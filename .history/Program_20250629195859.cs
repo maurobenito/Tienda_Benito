@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Tienda_Benito.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

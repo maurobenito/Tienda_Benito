@@ -1,15 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using Tienda_Benito.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ProyectoTiendaContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("ProyectoTiendaContext"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ProyectoTiendaContext"))
-    ));
 
 var app = builder.Build();
 

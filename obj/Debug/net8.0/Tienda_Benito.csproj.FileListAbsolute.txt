@@ -108,3 +108,4 @@ C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\refint\Tienda_Beni
 C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\Tienda_Benito.pdb
 C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\Tienda_Benito.genruntimeconfig.cache
 C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\ref\Tienda_Benito.dll
+C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\Tienda_Benito.sourcelink.json

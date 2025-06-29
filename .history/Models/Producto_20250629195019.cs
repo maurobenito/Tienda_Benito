@@ -15,8 +15,8 @@ namespace Tienda_Benito.Models
         public int? RubroId { get; set; }
 
         // ✅ Propiedades de navegación necesarias
-       public Proveedor? Proveedor { get; set; }
-        public Rubro? Rubro { get; set; }
+        public virtual Proveedor? Proveedor { get; set; }
+        public virtual Rubro? Rubro { get; set; }
 
         public virtual ICollection<Ventadetalle> Ventadetalles { get; set; } = new List<Ventadetalle>();
     }
