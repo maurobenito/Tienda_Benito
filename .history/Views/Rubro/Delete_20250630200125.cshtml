@@ -1,0 +1,14 @@
+@model Tienda_Benito.Models.Rubro
+@{
+    ViewData["Title"] = "Eliminar Rubro";
+}
+<h1>¿Eliminar Rubro?</h1>
+<dl class="row">
+    <dt class="col-sm-2">Nombre</dt>
+    <dd class="col-sm-10">@Model.Nombre</dd>
+</dl>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="RubroId" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

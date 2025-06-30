@@ -1,0 +1,41 @@
+@model Tienda_Benito.Models.Proveedor
+
+@{
+    ViewData["Title"] = "Editar Proveedor";
+}
+
+<h1>Editar Proveedor</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="ProveedorId" />
+    <div class="form-group">
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Telefono"></label>
+        <input asp-for="Telefono" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Direccion"></label>
+        <input asp-for="Direccion" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Cuit"></label>
+        <input asp-for="Cuit" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="RazonSocial"></label>
+        <input asp-for="RazonSocial" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DatosBancarios"></label>
+        <input asp-for="DatosBancarios" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>

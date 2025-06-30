@@ -1,0 +1,26 @@
+@model IList<Tienda_Benito.Models.Rubro>
+@{
+    ViewData["Title"] = "Rubros";
+}
+<h1>Rubros</h1>
+<p><a asp-action="Create" class="btn btn-primary">Nuevo Rubro</a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var item in Model) {
+        <tr>
+            <td>@item.Nombre</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RubroId">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.RubroId">Detalles</a> |
+                <a asp-action="Delete" asp-route-id="@item.RubroId">Eliminar</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
