@@ -1,0 +1,41 @@
+@model IEnumerable<Tienda_Benito.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<h1>Ventas</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nueva Venta</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Tipo Venta</th>
+            <th>Usuario</th>
+            <th>Cliente</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@item.Total.ToString("C")</td>
+            <td>@item.TipoVenta</td>
+            <td>@item.Usuario?.Nombre</td>
+            <td>@item.Cliente?.Nombre</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.VentaId">Detalles</a> |
+                <a asp-action="Edit" asp-route-id="@item.VentaId">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.VentaId">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
