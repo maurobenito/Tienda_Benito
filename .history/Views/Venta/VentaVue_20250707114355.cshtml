@@ -1,0 +1,149 @@
+@{
+    ViewData["Title"] = "Nueva Venta (Vue)";
+}
+
+<h2>Nueva Venta</h2>
+
+<div id="app">
+  <!-- Cliente -->
+  <div class="form-group">
+    <label>Cliente</label>
+    <input type="text" class="form-control" v-model="clienteBusqueda" @input="buscarClientes">
+    <ul class="list-group" v-if="clientes.length">
+      <li class="list-group-item" v-for="c in clientes" @click="seleccionarCliente(c)">
+        {{ c.nombreCompleto }}
+      </li>
+    </ul>
+    <div v-if="clienteSeleccionado">
+      <strong>Cliente Seleccionado:</strong> {{ clienteSeleccionado.nombreCompleto }}
+    </div>
+  </div>
+
+  <!-- Producto -->
+  <div class="form-group">
+    <label>Producto</label>
+    <input type="text" class="form-control" v-model="productoBusqueda" @input="buscarProductos">
+    <ul class="list-group" v-if="productos.length">
+      <li class="list-group-item" v-for="p in productos" @click="agregarProducto(p)">
+        {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
+      </li>
+    </ul>
+  </div>
+
+  <!-- Carrito -->
+  <h4>Carrito</h4>
+  <table class="table table-bordered" v-if="carrito.length">
+    <thead>
+      <tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr v-for="(item, i) in carrito">
+        <td>{{ item.nombre }}</td>
+        <td>${{ item.precioVenta.toFixed(2) }}</td>
+        <td>
+          <input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @change="actualizarTotal">
+        </td>
+        <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
+        <td><button class="btn btn-danger btn-sm" @click="quitarProducto(i)">Quitar</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Total y confirmar -->
+  <div v-if="carrito.length">
+    <h4>Total: ${{ total.toFixed(2) }}</h4>
+    <button class="btn btn-success" @click="confirmarVenta">Confirmar Venta</button>
+  </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.27.2/dist/axios.min.js"></script>
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    clienteBusqueda: '',
+    clientes: [],
+    clienteSeleccionado: null,
+    productoBusqueda: '',
+    productos: [],
+    carrito: [],
+    total: 0,
+    ventaIdConfirmada: null
+  },
+  methods: {
+    buscarClientes() {
+      if (this.clienteBusqueda.length < 2) {
+        this.clientes = [];
+        return;
+      }
+      axios.get('/api/clientes/buscar', { params: { query: this.clienteBusqueda } })
+        .then(r => this.clientes = r.data)
+        .catch(e => console.error('Error buscando clientes:', e));
+    },
+    seleccionarCliente(c) {
+      this.clienteSeleccionado = c;
+      this.clienteBusqueda = c.nombreCompleto;
+      this.clientes = [];
+    },
+    buscarProductos() {
+      if (this.productoBusqueda.length < 2) {
+        this.productos = [];
+        return;
+      }
+      axios.get('/api/productos/buscar', { params: { query: this.productoBusqueda } })
+        .then(r => this.productos = r.data)
+        .catch(e => console.error('Error buscando productos:', e));
+    },
+    agregarProducto(p) {
+      const ex = this.carrito.find(x => x.productoId === p.productoId);
+      if (ex) {
+        if (ex.cantidad < p.stock) ex.cantidad++;
+      } else {
+        this.carrito.push({ ...p, cantidad: 1 });
+      }
+      this.productoBusqueda = '';
+      this.productos = [];
+      this.actualizarTotal();
+    },
+    quitarProducto(i) {
+      this.carrito.splice(i, 1);
+      this.actualizarTotal();
+    },
+    actualizarTotal() {
+      this.total = this.carrito.reduce((acc, x) => acc + x.precioVenta * x.cantidad, 0);
+    },
+    confirmarVenta() {
+      if (!this.clienteSeleccionado || this.carrito.length === 0) {
+        alert('Seleccione cliente y productos.');
+        return;
+      }
+      const dto = {
+        clienteId: this.clienteSeleccionado.clienteId,
+        usuarioId: 1,
+        total: this.total,
+        productos: this.carrito.map(x => ({
+          productoId: x.productoId,
+          cantidad: x.cantidad,
+          precioUnitario: x.precioVenta
+        }))
+      };
+      axios.post('/api/ventas/crear', dto)
+        .then(res => {
+          alert('Venta OK. ID: ' + res.data.ventaId);
+          this.ventaIdConfirmada = res.data.ventaId;
+          this.carrito = [];
+          this.total = 0;
+          this.clienteSeleccionado = null;
+          this.clienteBusqueda = '';
+        })
+        .catch(e => {
+          alert('Error al registrar venta.');
+          console.error(e);
+        });
+    }
+  }
+});
+</script>
+}

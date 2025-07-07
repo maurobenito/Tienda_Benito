@@ -127,10 +127,8 @@ namespace Tienda_Benito.Controllers
         }
         public IActionResult DetalleVue(int id)
 {
-    ViewBag.VentaId = id;
     return View("VentaDetalleVue");
 }
-
 
     }
     

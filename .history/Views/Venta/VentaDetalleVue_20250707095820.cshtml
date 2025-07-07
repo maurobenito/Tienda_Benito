@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Detalle de Venta (Vue)";
+}
+
+<h2>Detalle de Venta</h2>
+
+<div id="app">
+    <div v-if="cargando" class="alert alert-info">
+        Cargando datos de la venta...
+    </div>
+
+    <div v-else-if="venta">
+        <p><strong>Venta ID:</strong> {{ venta.ventaId }}</p>
+        <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+        <p><strong>Usuario:</strong> {{ venta.usuario }}</p>
+        <p><strong>Fecha:</strong> {{ venta.fecha }}</p>
+
+        <h4>Productos Vendidos</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="detalle in venta.detalles">
+                    <td>{{ detalle.nombre }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
+                    <td>${{ detalle.subtotal.toFixed(2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 class="text-end">Total: ${{ venta.total.toFixed(2) }}</h4>
+    </div>
+
+    <div v-else class="alert alert-danger">
+        No se encontró la venta solicitada.
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                venta: null,
+                cargando: true
+            },
+            mounted() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = window.location.pathname.split('/').pop();
+
+                axios.get(`/api/ventas/${id}`)
+                    .then(resp => {
+                        this.venta = resp.data;
+                    })
+                    .catch(err => {
+                        console.error("Error cargando venta:", err);
+                        this.venta = null;
+                    })
+                    .finally(() => {
+                        this.cargando = false;
+                    });
+            }
+        });
+    </script>
+}

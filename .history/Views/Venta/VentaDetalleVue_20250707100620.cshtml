@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Detalle de Venta";
+}
+
+<h2>Detalle de la Venta</h2>
+
+<div id="app">
+    <div v-if="cargando">
+        <p>Cargando datos...</p>
+    </div>
+
+    <div v-else-if="venta">
+        <p><strong>ID Venta:</strong> {{ venta.ventaId }}</p>
+        <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+        <p><strong>Usuario:</strong> {{ venta.usuario }}</p>
+        <p><strong>Fecha:</strong> {{ new Date(venta.fecha).toLocaleString() }}</p>
+        <p><strong>Total:</strong> ${{ venta.total.toFixed(2) }}</p>
+
+        <h4>Productos Vendidos</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in venta.detalles">
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.precioUnitario.toFixed(2) }}</td>
+                    <td>${{ item.subtotal.toFixed(2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div v-else>
+        <p>No se pudo cargar la venta.</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                venta: null,
+                cargando: true
+            },
+            mounted() {
+                const id = @ViewBag.VentaId;
+
+                axios.get(`/api/ventas/${id}`)
+                    .then(resp => {
+                        this.venta = resp.data;
+                    })
+                    .catch(err => {
+                        console.error("Error cargando venta:", err);
+                        this.venta = null;
+                    })
+                    .finally(() => {
+                        this.cargando = false;
+                    });
+            }
+        });
+    </script>
+}

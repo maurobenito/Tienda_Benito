@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Detalle de Venta (Vue)";
+}
+
+<h2>Detalle de Venta</h2>
+
+<!-- 🔘 Botones de acción -->
+<div class="mb-3">
+    <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+    <button class="btn btn-danger" onclick="exportarPDF()">📄 Exportar a PDF</button>
+    <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar a Excel</button>
+</div>
+
+<!-- 📦 Detalle de venta -->
+<div id="app">
+    <div v-if="venta" id="detalleVenta">
+        <p><strong>Venta ID:</strong> {{ venta.ventaId }}</p>
+        <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+        <p><strong>Vendedor:</strong> {{ venta.usuario }}</p>
+        <p><strong>Fecha:</strong> {{ venta.fecha }}</p>
+        <p><strong>Total:</strong> ${{ venta.total.toFixed(2) }}</p>
+
+        <h4>Productos</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="detalle in venta.detalles">
+                    <td>{{ detalle.nombre }}</td>
+                    <td>{{ detalle.cantidad }}</td>
+                    <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
+                    <td>${{ detalle.subtotal.toFixed(2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div v-else>
+        <p>Cargando venta...</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                venta: null
+            },
+            created() {
+                const url = window.location.pathname;
+                const id = url.substring(url.lastIndexOf('/') + 1);
+                axios.get(`/api/ventas/${id}`)
+                    .then(resp => {
+                        this.venta = resp.data;
+                    })
+                    .catch(error => {
+                        console.error("Error cargando datos:", error);
+                        alert("No se pudo cargar la venta.");
+                    });
+            }
+        });
+
+        // 📄 Exportar a PDF
+        async function exportarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text("Detalle de Venta", 10, 10);
+            let y = 20;
+
+            const tabla = document.querySelector("#detalleVenta table");
+            const rows = tabla.querySelectorAll("tr");
+
+            rows.forEach(row => {
+                const cols = Array.from(row.cells).map(td => td.innerText).join(" | ");
+                doc.text(cols, 10, y);
+                y += 10;
+            });
+
+            doc.save("detalle_venta.pdf");
+        }
+
+        // 📊 Exportar a Excel
+        function exportarExcel() {
+            const tabla = document.querySelector("#detalleVenta table");
+            const wb = XLSX.utils.table_to_book(tabla, { sheet: "Detalle Venta" });
+            XLSX.writeFile(wb, "detalle_venta.xlsx");
+        }
+    </script>
+}

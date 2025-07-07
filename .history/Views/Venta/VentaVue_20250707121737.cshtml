@@ -1,0 +1,177 @@
+@{
+    ViewData["Title"] = "Nueva Venta (Vue)";
+}
+
+<h2>Nueva Venta</h2>
+
+<div id="app">
+    <div class="form-group">
+        <label>Cliente</label>
+        <input type="text" class="form-control" v-model="clienteBusqueda" v-on:input="buscarClientes">
+        <ul class="list-group" v-if="clientes.length">
+            <li class="list-group-item" v-for="c in clientes" v-on:click="seleccionarCliente(c)">
+                {{ c.nombreCompleto }}
+            </li>
+        </ul>
+        <div v-if="clienteSeleccionado">
+            <strong>Cliente Seleccionado:</strong> {{ clienteSeleccionado.nombreCompleto }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Producto</label>
+        <input type="text" class="form-control mb-2" v-model="productoBusqueda" v-on:input="buscarProductos">
+        <button class="btn btn-sm btn-outline-secondary mb-2" v-on:click="buscarProductos(true)">Ver todos los productos</button>
+
+        <div class="form-group">
+            <label>Filtrar por Rubro</label>
+            <select class="form-control" v-model="rubroSeleccionado" v-on:change="buscarProductosPorRubro">
+                <option value="">-- Todos --</option>
+                <option v-for="r in rubros" :value="r.rubroId">{{ r.nombre }}</option>
+            </select>
+        </div>
+
+        <ul class="list-group" v-if="productos.length">
+            <li class="list-group-item" v-for="p in productos" v-on:click="agregarProducto(p)">
+                {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
+            </li>
+        </ul>
+    </div>
+
+    <h4>Carrito</h4>
+    <table class="table table-bordered" v-if="carrito.length">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in carrito">
+                <td>{{ item.nombre }}</td>
+                <td>${{ item.precioVenta.toFixed(2) }}</td>
+                <td><input type="number" v-model.number="item.cantidad" min="1" :max="item.stock" class="form-control" v-on:change="actualizarTotal"></td>
+                <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
+                <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div v-if="carrito.length">
+        <h4>Total: ${{ total.toFixed(2) }}</h4>
+        <button class="btn btn-success" v-on:click="confirmarVenta">Confirmar Venta</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                clienteBusqueda: '',
+                clientes: [],
+                clienteSeleccionado: null,
+                productoBusqueda: '',
+                productos: [],
+                carrito: [],
+                total: 0,
+                usuarioId: 1,
+                rubros: [],
+                rubroSeleccionado: ''
+            },
+            mounted() {
+                // Cargar rubros apenas inicia
+                axios.get('/rubros')
+                    .then(response => {
+                        this.rubros = response.data;
+                    });
+            },
+            methods: {
+                buscarClientes() {
+                    if (this.clienteBusqueda.length < 2) {
+                        this.clientes = [];
+                        return;
+                    }
+                    axios.get('/clientes/buscar?query=' + this.clienteBusqueda)
+                        .then(response => {
+                            this.clientes = response.data;
+                        });
+                },
+                seleccionarCliente(cliente) {
+                    this.clienteSeleccionado = cliente;
+                    this.clientes = [];
+                    this.clienteBusqueda = cliente.nombreCompleto;
+                },
+                buscarProductos(verTodos = false) {
+                    let query = verTodos ? '' : this.productoBusqueda;
+                    axios.get('/productos/buscar?query=' + query)
+                        .then(response => {
+                            this.productos = response.data;
+                        });
+                },
+                buscarProductosPorRubro() {
+                    if (!this.rubroSeleccionado) {
+                        this.buscarProductos(true);
+                        return;
+                    }
+                    axios.get('/productos/porrubro/' + this.rubroSeleccionado)
+                        .then(response => {
+                            this.productos = response.data;
+                        });
+                },
+                agregarProducto(producto) {
+                    const existente = this.carrito.find(p => p.productoId === producto.productoId);
+                    if (existente) {
+                        if (existente.cantidad < producto.stock) {
+                            existente.cantidad++;
+                        }
+                    } else {
+                        this.carrito.push({ ...producto, cantidad: 1 });
+                    }
+                    this.productos = [];
+                    this.productoBusqueda = '';
+                    this.actualizarTotal();
+                },
+                quitarProducto(index) {
+                    this.carrito.splice(index, 1);
+                    this.actualizarTotal();
+                },
+                actualizarTotal() {
+                    this.total = this.carrito.reduce((suma, p) => suma + (p.precioVenta * p.cantidad), 0);
+                },
+                confirmarVenta() {
+                    if (!this.clienteSeleccionado || this.carrito.length === 0) {
+                        alert("Seleccione un cliente y al menos un producto.");
+                        return;
+                    }
+
+                    const datosVenta = {
+                        clienteId: this.clienteSeleccionado.clienteId,
+                        usuarioId: this.usuarioId,
+                        total: this.total,
+                        productos: this.carrito.map(p => ({
+                            productoId: p.productoId,
+                            cantidad: p.cantidad,
+                            precioUnitario: p.precioVenta
+                        }))
+                    };
+
+                    axios.post('/ventas/crear', datosVenta)
+                        .then(response => {
+                            alert("Venta registrada correctamente. Venta ID: " + response.data.ventaId);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            alert("Error al registrar la venta.");
+                            console.error(error);
+                        });
+                }
+            }
+        });
+    </script>
+}
