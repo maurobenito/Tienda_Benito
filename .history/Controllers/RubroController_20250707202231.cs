@@ -68,12 +68,13 @@ namespace Tienda_Benito.Controllers
             return RedirectToAction(nameof(Index));
 
         }
-       [HttpGet]
-public IActionResult GetRubros()
+[HttpGet("/Rubro/cargarRubros")]
+public IActionResult cargarRubros()
 {
     var lista = _context.Rubro
         .Select(r => new { rubroId = r.RubroId, nombre = r.Nombre })
         .ToList();
+
     return Json(lista);
 }
 

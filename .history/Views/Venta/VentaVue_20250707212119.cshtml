@@ -189,24 +189,32 @@
                     this.ventaConfirmada = false;
                     this.ventaIdGenerada = 0;
                 },
-                cargarRubros() {
-                    axios.get('/Rubro/GetRubros')
-                        .then(r => this.rubros = r.data)
-                        .catch(e => {
-                            console.error('Error al cargar rubros:', e);
-                            this.rubros = [];
-                        });
-                },
-                filtrarProductosPorRubro() {
-                    if (!this.rubroSeleccionado) return;
-                    axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
-                        .then(r => this.productos = r.data)
-                        .catch(e => {
-                            console.error('Error al filtrar productos por rubro:', e);
-                            this.productos = [];
-                        });
-                }
-            }
+               cargarRubros() {
+    axios.get('/Rubro/GetRubros')
+        .then(r => this.rubros = r.data)
+        .catch(e => {
+            console.error('Error al cargar rubros:', e);
+            this.rubros = [];
         });
-    </script>
+},
+
+               },
+            filtrarProductosPorRubro() {
+                if (!this.rubroSeleccionado) return;
+
+                axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
+                    .then(r => {
+                        this.productos = r.data;
+                    })
+                    .catch(e => {
+                        console.error('Error al filtrar productos por rubro:', e);
+                        this.productos = [];
+                    });
+            }
+        } // ← CIERRE CORRECTO de `methods`
+    }); // ← CIERRE CORRECTO de `new Vue(...)`
+</script>
+
+
+    
 }
