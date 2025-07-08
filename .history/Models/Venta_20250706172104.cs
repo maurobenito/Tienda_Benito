@@ -37,8 +37,6 @@ public partial class Ventum
     [ForeignKey("UsuarioId")]
     [InverseProperty("Venta")]
     public virtual Usuario? Usuario { get; set; }
-    public bool Anulada { get; set; } = false;
-
 
     [InverseProperty("Venta")]
     public virtual ICollection<Ventadetalle> Ventadetalles { get; set; } = new List<Ventadetalle>();

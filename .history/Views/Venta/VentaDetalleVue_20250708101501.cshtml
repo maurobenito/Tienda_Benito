@@ -6,14 +6,12 @@
 
 <!-- 🔘 Botones de acción -->
 <div class="mb-3 d-flex gap-2 flex-wrap">
-    <a href="/Venta" class="btn btn-outline-dark">⬅ Volver al Listado</a>
     <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir</button>
     <button class="btn btn-danger" onclick="exportarPDF()">📄 Exportar PDF</button>
     <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button>
-    <button class="btn btn-warning" onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
 </div>
 
-<!-- 📦 Contenido principal -->
+<!-- 📦 Contenedor principal -->
 <div id="app">
     <div v-if="venta" id="detalleVenta" class="border rounded p-4 shadow-sm bg-light">
         <!-- Información general -->
@@ -61,19 +59,6 @@
     </div>
 </div>
 
-<!-- 🧾 Template oculto para imprimir ticket -->
-<div id="ticketVenta" style="display: none; font-family: monospace;">
-    <h4>🧾 Tienda Benito</h4>
-    <p><strong>Venta #:</strong> <span id="ticketId"></span></p>
-    <p><strong>Cliente:</strong> <span id="ticketCliente"></span></p>
-    <p><strong>Fecha:</strong> <span id="ticketFecha"></span></p>
-    <hr>
-    <div id="ticketItems"></div>
-    <hr>
-    <p><strong>Total:</strong> $<span id="ticketTotal"></span></p>
-    <p>¡Gracias por su compra!</p>
-</div>
-
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -99,83 +84,33 @@
             }
         });
 
-        function exportarPDF() {
+        // 📄 Exportar a PDF
+        async function exportarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            doc.setFontSize(16);
             doc.text("Detalle de Venta", 10, 10);
-            let y = 20;
 
+            let y = 20;
             const tabla = document.querySelector("#detalleVenta table");
             const rows = tabla.querySelectorAll("tr");
 
             rows.forEach(row => {
                 const cols = Array.from(row.cells).map(td => td.innerText).join(" | ");
+                doc.setFontSize(10);
                 doc.text(cols, 10, y);
-                y += 10;
+                y += 8;
             });
 
             doc.save("detalle_venta.pdf");
         }
 
+        // 📊 Exportar a Excel
         function exportarExcel() {
             const tabla = document.querySelector("#detalleVenta table");
             const wb = XLSX.utils.table_to_book(tabla, { sheet: "Detalle Venta" });
             XLSX.writeFile(wb, "detalle_venta.xlsx");
         }
-
-        function imprimirTicket() {
-    const data = document.querySelector("#app").__vue__.venta;
-    if (!data) return alert("Venta no cargada.");
-
-    // Armamos el HTML del ticket
-    const html = `
-        <html>
-        <head>
-            <title>Ticket Venta #${data.ventaId}</title>
-            <style>
-                body {
-                    font-family: monospace;
-                    font-size: 14px;
-                    padding: 20px;
-                }
-                hr {
-                    border: none;
-                    border-top: 1px dashed #333;
-                    margin: 10px 0;
-                }
-                .center {
-                    text-align: center;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="center">
-                <h3>🧾 Tienda Benito</h3>
-                <p>Venta #${data.ventaId}</p>
-                <p>Cliente: ${data.cliente}</p>
-                <p>Fecha: ${data.fecha}</p>
-                <hr>
-            </div>
-            ${data.detalles.map(p =>
-                `<p>${p.nombre} x${p.cantidad} - $${(p.precioUnitario * p.cantidad).toFixed(2)}</p>`
-            ).join('')}
-            <hr>
-            <p class="center"><strong>TOTAL: $${data.total.toFixed(2)}</strong></p>
-            <hr>
-            <p class="center">¡Gracias por su compra!</p>
-        </body>
-        </html>
-    `;
-
-    // Abrimos nueva ventana, escribimos HTML y llamamos a imprimir
-    const popup = window.open('', '_blank', 'width=300,height=600');
-    popup.document.open();
-    popup.document.write(html);
-    popup.document.close();
-    popup.focus();
-    popup.print();
-}
-
     </script>
 }

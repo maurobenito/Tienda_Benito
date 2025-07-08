@@ -33,8 +33,8 @@
                 <td>@item.Usuario?.Email</td>
                 <td>@item.Cliente?.Nombre @item.Cliente?.Apellido</td>
                 <td class="text-center">
-                    <a asp-action="DetalleVue" asp-route-id="@item.VentaId" class="btn btn-info btn-sm">🔍 Ver</a>
-                    
+                    <a asp-action="DetalleVue" asp-route-id="@item.VentaId" class="btn btn-info btn-sm">Ver</a>
+
                     @if (!item.Anulada) {
                         <form asp-action="Anular" asp-route-id="@item.VentaId" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea anular esta venta?');">
                             <button type="submit" class="btn btn-warning btn-sm">🚫 Anular</button>

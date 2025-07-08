@@ -125,57 +125,24 @@
         }
 
         function imprimirTicket() {
-    const data = document.querySelector("#app").__vue__.venta;
-    if (!data) return alert("Venta no cargada.");
+            const data = document.querySelector("#app").__vue__.venta;
+            if (!data) return alert("Venta no cargada.");
 
-    // Armamos el HTML del ticket
-    const html = `
-        <html>
-        <head>
-            <title>Ticket Venta #${data.ventaId}</title>
-            <style>
-                body {
-                    font-family: monospace;
-                    font-size: 14px;
-                    padding: 20px;
-                }
-                hr {
-                    border: none;
-                    border-top: 1px dashed #333;
-                    margin: 10px 0;
-                }
-                .center {
-                    text-align: center;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="center">
-                <h3>🧾 Tienda Benito</h3>
-                <p>Venta #${data.ventaId}</p>
-                <p>Cliente: ${data.cliente}</p>
-                <p>Fecha: ${data.fecha}</p>
-                <hr>
-            </div>
-            ${data.detalles.map(p =>
-                `<p>${p.nombre} x${p.cantidad} - $${(p.precioUnitario * p.cantidad).toFixed(2)}</p>`
-            ).join('')}
-            <hr>
-            <p class="center"><strong>TOTAL: $${data.total.toFixed(2)}</strong></p>
-            <hr>
-            <p class="center">¡Gracias por su compra!</p>
-        </body>
-        </html>
-    `;
+            document.getElementById("ticketId").innerText = data.ventaId;
+            document.getElementById("ticketCliente").innerText = data.cliente;
+            document.getElementById("ticketFecha").innerText = data.fecha;
+            document.getElementById("ticketTotal").innerText = data.total.toFixed(2);
 
-    // Abrimos nueva ventana, escribimos HTML y llamamos a imprimir
-    const popup = window.open('', '_blank', 'width=300,height=600');
-    popup.document.open();
-    popup.document.write(html);
-    popup.document.close();
-    popup.focus();
-    popup.print();
-}
+            const itemsHtml = data.detalles.map(d =>
+                `<p>${d.nombre} x${d.cantidad} - $${(d.cantidad * d.precioUnitario).toFixed(2)}</p>`
+            ).join('');
+            document.getElementById("ticketItems").innerHTML = itemsHtml;
 
+            const w = window.open('', 'ticket', 'width=300,height=500');
+            w.document.write(document.getElementById("ticketVenta").outerHTML);
+            w.document.close();
+            w.focus();
+            w.print();
+        }
     </script>
 }
