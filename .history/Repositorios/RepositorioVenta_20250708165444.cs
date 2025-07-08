@@ -52,7 +52,7 @@ namespace Tienda_Benito.Repositorios
                 .Include(v => v.Usuario)
                 .FirstOrDefault(v => v.VentaId == id);
         }
-       public List<Ventum> ObtenerPaginado(int pagina, int tamPagina)
+        public List<Ventum> ObtenerPaginado(int pagina, int tamPagina)
 {
     return _context.Venta
         .Include(v => v.Cliente)
@@ -67,7 +67,6 @@ public int Contar()
 {
     return _context.Venta.Count();
 }
-
 
     }
 }

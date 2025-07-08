@@ -17,25 +17,11 @@ namespace Tienda_Benito.Controllers
             _context = context;
         }
 
-      public IActionResult Index(int pagina = 1, int tamPagina = 5)
-{
-    var ventas = _context.Venta
-        .Include(v => v.Cliente)
-        .Include(v => v.Usuario)
-        .OrderByDescending(v => v.Fecha);
+        public IActionResult Index()
+        {
+            return View(_repositorio.ObtenerTodos());
+        }
 
-    int totalVentas = ventas.Count();
-    var ventasPaginadas = ventas
-        .Skip((pagina - 1) * tamPagina)
-        .Take(tamPagina)
-        .ToList();
-
-    ViewBag.PaginaActual = pagina;
-    ViewBag.TamanoPagina = tamPagina;
-    ViewBag.TotalPaginas = (int)Math.Ceiling((double)totalVentas / tamPagina);
-
-    return View(ventasPaginadas);
-}
         public IActionResult Details(int id)
         {
             var venta = _repositorio.ObtenerPorId(id);

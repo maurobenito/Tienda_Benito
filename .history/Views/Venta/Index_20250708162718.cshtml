@@ -13,9 +13,9 @@
 <form method="get" class="form-inline mb-3">
     <label class="mr-2">Mostrar:</label>
     <select name="tamPagina" class="form-control mr-2" onchange="this.form.submit()">
-        <option value="5" selected="@(tamanoPagina == 5)">5</option>
-        <option value="10" selected="@(tamanoPagina == 10)">10</option>
-        <option value="15" selected="@(tamanoPagina == 15)">15</option>
+        <option value="5" @(tamanoPagina == 5 ? "selected" : "")>5</option>
+        <option value="10" @(tamanoPagina == 10 ? "selected" : "")>10</option>
+        <option value="15" @(tamanoPagina == 15 ? "selected" : "")>15</option>
     </select>
     <input type="hidden" name="pagina" value="@paginaActual" />
 </form>
@@ -48,7 +48,7 @@
                 <td>@item.Cliente?.Nombre @item.Cliente?.Apellido</td>
                 <td class="text-center">
                     <a asp-action="DetalleVue" asp-route-id="@item.VentaId" class="btn btn-info btn-sm">🔍 Ver</a>
-
+                    
                     @if (!item.Anulada)
                     {
                         <form asp-action="Anular" asp-route-id="@item.VentaId" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea anular esta venta?');">
@@ -65,36 +65,14 @@
     </tbody>
 </table>
 
-<!-- 🔢 Paginación con flechas -->
-@if (totalPaginas > 1)
-{
-    <nav>
-        <ul class="pagination justify-content-center">
-            <!-- Primera página -->
-            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pagina = 1, tamPagina = tamanoPagina })">«</a>
+<!-- 🔢 Paginación -->
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= totalPaginas; i++)
+        {
+            <li class="page-item @(i == paginaActual ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = i, tamPagina = tamanoPagina })">@i</a>
             </li>
-            <!-- Página anterior -->
-            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual - 1, tamPagina = tamanoPagina })">‹</a>
-            </li>
-
-            <!-- Páginas alrededor de la actual -->
-            @for (int i = Math.Max(1, paginaActual - 2); i <= Math.Min(totalPaginas, paginaActual + 2); i++)
-            {
-                <li class="page-item @(i == paginaActual ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { pagina = i, tamPagina = tamanoPagina })">@i</a>
-                </li>
-            }
-
-            <!-- Página siguiente -->
-            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual + 1, tamPagina = tamanoPagina })">›</a>
-            </li>
-            <!-- Última página -->
-            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pagina = totalPaginas, tamPagina = tamanoPagina })">»</a>
-            </li>
-        </ul>
-    </nav>
-}
+        }
+    </ul>
+</nav>
