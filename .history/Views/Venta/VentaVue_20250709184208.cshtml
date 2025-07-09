@@ -11,8 +11,8 @@
             <h4 class="alert-heading">¡Venta registrada exitosamente!</h4>
             <p>El número de venta es <strong>#{{ ventaIdGenerada }}</strong>.</p>
             <hr>
-            <button class="btn btn-primary" @@click="resetearFormulario">Hacer otra venta</button>
-            <button class="btn btn-info ml-2" @@click="irADetalleVenta">Ver detalle de la venta</button>
+            <button class="btn btn-primary" @click="resetearFormulario">Hacer otra venta</button>
+            <button class="btn btn-info ml-2" @click="irADetalleVenta">Ver detalle de la venta</button>
         </div>
     </div>
 
@@ -22,13 +22,13 @@
         <div class="form-group">
             <label><strong>Buscar Cliente</strong></label>
             <div class="input-group">
-                <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
+                <input type="text" class="form-control" v-model="clienteBusqueda" @input="buscarClientes">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary"@@click="abrirModalClientes">👁 Navegar Clientes</button>
+                    <button class="btn btn-outline-secondary" @click="abrirModalClientes">👁 Navegar Clientes</button>
                 </div>
             </div>
             <ul class="list-group" v-if="clientes.length">
-                <li class="list-group-item" v-for="c in clientes" @@click="seleccionarCliente(c)">
+                <li class="list-group-item" v-for="c in clientes" @click="seleccionarCliente(c)">
                     {{ c.nombreCompleto }}
                 </li>
             </ul>
@@ -41,7 +41,7 @@
         <div class="row">
             <div class="col-md-6">
                 <label><strong>Filtrar por Rubro</strong></label>
-                <select class="form-control" v-model="rubroSeleccionado" @@change="filtrarProductosPorRubro">
+                <select class="form-control" v-model="rubroSeleccionado" @change="filtrarProductosPorRubro">
                     <option disabled value="">-- Seleccione un rubro --</option>
                     <option v-for="r in rubros" :value="r.rubroId">{{ r.nombre }}</option>
                 </select>
@@ -49,19 +49,18 @@
             <div class="col-md-6">
                 <label><strong>Buscar Producto</strong></label>
                 <div class="input-group">
-                    <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
+                    <input type="text" class="form-control" v-model="productoBusqueda" @input="buscarProductos">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" @@click="abrirModalProductos">👁 Navegar Productos</button>
+                        <button class="btn btn-outline-secondary" @click="abrirModalProductos">👁 Navegar Productos</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Productos -->
-        <ul class="list-group mt-2" v-if="productos.length && !mostrarModalProductos">
-
+        <ul class="list-group mt-2" v-if="productos.length">
             <li class="list-group-item d-flex justify-content-between align-items-center"
-                v-for="p in productos" @@click="agregarProducto(p)">
+                v-for="p in productos" @click="agregarProducto(p)">
                 {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
                 <button class="btn btn-sm btn-primary">Agregar</button>
             </li>
@@ -84,16 +83,16 @@
                     <tr v-for="(item, index) in carrito">
                         <td>{{ item.nombre }}</td>
                         <td>${{ item.precioVenta.toFixed(2) }}</td>
-                        <td><input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @@change="actualizarTotal"></td>
+                        <td><input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @change="actualizarTotal"></td>
                         <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
-                        <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
+                        <td><button class="btn btn-danger btn-sm" @click="quitarProducto(index)">Quitar</button></td>
                     </tr>
                 </tbody>
             </table>
 
             <div v-if="carrito.length">
                 <h4>Total: ${{ total.toFixed(2) }}</h4>
-                <button class="btn btn-success" @@click="confirmarVenta">Confirmar Venta</button>
+                <button class="btn btn-success" @click="confirmarVenta">Confirmar Venta</button>
             </div>
         </div>
     </div>
@@ -111,7 +110,7 @@
                 <div class="modal-body">
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center"
-                            v-for="p in productos" @@click="agregarProducto(p)">
+                            v-for="p in productos" @click="agregarProducto(p)">
                             {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
                             <button class="btn btn-sm btn-success">Agregar</button>
                         </li>
@@ -133,7 +132,7 @@
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="c in clientes" @@click="seleccionarClienteDesdeModal(c)">
+                        <li class="list-group-item" v-for="c in clientes" @click="seleccionarClienteDesdeModal(c)">
                             {{ c.nombreCompleto }}
                         </li>
                     </ul>

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Nueva Venta (Vue)";
 }
 
-<h2>Nueva Venta</h2>
+<h2 class="mb-4">🧾 Nueva Venta</h2>
 
 <div id="app">
     <!-- Confirmación de venta -->
@@ -11,8 +11,8 @@
             <h4 class="alert-heading">¡Venta registrada exitosamente!</h4>
             <p>El número de venta es <strong>#{{ ventaIdGenerada }}</strong>.</p>
             <hr>
-            <button class="btn btn-primary" @@click="resetearFormulario">Hacer otra venta</button>
-            <button class="btn btn-info ml-2" @@click="irADetalleVenta">Ver detalle de la venta</button>
+            <button class="btn btn-primary" @@click="resetearFormulario">➕ Hacer otra venta</button>
+            <button class="btn btn-info ml-2" @@click="irADetalleVenta">🔍 Ver detalle de la venta</button>
         </div>
     </div>
 
@@ -20,20 +20,15 @@
     <div v-else>
         <!-- Cliente -->
         <div class="form-group">
-            <label><strong>Buscar Cliente</strong></label>
+            <label><strong>Cliente</strong></label>
             <div class="input-group">
                 <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary"@@click="abrirModalClientes">👁 Navegar Clientes</button>
-                </div>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalClientes">
+                    👤 Buscar
+                </button>
             </div>
-            <ul class="list-group" v-if="clientes.length">
-                <li class="list-group-item" v-for="c in clientes" @@click="seleccionarCliente(c)">
-                    {{ c.nombreCompleto }}
-                </li>
-            </ul>
-            <div v-if="clienteSeleccionado">
-                <strong>Cliente Seleccionado:</strong> {{ clienteSeleccionado.nombreCompleto }}
+            <div v-if="clienteSeleccionado" class="mt-2">
+                <strong>Seleccionado:</strong> {{ clienteSeleccionado.nombreCompleto }}
             </div>
         </div>
 
@@ -47,34 +42,24 @@
                 </select>
             </div>
             <div class="col-md-6">
-                <label><strong>Buscar Producto</strong></label>
+                <label><strong>Producto</strong></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" @@click="abrirModalProductos">👁 Navegar Productos</button>
-                    </div>
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalProductos">
+                        🛒 Buscar
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Productos -->
-        <ul class="list-group mt-2" v-if="productos.length && !mostrarModalProductos">
-
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-                v-for="p in productos" @@click="agregarProducto(p)">
-                {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
-                <button class="btn btn-sm btn-primary">Agregar</button>
-            </li>
-        </ul>
-
         <!-- Carrito -->
         <div class="mt-4">
-            <h4>Carrito</h4>
+            <h4>🧺 Carrito</h4>
             <table class="table table-bordered" v-if="carrito.length">
-                <thead>
+                <thead class="table-dark">
                     <tr>
                         <th>Producto</th>
-                        <th>Precio Unitario</th>
+                        <th>Precio</th>
                         <th>Cantidad</th>
                         <th>Subtotal</th>
                         <th></th>
@@ -86,68 +71,64 @@
                         <td>${{ item.precioVenta.toFixed(2) }}</td>
                         <td><input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @@change="actualizarTotal"></td>
                         <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
-                        <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
+                        <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">🗑</button></td>
                     </tr>
                 </tbody>
             </table>
 
             <div v-if="carrito.length">
-                <h4>Total: ${{ total.toFixed(2) }}</h4>
-                <button class="btn btn-success" @@click="confirmarVenta">Confirmar Venta</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Productos -->
-    <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar Producto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                            v-for="p in productos" @@click="agregarProducto(p)">
-                            {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
-                            <button class="btn btn-sm btn-success">Agregar</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Clientes -->
-    <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="c in clientes" @@click="seleccionarClienteDesdeModal(c)">
-                            {{ c.nombreCompleto }}
-                        </li>
-                    </ul>
-                </div>
+                <h4 class="text-success">Total: ${{ total.toFixed(2) }}</h4>
+                <button class="btn btn-success btn-lg mt-2" @@click="confirmarVenta">💾 Confirmar Venta</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal Clientes -->
+<div class="modal fade" id="modalClientes" tabindex="-1" aria-labelledby="modalClientesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalClientesLabel">Seleccionar Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+            <li class="list-group-item" v-for="c in clientes" @@click="seleccionarCliente(c); cerrarModal('modalClientes')" style="cursor: pointer">
+                {{ c.nombreCompleto }}
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Productos -->
+<div class="modal fade" id="modalProductos" tabindex="-1" aria-labelledby="modalProductosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalProductosLabel">Seleccionar Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                v-for="p in productos" @@click="agregarProducto(p); cerrarModal('modalProductos')" style="cursor:pointer">
+                {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
+                <button class="btn btn-sm btn-primary">Agregar</button>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         new Vue({
             el: '#app',
@@ -167,6 +148,8 @@
             },
             created() {
                 this.cargarRubros();
+                this.listarTodosLosClientes();
+                this.listarTodosLosProductos();
             },
             methods: {
                 buscarClientes() {
@@ -177,14 +160,14 @@
                     axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
                         .then(r => this.clientes = r.data);
                 },
+                listarTodosLosClientes() {
+                    axios.get('/api/clientes/buscar?query=')
+                        .then(r => this.clientes = r.data);
+                },
                 seleccionarCliente(cliente) {
                     this.clienteSeleccionado = cliente;
                     this.clienteBusqueda = cliente.nombreCompleto;
                     this.clientes = [];
-                },
-                seleccionarClienteDesdeModal(cliente) {
-                    this.seleccionarCliente(cliente);
-                    $('#modalClientes').modal('hide');
                 },
                 buscarProductos() {
                     if (this.productoBusqueda.length < 2) {
@@ -200,22 +183,7 @@
                         url += '&rubroId=' + this.rubroSeleccionado;
 
                     axios.get(url)
-                        .then(r => this.productos = r.data)
-                        .catch(e => console.error("Error al listar productos:", e));
-                },
-                abrirModalProductos() {
-                    axios.get('/api/productos/buscar?query=')
-                        .then(r => {
-                            this.productos = r.data;
-                            $('#modalProductos').modal('show');
-                        });
-                },
-                abrirModalClientes() {
-                    axios.get('/api/clientes/buscar?query=')
-                        .then(r => {
-                            this.clientes = r.data;
-                            $('#modalClientes').modal('show');
-                        });
+                        .then(r => this.productos = r.data);
                 },
                 agregarProducto(producto) {
                     const existente = this.carrito.find(p => p.productoId === producto.productoId);
@@ -274,23 +242,19 @@
                 },
                 cargarRubros() {
                     axios.get('/Rubro/GetRubros')
-                        .then(r => this.rubros = r.data)
-                        .catch(e => {
-                            console.error('Error al cargar rubros:', e);
-                            this.rubros = [];
-                        });
+                        .then(r => this.rubros = r.data);
                 },
                 filtrarProductosPorRubro() {
                     if (!this.rubroSeleccionado) return;
                     axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
-                        .then(r => this.productos = r.data)
-                        .catch(e => {
-                            console.error('Error al filtrar productos por rubro:', e);
-                            this.productos = [];
-                        });
+                        .then(r => this.productos = r.data);
                 },
                 irADetalleVenta() {
                     window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
+                },
+                cerrarModal(id) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById(id));
+                    if (modal) modal.hide();
                 }
             }
         });

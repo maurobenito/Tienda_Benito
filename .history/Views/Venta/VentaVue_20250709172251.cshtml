@@ -21,13 +21,12 @@
         <!-- Cliente -->
         <div class="form-group">
             <label><strong>Buscar Cliente</strong></label>
-            <div class="input-group">
-                <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary"@@click="abrirModalClientes">👁 Navegar Clientes</button>
-                </div>
-            </div>
-            <ul class="list-group" v-if="clientes.length">
+            <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
+            <button class="btn btn-outline-secondary btn-sm mt-1" data-toggle="modal" data-target="#modalClientes">
+                Navegar clientes
+            </button>
+
+            <ul class="list-group mt-2" v-if="clientes.length">
                 <li class="list-group-item" v-for="c in clientes" @@click="seleccionarCliente(c)">
                     {{ c.nombreCompleto }}
                 </li>
@@ -48,18 +47,19 @@
             </div>
             <div class="col-md-6">
                 <label><strong>Buscar Producto</strong></label>
-                <div class="input-group">
-                    <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" @@click="abrirModalProductos">👁 Navegar Productos</button>
-                    </div>
-                </div>
+                <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
             </div>
         </div>
 
         <!-- Productos -->
-        <ul class="list-group mt-2" v-if="productos.length && !mostrarModalProductos">
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <h5 class="mb-0">Productos</h5>
+            <button class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#modalProductos">
+                Navegar productos
+            </button>
+        </div>
 
+        <ul class="list-group mt-2" v-if="productos.length">
             <li class="list-group-item d-flex justify-content-between align-items-center"
                 v-for="p in productos" @@click="agregarProducto(p)">
                 {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
@@ -84,7 +84,10 @@
                     <tr v-for="(item, index) in carrito">
                         <td>{{ item.nombre }}</td>
                         <td>${{ item.precioVenta.toFixed(2) }}</td>
-                        <td><input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @@change="actualizarTotal"></td>
+                        <td>
+                            <input type="number" class="form-control" v-model.number="item.cantidad"
+                                   min="1" :max="item.stock" @@change="actualizarTotal">
+                        </td>
                         <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
                         <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
                     </tr>
@@ -97,57 +100,57 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal de Productos -->
-    <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar Producto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                            v-for="p in productos" @@click="agregarProducto(p)">
-                            {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
-                            <button class="btn btn-sm btn-success">Agregar</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<!-- MODAL CLIENTES -->
+<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Seleccionar Cliente</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li v-for="c in clientes" class="list-group-item" @@click="seleccionarClienteDesdeModal(c)">
+            {{ c.nombreCompleto }}
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Modal de Clientes -->
-    <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item" v-for="c in clientes" @@click="seleccionarClienteDesdeModal(c)">
-                            {{ c.nombreCompleto }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<!-- MODAL PRODUCTOS -->
+<div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Seleccionar Producto</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li v-for="p in productos" class="list-group-item d-flex justify-content-between"
+              @@click="agregarProducto(p)">
+            {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
+            <button class="btn btn-sm btn-primary">Agregar</button>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         new Vue({
             el: '#app',
@@ -167,6 +170,8 @@
             },
             created() {
                 this.cargarRubros();
+                this.listarTodosLosClientes();
+                this.listarTodosLosProductos();
             },
             methods: {
                 buscarClientes() {
@@ -175,6 +180,10 @@
                         return;
                     }
                     axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
+                        .then(r => this.clientes = r.data);
+                },
+                listarTodosLosClientes() {
+                    axios.get('/api/clientes/buscar?query=')
                         .then(r => this.clientes = r.data);
                 },
                 seleccionarCliente(cliente) {
@@ -200,22 +209,7 @@
                         url += '&rubroId=' + this.rubroSeleccionado;
 
                     axios.get(url)
-                        .then(r => this.productos = r.data)
-                        .catch(e => console.error("Error al listar productos:", e));
-                },
-                abrirModalProductos() {
-                    axios.get('/api/productos/buscar?query=')
-                        .then(r => {
-                            this.productos = r.data;
-                            $('#modalProductos').modal('show');
-                        });
-                },
-                abrirModalClientes() {
-                    axios.get('/api/clientes/buscar?query=')
-                        .then(r => {
-                            this.clientes = r.data;
-                            $('#modalClientes').modal('show');
-                        });
+                        .then(r => this.productos = r.data);
                 },
                 agregarProducto(producto) {
                     const existente = this.carrito.find(p => p.productoId === producto.productoId);
@@ -225,6 +219,7 @@
                         this.carrito.push({ ...producto, cantidad: 1 });
                     }
                     this.actualizarTotal();
+                    $('#modalProductos').modal('hide');
                 },
                 quitarProducto(index) {
                     this.carrito.splice(index, 1);
@@ -271,23 +266,17 @@
                     this.rubroSeleccionado = '';
                     this.ventaConfirmada = false;
                     this.ventaIdGenerada = 0;
+                    this.listarTodosLosClientes();
+                    this.listarTodosLosProductos();
                 },
                 cargarRubros() {
                     axios.get('/Rubro/GetRubros')
-                        .then(r => this.rubros = r.data)
-                        .catch(e => {
-                            console.error('Error al cargar rubros:', e);
-                            this.rubros = [];
-                        });
+                        .then(r => this.rubros = r.data);
                 },
                 filtrarProductosPorRubro() {
                     if (!this.rubroSeleccionado) return;
                     axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
-                        .then(r => this.productos = r.data)
-                        .catch(e => {
-                            console.error('Error al filtrar productos por rubro:', e);
-                            this.productos = [];
-                        });
+                        .then(r => this.productos = r.data);
                 },
                 irADetalleVenta() {
                     window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;

@@ -15,22 +15,21 @@ namespace Tienda_Benito.Controllers.Api
             _context = context;
         }
 
-       [HttpGet("buscar")]
-public IActionResult Buscar(string query = "")
-{
-    var resultados = _context.Cliente
-        .Where(c => (c.Nombre + " " + c.Apellido).Contains(query ?? ""))
-        .Select(c => new
+        [HttpGet("buscar")]
+        public IActionResult Buscar(string query)
         {
-            clienteId = c.ClienteId,
-            nombreCompleto = c.Nombre + " " + c.Apellido
-        })
-        .Take(10)
-        .ToList();
+            var resultados = _context.Cliente
+                .Where(c => c.Nombre.Contains(query) || c.Apellido.Contains(query))
+                .Select(c => new
+                {
+                    clienteId = c.ClienteId,
+                    nombreCompleto = c.Nombre + " " + c.Apellido
+                })
+                .Take(10)
+                .ToList();
 
-    return Ok(resultados);
-}
-
+            return Ok(resultados);
+        }
         [HttpGet("todos")]
 public IActionResult ObtenerTodos()
 {
