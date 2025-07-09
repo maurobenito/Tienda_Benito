@@ -1,0 +1,192 @@
+@{
+    ViewData["Title"] = "Detalle de Venta (Vue)";
+}
+
+<h2 class="mb-4">🧾 Detalle de Venta</h2>
+
+<!-- 🔘 Botones de acción -->
+<div class="mb-3 d-flex gap-2 flex-wrap">
+    <a href="/Venta" class="btn btn-outline-dark">⬅ Volver al Listado</a>
+    <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+    <button class="btn btn-danger" onclick="exportarPDF()">📄 Exportar PDF</button>
+    <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button>
+    <button class="btn btn-warning" onclick="imprimirTicket()">🧾 Imprimir Ticket</button>
+</div>
+
+<!-- 📦 Contenido principal -->
+<div id="app">
+    <div v-if="venta" id="detalleVenta" class="border rounded p-4 shadow-sm bg-light">
+        <!-- ⚠þ Leyenda si está anulada -->
+        <div v-if="venta.anulada" class="alert alert-danger text-center font-weight-bold">
+            📄 NOTA DE CRÉDITO - Esta venta fue anulada
+        </div>
+
+        <!-- Información general -->
+        <div class="mb-4">
+            <h5 class="text-primary">👭 Información de la Venta</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>ID Venta:</strong> {{ venta.ventaId }}</p>
+                    <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Vendedor:</strong> {{ venta.usuario }}</p>
+                    <p><strong>Fecha:</strong> {{ venta.fecha }}</p>
+                </div>
+            </div>
+            <h5 class="text-right text-success">Total: ${{ venta.total.toFixed(2) }}</h5>
+        </div>
+
+        <!-- Tabla de productos -->
+        <h5 class="text-primary">🛂 Productos Vendidos</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-sm bg-white">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="detalle in venta.detalles">
+                        <td>{{ detalle.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precioUnitario.toFixed(2) }}</td>
+                        <td>${{ detalle.subtotal.toFixed(2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div v-else>
+        <div class="alert alert-info">⏳ Cargando detalles de la venta...</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                venta: null
+            },
+            created() {
+                const id = window.location.pathname.split('/').pop();
+                axios.get(`/api/ventas/${id}`)
+                    .then(resp => {
+                        this.venta = resp.data;
+                    })
+                    .catch(error => {
+                        console.error("Error cargando venta:", error);
+                        alert("No se pudo cargar la venta.");
+                    });
+            },
+            methods: {
+                exportarPDF() {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    let y = 10;
+
+                    doc.setFontSize(16);
+                    if (this.venta.anulada) {
+                        doc.setTextColor(255, 0, 0);
+                        doc.text("🧾 NOTA DE CRÉDITO", 10, y);
+                    } else {
+                        doc.setTextColor(0, 0, 0);
+                        doc.text("🧾 COMPROBANTE DE VENTA", 10, y);
+                    }
+
+                    y += 10;
+                    doc.setTextColor(0, 0, 0);
+                    doc.text("Venta ID: " + this.venta.ventaId, 10, y += 10);
+                    doc.text("Cliente: " + this.venta.cliente, 10, y += 10);
+                    doc.text("Vendedor: " + this.venta.usuario, 10, y += 10);
+                    doc.text("Fecha: " + this.venta.fecha, 10, y += 10);
+                    doc.text("Total: $" + this.venta.total.toFixed(2), 10, y += 10);
+
+                    y += 10;
+                    doc.text("Productos:", 10, y);
+
+                    const tabla = document.querySelector("#detalleVenta table");
+                    const rows = tabla.querySelectorAll("tr");
+
+                    rows.forEach(row => {
+                        const cols = Array.from(row.cells).map(td => td.innerText).join(" | ");
+                        doc.text(cols, 10, y += 10);
+                    });
+
+                    doc.save(this.venta.anulada ? "nota_credito.pdf" : "comprobante_venta.pdf");
+                },
+
+                exportarExcel() {
+                    const tabla = document.querySelector("#detalleVenta table");
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.table_to_sheet(tabla);
+                    const encabezado = this.venta.anulada ? "🧾 NOTA DE CRÉDITO" : "🧾 COMPROBANTE DE VENTA";
+                    XLSX.utils.sheet_add_aoa(ws, [[encabezado]], { origin: "A1" });
+                    XLSX.utils.book_append_sheet(wb, ws, "Detalle Venta");
+                    XLSX.writeFile(wb, this.venta.anulada ? "nota_credito.xlsx" : "comprobante_venta.xlsx");
+                },
+
+                imprimirTicket() {
+                    const data = this.venta;
+                    if (!data) return alert("Venta no cargada.");
+
+                    const html = `
+                        <html>
+                        <head>
+                            <title>Ticket Venta #${data.ventaId}</title>
+                            <style>
+                                body {
+                                    font-family: monospace;
+                                    font-size: 14px;
+                                    padding: 20px;
+                                }
+                                hr {
+                                    border: none;
+                                    border-top: 1px dashed #333;
+                                    margin: 10px 0;
+                                }
+                                .center {
+                                    text-align: center;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="center">
+                                <h3>${data.anulada ? "🧾 NOTA DE CRÉDITO" : "🧾 Tienda Benito"}</h3>
+                                <p>Venta #${data.ventaId}</p>
+                                <p>Cliente: ${data.cliente}</p>
+                                <p>Fecha: ${data.fecha}</p>
+                                <hr>
+                            </div>
+                            ${data.detalles.map(p =>
+                                `<p>${p.nombre} x${p.cantidad} - $${(p.precioUnitario * p.cantidad).toFixed(2)}</p>`
+                            ).join('')}
+                            <hr>
+                            <p class="center"><strong>TOTAL: $${data.total.toFixed(2)}</strong></p>
+                            <hr>
+                            <p class="center">¡Gracias por su compra!</p>
+                        </body>
+                        </html>
+                    `;
+
+                    const popup = window.open('', '_blank', 'width=300,height=600');
+                    popup.document.open();
+                    popup.document.write(html);
+                    popup.document.close();
+                    popup.focus();
+                    popup.print();
+                }
+            }
+        });
+    </script>
+}

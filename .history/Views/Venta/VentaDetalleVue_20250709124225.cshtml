@@ -18,7 +18,7 @@
     <div v-if="venta" id="detalleVenta" class="border rounded p-4 shadow-sm bg-light">
         <!-- Información general -->
         <div class="mb-4">
-            <h5 class="text-primary">{{ venta.anulada ? '🧾 NOTA DE CRÉDITO' : '🧍 Información de la Venta' }}</h5>
+            <h5 class="text-primary">🧍 Información de la Venta</h5>
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>ID Venta:</strong> {{ venta.ventaId }}</p>
@@ -81,7 +81,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script>
-        const app = new Vue({
+        new Vue({
             el: '#app',
             data: {
                 venta: null
@@ -103,9 +103,7 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            const titulo = app.venta.anulada ? "🧾 NOTA DE CRÉDITO" : "🧾 DETALLE DE VENTA";
-            doc.text(titulo, 10, 10);
-
+            doc.text("Detalle de Venta", 10, 10);
             let y = 20;
 
             const tabla = document.querySelector("#detalleVenta table");
@@ -117,73 +115,67 @@
                 y += 10;
             });
 
-            const nombreArchivo = app.venta.anulada ? "nota_credito.pdf" : "detalle_venta.pdf";
-            doc.save(nombreArchivo);
+            doc.save("detalle_venta.pdf");
         }
 
         function exportarExcel() {
             const tabla = document.querySelector("#detalleVenta table");
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.table_to_sheet(tabla);
-
-            const titulo = app.venta.anulada ? "🧾 NOTA DE CRÉDITO" : "🧾 DETALLE DE VENTA";
-            XLSX.utils.sheet_add_aoa(ws, [[titulo]], { origin: "A1" });
-
-            XLSX.utils.book_append_sheet(wb, ws, "Detalle Venta");
-
-            const nombreArchivo = app.venta.anulada ? "nota_credito.xlsx" : "detalle_venta.xlsx";
-            XLSX.writeFile(wb, nombreArchivo);
+            const wb = XLSX.utils.table_to_book(tabla, { sheet: "Detalle Venta" });
+            XLSX.writeFile(wb, "detalle_venta.xlsx");
         }
 
         function imprimirTicket() {
-            const data = document.querySelector("#app").__vue__.venta;
-            if (!data) return alert("Venta no cargada.");
+    const data = document.querySelector("#app").__vue__.venta;
+    if (!data) return alert("Venta no cargada.");
 
-            const html = `
-                <html>
-                <head>
-                    <title>Ticket Venta #${data.ventaId}</title>
-                    <style>
-                        body {
-                            font-family: monospace;
-                            font-size: 14px;
-                            padding: 20px;
-                        }
-                        hr {
-                            border: none;
-                            border-top: 1px dashed #333;
-                            margin: 10px 0;
-                        }
-                        .center {
-                            text-align: center;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="center">
-                        <h3>${data.anulada ? '🧾 NOTA DE CRÉDITO' : '🧾 Tienda Benito'}</h3>
-                        <p>Venta #${data.ventaId}</p>
-                        <p>Cliente: ${data.cliente}</p>
-                        <p>Fecha: ${data.fecha}</p>
-                        <hr>
-                    </div>
-                    ${data.detalles.map(p =>
-                        `<p>${p.nombre} x${p.cantidad} - $${(p.precioUnitario * p.cantidad).toFixed(2)}</p>`
-                    ).join('')}
-                    <hr>
-                    <p class="center"><strong>TOTAL: $${data.total.toFixed(2)}</strong></p>
-                    <hr>
-                    <p class="center">${data.anulada ? 'Documento generado por anulación' : '¡Gracias por su compra!'}</p>
-                </body>
-                </html>
-            `;
+    // Armamos el HTML del ticket
+    const html = `
+        <html>
+        <head>
+            <title>Ticket Venta #${data.ventaId}</title>
+            <style>
+                body {
+                    font-family: monospace;
+                    font-size: 14px;
+                    padding: 20px;
+                }
+                hr {
+                    border: none;
+                    border-top: 1px dashed #333;
+                    margin: 10px 0;
+                }
+                .center {
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="center">
+                <h3>🧾 Tienda Benito</h3>
+                <p>Venta #${data.ventaId}</p>
+                <p>Cliente: ${data.cliente}</p>
+                <p>Fecha: ${data.fecha}</p>
+                <hr>
+            </div>
+            ${data.detalles.map(p =>
+                `<p>${p.nombre} x${p.cantidad} - $${(p.precioUnitario * p.cantidad).toFixed(2)}</p>`
+            ).join('')}
+            <hr>
+            <p class="center"><strong>TOTAL: $${data.total.toFixed(2)}</strong></p>
+            <hr>
+            <p class="center">¡Gracias por su compra!</p>
+        </body>
+        </html>
+    `;
 
-            const popup = window.open('', '_blank', 'width=300,height=600');
-            popup.document.open();
-            popup.document.write(html);
-            popup.document.close();
-            popup.focus();
-            popup.print();
-        }
+    // Abrimos nueva ventana, escribimos HTML y llamamos a imprimir
+    const popup = window.open('', '_blank', 'width=300,height=600');
+    popup.document.open();
+    popup.document.write(html);
+    popup.document.close();
+    popup.focus();
+    popup.print();
+}
+
     </script>
 }
