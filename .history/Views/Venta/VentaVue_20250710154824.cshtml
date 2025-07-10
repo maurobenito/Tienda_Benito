@@ -70,18 +70,6 @@
         <!-- Carrito -->
         <div class="mt-4">
             <h4>Carrito</h4>
-            <!-- Tipo de Venta -->
-<div class="form-group mt-3">
-    <label><strong>Tipo de Venta</strong></label>
-    <select class="form-control" v-model="tipoVenta">
-        <option disabled value="">-- Seleccione un tipo --</option>
-        <option value="Contado">Contado</option>
-        <option value="Tarjeta Débito">Tarjeta Débito</option>
-        <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-        <option value="Transferencia">Transferencia</option>
-    </select>
-</div>
-
             <table class="table table-bordered" v-if="carrito.length">
                 <thead>
                     <tr>
@@ -171,7 +159,7 @@
                 productos: [],
                 carrito: [],
                 total: 0,
-                tipoVenta: '',
+                tipoVenta: 'contado', // Nuevo campo para el tipo de venta
                 usuarioId: 1,
                 rubros: [],
                 rubroSeleccionado: '',
@@ -251,10 +239,6 @@
                         alert("Seleccione un cliente y al menos un producto.");
                         return;
                     }
-                    if (!this.tipoVenta) {
-                        alert("Debe seleccionar un tipo de venta.");
-                        return;
-        }
 
                     const venta = {
                         clienteId: this.clienteSeleccionado.clienteId,
@@ -286,7 +270,6 @@
                     this.productos = [];
                     this.carrito = [];
                     this.total = 0;
-                    this.tipoVenta = '';
                     this.rubroSeleccionado = '';
                     this.ventaConfirmada = false;
                     this.ventaIdGenerada = 0;

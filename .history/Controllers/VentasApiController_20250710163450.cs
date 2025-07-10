@@ -96,7 +96,7 @@ public class VentasApiController : ControllerBase
             Usuario = venta.Usuario.Email, // Cambiado a Email porque 'Nombre' no existe en Usuario
             Fecha = venta.Fecha.ToString("yyyy-MM-dd HH:mm"),
             venta.Total,
-            TipoVenta = venta.TipoVenta,
+            TipoVenta = venta.TipoVenta;
             Anulada = venta.Anulada,
             Detalles = detalles
         });

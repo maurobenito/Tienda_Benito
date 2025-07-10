@@ -171,7 +171,7 @@
                 productos: [],
                 carrito: [],
                 total: 0,
-                tipoVenta: '',
+                tipoVenta: 'contado', // Nuevo campo para el tipo de venta
                 usuarioId: 1,
                 rubros: [],
                 rubroSeleccionado: '',
@@ -251,10 +251,6 @@
                         alert("Seleccione un cliente y al menos un producto.");
                         return;
                     }
-                    if (!this.tipoVenta) {
-                        alert("Debe seleccionar un tipo de venta.");
-                        return;
-        }
 
                     const venta = {
                         clienteId: this.clienteSeleccionado.clienteId,
@@ -286,7 +282,6 @@
                     this.productos = [];
                     this.carrito = [];
                     this.total = 0;
-                    this.tipoVenta = '';
                     this.rubroSeleccionado = '';
                     this.ventaConfirmada = false;
                     this.ventaIdGenerada = 0;
