@@ -205,10 +205,12 @@
                 },
                 abrirModalProductos() {
                     axios.get('/api/productos/buscar?query=')
-                        .then(r => {
-                            this.productos = r.data;
-                            $('#modalProductos').modal('show');
-                        });
+        .then(r => {
+            this.productosModal = r.data;           // ✅ Usamos productosModal SOLO para el modal
+            this.mostrarModalProductos = true;      // ✅ Usás esta variable en el v-if del modal
+            this.productos = [];                    // 🔥 Vaciamos productos para que no aparezcan abajo del input
+        });
+
                 },
                 abrirModalClientes() {
                     axios.get('/api/clientes/buscar?query=')

@@ -203,13 +203,19 @@
                         .then(r => this.productos = r.data)
                         .catch(e => console.error("Error al listar productos:", e));
                 },
-                abrirModalProductos() {
-                    axios.get('/api/productos/buscar?query=')
+               abrirModalProductos() {
+                    let url = '/api/productos/buscar?query=';
+                    if (this.rubroSeleccionado)
+                         url += '&rubroId=' + this.rubroSeleccionado;
+
+                    axios.get(url)
                         .then(r => {
-                            this.productos = r.data;
-                            $('#modalProductos').modal('show');
+                            this.productosModal = r.data;       // ✅ solo usamos productosModal
+                            this.mostrarModalProductos = true;
+                            this.productos = [];                // 🔥 limpiamos para que no aparezcan abajo
                         });
                 },
+
                 abrirModalClientes() {
                     axios.get('/api/clientes/buscar?query=')
                         .then(r => {

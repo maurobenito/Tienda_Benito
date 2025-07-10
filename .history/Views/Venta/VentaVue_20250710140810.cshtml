@@ -58,14 +58,11 @@
         </div>
 
         <!-- Productos -->
-      <ul class="list-group mt-2"
-    v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
-    <li class="list-group-item d-flex justify-content-between align-items-center"
-        v-for="p in productos" @@click="agregarProducto(p)">
-        {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
-        <button class="btn btn-sm btn-primary">Agregar</button>
-    </li>
-</ul>
+        <ul class="list-group mt-2" v-if="productos.length && !mostrarModalProductos">
+
+
+            
+        </ul>
 
         <!-- Carrito -->
         <div class="mt-4">

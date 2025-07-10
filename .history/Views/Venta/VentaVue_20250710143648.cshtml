@@ -133,10 +133,11 @@
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="c in clientes" @@click="seleccionarClienteDesdeModal(c)">
-                            {{ c.nombreCompleto }}
+                        <li class="list-group-item" v-for="c in clientesModal" @@click="seleccionarClienteDesdeModal(c)">
+                        {{ c.nombreCompleto }}
                         </li>
                     </ul>
+
                 </div>
             </div>
         </div>
