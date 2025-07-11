@@ -12,7 +12,7 @@ namespace Tienda_Benito.Models
         public decimal PrecioVenta { get; set; }
         public string? UnidadMedida { get; set; }
         
-        public decimal Stock { get; set; }
+        public int Stock { get; set; }
         public int? ProveedorId { get; set; }
         public int? RubroId { get; set; }
 

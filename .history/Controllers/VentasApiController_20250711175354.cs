@@ -41,24 +41,19 @@ public IActionResult Crear([FromBody] VentaDto dto)
                 return BadRequest($"Producto ID {item.ProductoId} no encontrado.");
 
             // ✅ Si es fraccionado, descuenta del padre
-           if (prod.ProductoPadreId.HasValue && prod.EquivalenciaEnPadre > 0)
-{
-    var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
-    if (padre == null)
-        return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
+            if (prod.ProductoPadreId.HasValue && prod.EquivalenciaEnPadre > 0)
+            {
+                var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
+                if (padre == null)
+                    return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
 
-    var unidadesNecesarias = item.Cantidad * prod.EquivalenciaEnPadre;
+                var unidadesNecesarias = item.Cantidad * prod.EquivalenciaEnPadre;
 
-    if (padre.Stock < unidadesNecesarias)
-        return BadRequest($"Stock insuficiente en el producto padre ({padre.Nombre}) para vender {item.Cantidad} de {prod.Nombre}.");
+                if (padre.Stock < unidadesNecesarias)
+                    return BadRequest($"Stock insuficiente en el producto padre ({padre.Nombre}) para vender {item.Cantidad} de {prod.Nombre}.");
 
-    // ✅ Descuento del padre
-    padre.Stock -= (decimal)unidadesNecesarias;
-
-    // ✅ Recalcular y actualizar el stock del producto hijo basado en stock del padre
-    prod.Stock = (int)(padre.Stock / prod.EquivalenciaEnPadre);
-}
-
+                padre.Stock -= (decimal)unidadesNecesarias; // ✅ descuento en decimal
+            }
             else
             {
                 // ✅ Producto normal (no fraccionado)

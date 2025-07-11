@@ -14,7 +14,7 @@ public class VentasApiController : ControllerBase
     }
 
     // ✅ POST para crear una nueva venta
-[HttpPost("crear")]
+  [HttpPost("crear")]
 public IActionResult Crear([FromBody] VentaDto dto)
 {
     try
@@ -40,35 +40,30 @@ public IActionResult Crear([FromBody] VentaDto dto)
             if (prod == null)
                 return BadRequest($"Producto ID {item.ProductoId} no encontrado.");
 
-            // ✅ Si es fraccionado, descuenta del padre
-           if (prod.ProductoPadreId.HasValue && prod.EquivalenciaEnPadre > 0)
-{
-    var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
-    if (padre == null)
-        return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
+            // Si el producto es fraccionado
+            if (prod.ProductoPadreId.HasValue && prod.EquivalenciaEnPadre > 0)
+            {
+                var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
+                if (padre == null)
+                    return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
 
-    var unidadesNecesarias = item.Cantidad * prod.EquivalenciaEnPadre;
+                var unidadesNecesarias = item.Cantidad * prod.EquivalenciaEnPadre;
 
-    if (padre.Stock < unidadesNecesarias)
-        return BadRequest($"Stock insuficiente en el producto padre ({padre.Nombre}) para vender {item.Cantidad} de {prod.Nombre}.");
+                if (padre.Stock < unidadesNecesarias)
+                    return BadRequest($"Stock insuficiente en el producto padre ({padre.Nombre}) para el producto fraccionado {prod.Nombre}.");
 
-    // ✅ Descuento del padre
-    padre.Stock -= (decimal)unidadesNecesarias;
-
-    // ✅ Recalcular y actualizar el stock del producto hijo basado en stock del padre
-    prod.Stock = (int)(padre.Stock / prod.EquivalenciaEnPadre);
-}
-
+                padre.Stock -= (int)unidadesNecesarias;
+            }
             else
             {
-                // ✅ Producto normal (no fraccionado)
+                // Producto normal (no fraccionado)
                 if (prod.Stock < item.Cantidad)
                     return BadRequest($"Stock insuficiente para el producto {prod.Nombre}.");
-
-                prod.Stock -= item.Cantidad;
             }
 
-            // ✅ Agregar al detalle
+            // Descuento del propio producto
+            prod.Stock -= item.Cantidad;
+
             var detalle = new Ventadetalle
             {
                 VentaId = venta.VentaId,
@@ -89,8 +84,6 @@ public IActionResult Crear([FromBody] VentaDto dto)
         return StatusCode(500, ex.ToString());
     }
 }
-
-
 
     // ✅ GET para obtener detalles de una venta por ID (usado por Vue)
     [HttpGet("{id}")]

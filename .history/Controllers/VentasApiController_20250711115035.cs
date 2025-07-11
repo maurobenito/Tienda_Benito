@@ -14,7 +14,7 @@ public class VentasApiController : ControllerBase
     }
 
     // ✅ POST para crear una nueva venta
-[HttpPost("crear")]
+  [HttpPost("crear")]
 public IActionResult Crear([FromBody] VentaDto dto)
 {
     try
@@ -34,63 +34,46 @@ public IActionResult Crear([FromBody] VentaDto dto)
         _context.Venta.Add(venta);
         _context.SaveChanges();
 
-        foreach (var item in dto.Productos)
-        {
-            var prod = _context.Producto.FirstOrDefault(p => p.ProductoId == item.ProductoId);
-            if (prod == null)
-                return BadRequest($"Producto ID {item.ProductoId} no encontrado.");
-
-            // ✅ Si es fraccionado, descuenta del padre
-           if (prod.ProductoPadreId.HasValue && prod.EquivalenciaEnPadre > 0)
+       foreach (var item in dto.Productos)
 {
-    var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
-    if (padre == null)
-        return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
+    var prod = _context.Producto.FirstOrDefault(p => p.ProductoId == item.ProductoId);
+    if (prod == null)
+        return BadRequest($"Producto ID {item.ProductoId} no encontrado.");
 
-    var unidadesNecesarias = item.Cantidad * prod.EquivalenciaEnPadre;
-
-    if (padre.Stock < unidadesNecesarias)
-        return BadRequest($"Stock insuficiente en el producto padre ({padre.Nombre}) para vender {item.Cantidad} de {prod.Nombre}.");
-
-    // ✅ Descuento del padre
-    padre.Stock -= (decimal)unidadesNecesarias;
-
-    // ✅ Recalcular y actualizar el stock del producto hijo basado en stock del padre
-    prod.Stock = (int)(padre.Stock / prod.EquivalenciaEnPadre);
-}
-
-            else
-            {
-                // ✅ Producto normal (no fraccionado)
-                if (prod.Stock < item.Cantidad)
-                    return BadRequest($"Stock insuficiente para el producto {prod.Nombre}.");
-
-                prod.Stock -= item.Cantidad;
-            }
-
-            // ✅ Agregar al detalle
-            var detalle = new Ventadetalle
-            {
-                VentaId = venta.VentaId,
-                ProductoId = item.ProductoId,
-                Cantidad = item.Cantidad,
-                PrecioUnitario = item.PrecioUnitario
-            };
-
-            _context.Ventadetalle.Add(detalle);
-            venta.Total += item.Cantidad * item.PrecioUnitario;
-        }
-
-        _context.SaveChanges();
-        return Ok(new { ventaId = venta.VentaId });
-    }
-    catch (Exception ex)
+    var detalle = new Ventadetalle
     {
-        return StatusCode(500, ex.ToString());
+        VentaId = venta.VentaId,
+        ProductoId = item.ProductoId,
+        Cantidad = item.Cantidad,
+        PrecioUnitario = item.PrecioUnitario
+    };
+
+    _context.Ventadetalle.Add(detalle);
+    venta.Total += item.Cantidad * item.PrecioUnitario;
+
+    if (prod.ProductoPadreId.HasValue)
+    {
+        // Es un producto fraccionado
+        var padre = _context.Producto.FirstOrDefault(p => p.ProductoId == prod.ProductoPadreId.Value);
+        if (padre == null)
+            return BadRequest($"Producto padre del producto {prod.Nombre} no encontrado.");
+
+        // Calcular cuánto se descuenta del padre
+        var cantidadEnPadre = item.Cantidad * prod.EquivalenciaEnPadre;
+        if (padre.Stock < cantidadEnPadre)
+            return BadRequest($"Stock insuficiente del producto padre ({padre.Nombre}) para vender {item.Cantidad} unidades de {prod.Nombre}.");
+
+        padre.Stock -= (int)Math.Ceiling(cantidadEnPadre); // Redondea hacia arriba
+    }
+    else
+    {
+        // Producto normal
+        if (prod.Stock < item.Cantidad)
+            return BadRequest($"Stock insuficiente para el producto {prod.Nombre}.");
+
+        prod.Stock -= item.Cantidad;
     }
 }
-
-
 
     // ✅ GET para obtener detalles de una venta por ID (usado por Vue)
     [HttpGet("{id}")]
