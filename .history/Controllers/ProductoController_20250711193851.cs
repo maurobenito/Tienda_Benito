@@ -35,33 +35,30 @@ namespace Tienda_Benito.Controllers
 
         public IActionResult Create()
         {
-            CargarCombos(new Producto());
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre");
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre");
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(Producto p)
         {
-            // Evitamos validaciones innecesarias
-            ModelState.Remove("ProductoPadre");
-            ModelState.Remove("ProductosFraccionados");
-
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                CargarCombos(p);
-                return View(p);
+                _context.Producto.Add(p);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
 
-            if (p.ProductoPadreId == 0)
-            {
-                p.ProductoPadreId = null;
-                p.EquivalenciaEnPadre = null;
-            }
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", p.ProveedorId);
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", p.RubroId);
+            ViewBag.ProductosPadre = new SelectList(
+            _context.Producto.Where(p => p.ProductoPadreId == null), 
+            "ProductoId", 
+            "Nombre"
+);
 
-            _context.Producto.Add(p);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return View(p);
         }
 
         public IActionResult Edit(int id)
@@ -69,33 +66,30 @@ namespace Tienda_Benito.Controllers
             var producto = _context.Producto.Find(id);
             if (producto == null) return NotFound();
 
-            CargarCombos(producto);
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", producto.ProveedorId);
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", producto.RubroId);
+            ViewBag.ProductosPadre = new SelectList(
+             _context.Producto.Where(p => p.ProductoPadreId == null),
+            "ProductoId",
+             "Nombre"
+        );
+
             return View(producto);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Edit(Producto p)
         {
-            // Evitamos validaciones innecesarias
-            ModelState.Remove("ProductoPadre");
-            ModelState.Remove("ProductosFraccionados");
-
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                CargarCombos(p);
-                return View(p);
+                _context.Producto.Update(p);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
 
-            if (p.ProductoPadreId == 0)
-            {
-                p.ProductoPadreId = null;
-                p.EquivalenciaEnPadre = null;
-            }
-
-            _context.Producto.Update(p);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", p.ProveedorId);
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", p.RubroId);
+            return View(p);
         }
 
         public IActionResult Delete(int id)
@@ -120,6 +114,7 @@ namespace Tienda_Benito.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // ✅ NUEVA ACCIÓN PARA OBTENER EL PRECIO POR ID
         [HttpGet]
         public IActionResult GetPrecio(int id)
         {
@@ -128,18 +123,6 @@ namespace Tienda_Benito.Controllers
                 return NotFound();
 
             return Json(new { precio = producto.PrecioVenta });
-        }
-
-        private void CargarCombos(Producto p)
-        {
-            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", p.ProveedorId);
-            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", p.RubroId);
-            ViewBag.ProductosPadre = new SelectList(
-                _context.Producto.Where(x => x.ProductoPadreId == null && x.ProductoId != p.ProductoId),
-                "ProductoId",
-                "Nombre",
-                p.ProductoPadreId
-            );
         }
     }
 }

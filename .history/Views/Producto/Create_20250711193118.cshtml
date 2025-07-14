@@ -48,7 +48,6 @@
         <select asp-for="ProveedorId" class="form-control" asp-items="ViewBag.Proveedores">
             <option value="">Seleccione un proveedor</option>
         </select>
-        <span asp-validation-for="ProveedorId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -56,55 +55,22 @@
         <select asp-for="RubroId" class="form-control" asp-items="ViewBag.Rubros">
             <option value="">Seleccione un rubro</option>
         </select>
-        <span asp-validation-for="RubroId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Stock"></label>
+        <label asp-for="Stock" class="control-label"></label>
         <input asp-for="Stock" class="form-control" />
         <span asp-validation-for="Stock" class="text-danger"></span>
-    </div>
-
-    <hr />
-    <div class="form-group form-check">
-        <input type="checkbox" id="esFraccionado" class="form-check-input" onchange="toggleFraccionado()" />
-        <label for="esFraccionado" class="form-check-label">¿Es un producto fraccionado?</label>
-    </div>
-
-    <div id="fraccionadoFields" style="display:none;">
-        <div class="form-group">
-            <label asp-for="ProductoPadreId">Producto Padre</label>
-            <select asp-for="ProductoPadreId" class="form-control" asp-items="ViewBag.ProductosPadre">
-                <option value="">Seleccione un producto padre</option>
-            </select>
-            <span asp-validation-for="ProductoPadreId" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="EquivalenciaEnPadre">Equivalencia en el producto padre</label>
-            <input asp-for="EquivalenciaEnPadre" class="form-control" />
-            <span asp-validation-for="EquivalenciaEnPadre" class="text-danger"></span>
-        </div>
     </div>
 
     <button type="submit" class="btn btn-success">💾 Crear</button>
     <a asp-action="Index" class="btn btn-secondary">↩ Volver</a>
 </form>
-
 @section Scripts {
     <script>
         function toggleFraccionado() {
             const checked = document.getElementById('esFraccionado').checked;
             document.getElementById('fraccionadoFields').style.display = checked ? 'block' : 'none';
         }
-
-        // Si ya viene preseleccionado
-        window.onload = function () {
-            const padreId = document.getElementById("ProductoPadreId").value;
-            if (padreId && padreId !== "0") {
-                document.getElementById("esFraccionado").checked = true;
-                toggleFraccionado();
-            }
-        };
     </script>
 }

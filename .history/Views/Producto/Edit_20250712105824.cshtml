@@ -5,21 +5,7 @@
 
 <h2 class="mb-4">✏️ Editar Producto</h2>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <strong>Hay errores en el formulario:</strong>
-        <ul>
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <li>@error.ErrorMessage</li>
-        }
-        </ul>
-    </div>
-}
-
-<form asp-action="Edit" method="post" class="border rounded p-4 shadow-sm bg-light">
-    @Html.AntiForgeryToken()
+<form asp-action="Edit" class="border rounded p-4 shadow-sm bg-light">
     <input type="hidden" asp-for="ProductoId" />
 
     <div class="form-group">
@@ -82,8 +68,8 @@
     </div>
 
     <hr />
-    <div class="form-check mb-2">
-        <input type="checkbox" id="esFraccionado" class="form-check-input" />
+    <div class="form-group form-check">
+        <input type="checkbox" id="esFraccionado" class="form-check-input" onchange="toggleFraccionado()" />
         <label for="esFraccionado" class="form-check-label">¿Es un producto fraccionado?</label>
     </div>
 
@@ -108,7 +94,6 @@
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
         function toggleFraccionado() {
             const checked = document.getElementById('esFraccionado').checked;
@@ -121,16 +106,6 @@
                 document.getElementById("esFraccionado").checked = true;
                 toggleFraccionado();
             }
-
-            document.querySelector("form").addEventListener("submit", function () {
-                const fraccionado = document.getElementById('esFraccionado').checked;
-                if (!fraccionado) {
-                    document.getElementById("ProductoPadreId").value = "";
-                    document.getElementById("EquivalenciaEnPadre").value = "";
-                }
-            });
-
-            document.getElementById("esFraccionado").addEventListener("change", toggleFraccionado);
         };
     </script>
 }

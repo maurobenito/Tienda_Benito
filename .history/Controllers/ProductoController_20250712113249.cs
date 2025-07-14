@@ -35,28 +35,24 @@ namespace Tienda_Benito.Controllers
 
         public IActionResult Create()
         {
-            CargarCombos(new Producto());
-            return View();
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre");
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre");
+            ViewBag.ProductosPadre = new SelectList(
+                _context.Producto.Where(p => p.ProductoPadreId == null),
+                "ProductoId",
+                "Nombre"
+            );
+            return View(new Producto());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Producto p)
         {
-            // Evitamos validaciones innecesarias
-            ModelState.Remove("ProductoPadre");
-            ModelState.Remove("ProductosFraccionados");
-
             if (!ModelState.IsValid)
             {
                 CargarCombos(p);
                 return View(p);
-            }
-
-            if (p.ProductoPadreId == 0)
-            {
-                p.ProductoPadreId = null;
-                p.EquivalenciaEnPadre = null;
             }
 
             _context.Producto.Add(p);
@@ -74,28 +70,38 @@ namespace Tienda_Benito.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Producto p)
+[ValidateAntiForgeryToken]
+public IActionResult Edit(Producto p)
+{
+    ModelState.Remove("ProductoPadre");
+    ModelState.Remove("ProductosFraccionados");
+
+    if (!ModelState.IsValid)
+    {
+        CargarCombos(p);
+        return View(p);
+    }
+
+    if (p.ProductoPadreId == 0)
+    {
+        p.ProductoPadreId = null;
+        p.EquivalenciaEnPadre = null;
+    }
+
+    _context.Producto.Update(p);
+    _context.SaveChanges();
+    return RedirectToAction(nameof(Index));
+}
+        private void CargarCombos(Producto p)
         {
-            // Evitamos validaciones innecesarias
-            ModelState.Remove("ProductoPadre");
-            ModelState.Remove("ProductosFraccionados");
-
-            if (!ModelState.IsValid)
-            {
-                CargarCombos(p);
-                return View(p);
-            }
-
-            if (p.ProductoPadreId == 0)
-            {
-                p.ProductoPadreId = null;
-                p.EquivalenciaEnPadre = null;
-            }
-
-            _context.Producto.Update(p);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", p.ProveedorId);
+            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", p.RubroId);
+            ViewBag.ProductosPadre = new SelectList(
+                _context.Producto.Where(x => x.ProductoPadreId == null || x.ProductoId == p.ProductoPadreId),
+                "ProductoId",
+                "Nombre",
+                p.ProductoPadreId
+            );
         }
 
         public IActionResult Delete(int id)
@@ -109,6 +115,7 @@ namespace Tienda_Benito.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             var producto = _context.Producto.Find(id);
@@ -128,18 +135,6 @@ namespace Tienda_Benito.Controllers
                 return NotFound();
 
             return Json(new { precio = producto.PrecioVenta });
-        }
-
-        private void CargarCombos(Producto p)
-        {
-            ViewBag.Proveedores = new SelectList(_context.Proveedor, "ProveedorId", "Nombre", p.ProveedorId);
-            ViewBag.Rubros = new SelectList(_context.Rubro, "RubroId", "Nombre", p.RubroId);
-            ViewBag.ProductosPadre = new SelectList(
-                _context.Producto.Where(x => x.ProductoPadreId == null && x.ProductoId != p.ProductoId),
-                "ProductoId",
-                "Nombre",
-                p.ProductoPadreId
-            );
         }
     }
 }

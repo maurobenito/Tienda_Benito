@@ -183,36 +183,67 @@
             },
             mounted() {
                 document.addEventListener('click', this.handleClickOutside);
-                document.addEventListener('keydown', this.handleEscape);
             },
             beforeDestroy() {
                 document.removeEventListener('click', this.handleClickOutside);
-                document.removeEventListener('keydown', this.handleEscape);
             },
+            // Dentro de mounted()
+mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener('keydown', this.handleEscape);
+},
+beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('keydown', this.handleEscape);
+},
+methods: {
+    handleEscape(event) {
+        if (event.key === 'Escape') {
+            this.clienteBusqueda = '';
+            this.clientes = [];
+            this.productoBusqueda = '';
+            this.productos = [];
+        }
+    },
+    handleClickOutside(event) {
+        const clienteInput = this.$el.querySelector('input[v-model="clienteBusqueda"]');
+        const productoInput = this.$el.querySelector('input[v-model="productoBusqueda"]');
+
+        const clickedInsideCliente = clienteInput && (clienteInput === event.target || clienteInput.contains(event.target));
+        const clickedInsideProducto = productoInput && (productoInput === event.target || productoInput.contains(event.target));
+
+        const clickedInsideListGroup = event.target.closest('.list-group');
+
+        if (!clickedInsideCliente && !clickedInsideListGroup && this.clienteBusqueda.length > 0) {
+            this.clienteBusqueda = '';
+            this.clientes = [];
+        }
+
+        if (!clickedInsideProducto && !clickedInsideListGroup && this.productoBusqueda.length > 0) {
+            this.productoBusqueda = '';
+            this.productos = [];
+        }
+    },
+
             methods: {
-                handleEscape(event) {
-                    if (event.key === 'Escape') {
-                        this.clienteBusqueda = '';
-                        this.clientes = [];
-                        this.productoBusqueda = '';
-                        this.productos = [];
-                    }
-                },
                 handleClickOutside(event) {
                     const clienteInput = this.$el.querySelector('input[v-model="clienteBusqueda"]');
                     const productoInput = this.$el.querySelector('input[v-model="productoBusqueda"]');
 
-                    const clickedInsideCliente = clienteInput && (clienteInput === event.target || clienteInput.contains(event.target));
-                    const clickedInsideProducto = productoInput && (productoInput === event.target || productoInput.contains(event.target));
-
-                    const clickedInsideListGroup = event.target.closest('.list-group');
-
-                    if (!clickedInsideCliente && !clickedInsideListGroup && this.clienteBusqueda.length > 0) {
+                    if (
+                        clienteInput && !clienteInput.contains(event.target) &&
+                        !event.target.closest('.list-group') &&
+                        this.clienteBusqueda.length > 0
+                    ) {
                         this.clienteBusqueda = '';
                         this.clientes = [];
                     }
 
-                    if (!clickedInsideProducto && !clickedInsideListGroup && this.productoBusqueda.length > 0) {
+                    if (
+                        productoInput && !productoInput.contains(event.target) &&
+                        !event.target.closest('.list-group') &&
+                        this.productoBusqueda.length > 0
+                    ) {
                         this.productoBusqueda = '';
                         this.productos = [];
                     }

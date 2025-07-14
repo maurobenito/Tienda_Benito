@@ -24,7 +24,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" @@click="abrirModalClientes">👁 Navegar Clientes</button>
+                    <button class="btn btn-outline-secondary"@@click="abrirModalClientes">👁 Navegar Clientes</button>
                 </div>
             </div>
             <ul class="list-group" v-if="clientes.length">
@@ -58,29 +58,29 @@
         </div>
 
         <!-- Productos -->
-        <ul class="list-group mt-2"
-            v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-                v-for="p in productos" @@click="agregarProducto(p)">
-                {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
-                <button class="btn btn-sm btn-primary">Agregar</button>
-            </li>
-        </ul>
+      <ul class="list-group mt-2"
+    v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
+    <li class="list-group-item d-flex justify-content-between align-items-center"
+        v-for="p in productos" @@click="agregarProducto(p)">
+        {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
+        <button class="btn btn-sm btn-primary">Agregar</button>
+    </li>
+</ul>
 
         <!-- Carrito -->
         <div class="mt-4">
             <h4>Carrito</h4>
-
-            <div class="form-group mt-3">
-                <label><strong>Tipo de Venta</strong></label>
-                <select class="form-control" v-model="tipoVenta">
-                    <option disabled value="">-- Seleccione un tipo --</option>
-                    <option value="Contado">Contado</option>
-                    <option value="Tarjeta Débito">Tarjeta Débito</option>
-                    <option value="Tarjeta Crédito">Tarjeta Crédito</option>
-                    <option value="Transferencia">Transferencia</option>
-                </select>
-            </div>
+            <!-- Tipo de Venta -->
+<div class="form-group mt-3">
+    <label><strong>Tipo de Venta</strong></label>
+    <select class="form-control" v-model="tipoVenta">
+        <option disabled value="">-- Seleccione un tipo --</option>
+        <option value="Contado">Contado</option>
+        <option value="Tarjeta Débito">Tarjeta Débito</option>
+        <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+        <option value="Transferencia">Transferencia</option>
+    </select>
+</div>
 
             <table class="table table-bordered" v-if="carrito.length">
                 <thead>
@@ -183,40 +183,11 @@
             },
             mounted() {
                 document.addEventListener('click', this.handleClickOutside);
-                document.addEventListener('keydown', this.handleEscape);
             },
             beforeDestroy() {
                 document.removeEventListener('click', this.handleClickOutside);
-                document.removeEventListener('keydown', this.handleEscape);
             },
             methods: {
-                handleEscape(event) {
-                    if (event.key === 'Escape') {
-                        this.clienteBusqueda = '';
-                        this.clientes = [];
-                        this.productoBusqueda = '';
-                        this.productos = [];
-                    }
-                },
-                handleClickOutside(event) {
-                    const clienteInput = this.$el.querySelector('input[v-model="clienteBusqueda"]');
-                    const productoInput = this.$el.querySelector('input[v-model="productoBusqueda"]');
-
-                    const clickedInsideCliente = clienteInput && (clienteInput === event.target || clienteInput.contains(event.target));
-                    const clickedInsideProducto = productoInput && (productoInput === event.target || productoInput.contains(event.target));
-
-                    const clickedInsideListGroup = event.target.closest('.list-group');
-
-                    if (!clickedInsideCliente && !clickedInsideListGroup && this.clienteBusqueda.length > 0) {
-                        this.clienteBusqueda = '';
-                        this.clientes = [];
-                    }
-
-                    if (!clickedInsideProducto && !clickedInsideListGroup && this.productoBusqueda.length > 0) {
-                        this.productoBusqueda = '';
-                        this.productos = [];
-                    }
-                },
                 buscarClientes() {
                     if (this.clienteBusqueda.length < 2) {
                         this.clientes = [];
@@ -272,7 +243,8 @@
                     } else {
                         this.carrito.push({ ...producto, cantidad: 1 });
                     }
-                    this.actualizarTotal();
+                    this.productoBusqueda = '';
+                    this.productos = [];
                 },
                 quitarProducto(index) {
                     this.carrito.splice(index, 1);
@@ -290,7 +262,6 @@
                         alert("Debe seleccionar un tipo de venta.");
                         return;
                     }
-
                     const venta = {
                         clienteId: this.clienteSeleccionado.clienteId,
                         usuarioId: this.usuarioId,
@@ -302,7 +273,6 @@
                             precioUnitario: p.precioVenta
                         }))
                     };
-
                     axios.post('/api/ventas/crear', venta)
                         .then(r => {
                             this.ventaIdGenerada = r.data.ventaId;
@@ -345,6 +315,20 @@
                 },
                 irADetalleVenta() {
                     window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
+                },
+                handleClickOutside(event) {
+                    const clienteInput = this.$el.querySelector('input[v-model="clienteBusqueda"]');
+                    const productoInput = this.$el.querySelector('input[v-model="productoBusqueda"]');
+
+                    if (clienteInput && !clienteInput.contains(event.target)) {
+                        this.clienteBusqueda = '';
+                        this.clientes = [];
+                    }
+
+                    if (productoInput && !productoInput.contains(event.target)) {
+                        this.productoBusqueda = '';
+                        this.productos = [];
+                    }
                 }
             }
         });

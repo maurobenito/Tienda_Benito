@@ -1,27 +1,12 @@
 @model Tienda_Benito.Models.Producto
+
 @{
-    ViewData["Title"] = "Editar Producto";
+    ViewData["Title"] = "Crear Producto";
 }
 
-<h2 class="mb-4">✏️ Editar Producto</h2>
+<h2 class="mb-4">➕ Crear Nuevo Producto</h2>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <strong>Hay errores en el formulario:</strong>
-        <ul>
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <li>@error.ErrorMessage</li>
-        }
-        </ul>
-    </div>
-}
-
-<form asp-action="Edit" method="post" class="border rounded p-4 shadow-sm bg-light">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="ProductoId" />
-
+<form asp-action="Create" class="border rounded p-4 shadow-sm bg-light">
     <div class="form-group">
         <label asp-for="Nombre"></label>
         <input asp-for="Nombre" class="form-control" />
@@ -64,7 +49,6 @@
         <select asp-for="ProveedorId" class="form-control" asp-items="ViewBag.Proveedores">
             <option value="">Seleccione un proveedor</option>
         </select>
-        <span asp-validation-for="ProveedorId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -72,7 +56,6 @@
         <select asp-for="RubroId" class="form-control" asp-items="ViewBag.Rubros">
             <option value="">Seleccione un rubro</option>
         </select>
-        <span asp-validation-for="RubroId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -81,19 +64,17 @@
         <span asp-validation-for="Stock" class="text-danger"></span>
     </div>
 
-    <hr />
-    <div class="form-check mb-2">
-        <input type="checkbox" id="esFraccionado" class="form-check-input" />
-        <label for="esFraccionado" class="form-check-label">¿Es un producto fraccionado?</label>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="esFraccionado" onchange="toggleFraccionado()" />
+        <label class="form-check-label" for="esFraccionado">¿Es producto fraccionado?</label>
     </div>
 
-    <div id="fraccionadoFields" style="display:none;">
+    <div id="fraccionadoFields" style="display: none;">
         <div class="form-group">
             <label asp-for="ProductoPadreId">Producto Padre</label>
             <select asp-for="ProductoPadreId" class="form-control" asp-items="ViewBag.ProductosPadre">
-                <option value="">Seleccione un producto padre</option>
+                <option value="">Seleccione el producto padre</option>
             </select>
-            <span asp-validation-for="ProductoPadreId" class="text-danger"></span>
         </div>
 
         <div class="form-group">
@@ -103,34 +84,15 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+    <button type="submit" class="btn btn-success">💾 Crear</button>
     <a asp-action="Index" class="btn btn-secondary">↩ Volver</a>
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
         function toggleFraccionado() {
             const checked = document.getElementById('esFraccionado').checked;
             document.getElementById('fraccionadoFields').style.display = checked ? 'block' : 'none';
         }
-
-        window.onload = function () {
-            const padreId = document.getElementById("ProductoPadreId").value;
-            if (padreId && padreId !== "0") {
-                document.getElementById("esFraccionado").checked = true;
-                toggleFraccionado();
-            }
-
-            document.querySelector("form").addEventListener("submit", function () {
-                const fraccionado = document.getElementById('esFraccionado').checked;
-                if (!fraccionado) {
-                    document.getElementById("ProductoPadreId").value = "";
-                    document.getElementById("EquivalenciaEnPadre").value = "";
-                }
-            });
-
-            document.getElementById("esFraccionado").addEventListener("change", toggleFraccionado);
-        };
     </script>
 }

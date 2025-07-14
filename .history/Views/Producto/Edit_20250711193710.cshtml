@@ -3,23 +3,9 @@
     ViewData["Title"] = "Editar Producto";
 }
 
-<h2 class="mb-4">✏️ Editar Producto</h2>
+<h2>Editar Producto</h2>
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        <strong>Hay errores en el formulario:</strong>
-        <ul>
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <li>@error.ErrorMessage</li>
-        }
-        </ul>
-    </div>
-}
-
-<form asp-action="Edit" method="post" class="border rounded p-4 shadow-sm bg-light">
-    @Html.AntiForgeryToken()
+<form asp-action="Edit" class="shadow p-4 rounded bg-light">
     <input type="hidden" asp-for="ProductoId" />
 
     <div class="form-group">
@@ -82,14 +68,15 @@
     </div>
 
     <hr />
-    <div class="form-check mb-2">
-        <input type="checkbox" id="esFraccionado" class="form-check-input" />
-        <label for="esFraccionado" class="form-check-label">¿Es un producto fraccionado?</label>
+
+    <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="esFraccionado" onchange="toggleFraccionado()" />
+        <label class="form-check-label" for="esFraccionado">¿Es un producto fraccionado?</label>
     </div>
 
     <div id="fraccionadoFields" style="display:none;">
         <div class="form-group">
-            <label asp-for="ProductoPadreId">Producto Padre</label>
+            <label for="ProductoPadreId">Producto padre</label>
             <select asp-for="ProductoPadreId" class="form-control" asp-items="ViewBag.ProductosPadre">
                 <option value="">Seleccione un producto padre</option>
             </select>
@@ -97,40 +84,30 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="EquivalenciaEnPadre">Equivalencia en el producto padre</label>
+            <label for="EquivalenciaEnPadre">Equivalencia en el producto padre</label>
             <input asp-for="EquivalenciaEnPadre" class="form-control" />
             <span asp-validation-for="EquivalenciaEnPadre" class="text-danger"></span>
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
-    <a asp-action="Index" class="btn btn-secondary">↩ Volver</a>
+    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">🔙 Cancelar</a>
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
         function toggleFraccionado() {
-            const checked = document.getElementById('esFraccionado').checked;
-            document.getElementById('fraccionadoFields').style.display = checked ? 'block' : 'none';
+            const isChecked = document.getElementById("esFraccionado").checked;
+            document.getElementById("fraccionadoFields").style.display = isChecked ? "block" : "none";
         }
 
+        // Mostrar campos si ya estaban cargados
         window.onload = function () {
-            const padreId = document.getElementById("ProductoPadreId").value;
-            if (padreId && padreId !== "0") {
+            const tienePadre = document.getElementById("ProductoPadreId").value !== "";
+            if (tienePadre) {
                 document.getElementById("esFraccionado").checked = true;
                 toggleFraccionado();
             }
-
-            document.querySelector("form").addEventListener("submit", function () {
-                const fraccionado = document.getElementById('esFraccionado').checked;
-                if (!fraccionado) {
-                    document.getElementById("ProductoPadreId").value = "";
-                    document.getElementById("EquivalenciaEnPadre").value = "";
-                }
-            });
-
-            document.getElementById("esFraccionado").addEventListener("change", toggleFraccionado);
-        };
+        }
     </script>
 }
