@@ -70,14 +70,8 @@
 <thead class="thead-dark text-center">
     <tr>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("nombre")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Nombre
+            <a asp-action="Index" asp-route-orden="@OrdenLink("nombre")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Nombre 
                 @if (ordenActual.Contains("nombre"))
                 {
                     <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
@@ -86,14 +80,8 @@
         </th>
         <th>Descripción</th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("precioCosto")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Precio Costo
+            <a asp-action="Index" asp-route-orden="@OrdenLink("precioCosto")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Precio Costo 
                 @if (ordenActual.Contains("precioCosto"))
                 {
                     <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
@@ -101,14 +89,8 @@
             </a>
         </th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("precioVenta")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Precio Venta
+            <a asp-action="Index" asp-route-orden="@OrdenLink("precioVenta")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Precio Venta 
                 @if (ordenActual.Contains("precioVenta"))
                 {
                     <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
@@ -117,14 +99,8 @@
         </th>
         <th>Unidad</th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("rubro")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Rubro
+            <a asp-action="Index" asp-route-orden="@OrdenLink("rubro")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Rubro 
                 @if (ordenActual.Contains("rubro"))
                 {
                     <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
@@ -132,14 +108,8 @@
             </a>
         </th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("proveedor")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Proveedor
+            <a asp-action="Index" asp-route-orden="@OrdenLink("proveedor")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Proveedor 
                 @if (ordenActual.Contains("proveedor"))
                 {
                     <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
@@ -150,7 +120,6 @@
         <th>Acciones</th>
     </tr>
 </thead>
-
 
     <tbody>
         @foreach (var item in Model)

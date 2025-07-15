@@ -52,14 +52,13 @@
                 }
             </select>
         </div>
-      <div class="col-auto">
-    <select name="tamPagina" class="form-control">
-        <option value="5" selected="@(tamanoPagina == 5)">5 por página</option>
-        <option value="10" selected="@(tamanoPagina == 10)">10 por página</option>
-        <option value="15" selected="@(tamanoPagina == 15)">15 por página</option>
-    </select>
-</div>
-
+        <div class="col-auto">
+            <select name="tamPagina" class="form-control">
+                <option value="5" selected="@(tamanoPagina == 5)">5</option>
+                <option value="10" selected="@(tamanoPagina == 10)">10</option>
+                <option value="15" selected="@(tamanoPagina == 15)">15</option>
+            </select>
+        </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Filtrar</button>
         </div>
@@ -67,90 +66,39 @@
 </form>
 
 <table class="table table-hover table-bordered table-striped shadow-sm">
-<thead class="thead-dark text-center">
+ <thead class="thead-dark text-center">
     <tr>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("nombre")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Nombre
-                @if (ordenActual.Contains("nombre"))
-                {
-                    <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                }
+            <a asp-action="Index" asp-route-orden="@OrdenLink("nombre")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Nombre @Html.Raw(ordenActual.Contains("nombre") ? (ordenActual.EndsWith("_desc") ? "↓" : "↑") : "")
             </a>
         </th>
         <th>Descripción</th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("precioCosto")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Precio Costo
-                @if (ordenActual.Contains("precioCosto"))
-                {
-                    <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                }
+            <a asp-action="Index" asp-route-orden="@OrdenLink("precioCosto")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Precio Costo @Html.Raw(ordenActual.Contains("precioCosto") ? (ordenActual.EndsWith("_desc") ? "↓" : "↑") : "")
             </a>
         </th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("precioVenta")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Precio Venta
-                @if (ordenActual.Contains("precioVenta"))
-                {
-                    <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                }
+            <a asp-action="Index" asp-route-orden="@OrdenLink("precioVenta")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Precio Venta @Html.Raw(ordenActual.Contains("precioVenta") ? (ordenActual.EndsWith("_desc") ? "↓" : "↑") : "")
             </a>
         </th>
         <th>Unidad</th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("rubro")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Rubro
-                @if (ordenActual.Contains("rubro"))
-                {
-                    <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                }
+            <a asp-action="Index" asp-route-orden="@OrdenLink("rubro")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Rubro @Html.Raw(ordenActual.Contains("rubro") ? (ordenActual.EndsWith("_desc") ? "↓" : "↑") : "")
             </a>
         </th>
         <th>
-            <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
-               asp-action="Index"
-               asp-route-orden="@OrdenLink("proveedor")"
-               asp-route-nombre="@nombreFiltro"
-               asp-route-rubro="@rubroFiltro"
-               asp-route-proveedor="@proveedorFiltro"
-               asp-route-tamPagina="@tamanoPagina">
-                Proveedor
-                @if (ordenActual.Contains("proveedor"))
-                {
-                    <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                }
+            <a asp-action="Index" asp-route-orden="@OrdenLink("proveedor")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">
+                Proveedor @Html.Raw(ordenActual.Contains("proveedor") ? (ordenActual.EndsWith("_desc") ? "↓" : "↑") : "")
             </a>
         </th>
         <th>Stock</th>
         <th>Acciones</th>
     </tr>
 </thead>
-
 
     <tbody>
         @foreach (var item in Model)
