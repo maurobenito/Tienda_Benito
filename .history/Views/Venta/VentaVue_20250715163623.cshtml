@@ -58,7 +58,8 @@
         </div>
 
         <!-- Productos -->
-        <ul class="list-group mt-2" v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
+        <ul class="list-group mt-2"
+            v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
             <li class="list-group-item d-flex justify-content-between align-items-center"
                 v-for="p in productos" @@click="agregarProducto(p)">
                 {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
@@ -79,6 +80,7 @@
         <!-- Carrito -->
         <div class="mt-4">
             <h4>Carrito</h4>
+
             <div class="form-group mt-3">
                 <label><strong>Tipo de Venta</strong></label>
                 <select class="form-control" v-model="tipoVenta">
@@ -105,8 +107,7 @@
                         <td>{{ item.nombre }}</td>
                         <td>${{ item.precioVenta.toFixed(2) }}</td>
                         <td>
-                            <input type="number" class="form-control" v-model.number="item.cantidad"
-                                :min="1" :max="item.stock" @@change="actualizarTotal">
+                            <input type="number" class="form-control" v-model.number="item.cantidad" min="1" :max="item.stock" @@change="actualizarTotal">
                         </td>
                         <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
                         <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
@@ -121,14 +122,14 @@
         </div>
     </div>
 
-    <!-- Modales -->
+    <!-- Modal de Productos -->
     <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Seleccionar Producto</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -144,13 +145,14 @@
         </div>
     </div>
 
+    <!-- Modal de Clientes -->
     <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Seleccionar Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -214,10 +216,20 @@
                     }
                 },
                 handleClickOutside(event) {
-                    const clickedInside = event.target.closest('.list-group') || event.target.closest('.input-group');
-                    if (!clickedInside) {
+                    const clienteInput = this.$el.querySelector('input[v-model="clienteBusqueda"]');
+                    const productoInput = this.$el.querySelector('input[v-model="productoBusqueda"]');
+
+                    const clickedInsideCliente = clienteInput && (clienteInput === event.target || clienteInput.contains(event.target));
+                    const clickedInsideProducto = productoInput && (productoInput === event.target || productoInput.contains(event.target));
+
+                    const clickedInsideListGroup = event.target.closest('.list-group');
+
+                    if (!clickedInsideCliente && !clickedInsideListGroup && this.clienteBusqueda.length > 0) {
                         this.clienteBusqueda = '';
                         this.clientes = [];
+                    }
+
+                    if (!clickedInsideProducto && !clickedInsideListGroup && this.productoBusqueda.length > 0) {
                         this.productoBusqueda = '';
                         this.productos = [];
                     }
@@ -247,6 +259,15 @@
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);
                 },
+                listarTodosLosProductos() {
+                    let url = '/api/productos/buscar?query=';
+                    if (this.rubroSeleccionado)
+                        url += '&rubroId=' + this.rubroSeleccionado;
+
+                    axios.get(url)
+                        .then(r => this.productos = r.data)
+                        .catch(e => console.error("Error al listar productos:", e));
+                },
                 abrirModalProductos() {
                     axios.get('/api/productos/buscar?query=')
                         .then(r => {
@@ -275,7 +296,7 @@
                     this.actualizarTotal();
                 },
                 actualizarTotal() {
-                    this.total = this.carrito.reduce((sum, p) => sum + p.precioVenta * p.cantidad, 0);
+                    this.total = this.carrito.reduce((suma, p) => suma + p.precioVenta * p.cantidad, 0);
                 },
                 confirmarVenta() {
                     if (!this.clienteSeleccionado || this.carrito.length === 0) {

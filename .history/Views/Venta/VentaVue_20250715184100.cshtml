@@ -1,0 +1,253 @@
+@{
+    ViewData["Title"] = "Nueva Venta (Vue)";
+}
+
+<h2>Nueva Venta</h2>
+
+<div id="app">
+    <!-- Confirmación de venta -->
+    <div v-if="ventaConfirmada">
+        <div class="alert alert-success">
+            <h4 class="alert-heading">¡Venta registrada exitosamente!</h4>
+            <p>El número de venta es <strong>#{{ ventaIdGenerada }}</strong>.</p>
+            <hr>
+            <button class="btn btn-primary" @@click="resetearFormulario">Hacer otra venta</button>
+            <button class="btn btn-info ml-2" @@click="irADetalleVenta">Ver detalle de la venta</button>
+        </div>
+    </div>
+
+    <!-- Modal de Productos -->
+    <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleccionar Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row mb-3">
+                        <div class="col-md-4">
+                            <input class="form-control" placeholder="Buscar por nombre" v-model="filtroNombre" @@input="filtrarProductos">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="filtroRubroId" @@change="filtrarProductos">
+                                <option value="">Todos los Rubros</option>
+                                <option v-for="r in rubros" :value="r.rubroId">{{ r.nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" v-model="filtroProveedorId" @@change="filtrarProductos">
+                                <option value="">Todos los Proveedores</option>
+                                <option v-for="p in proveedores" :value="p.proveedorId">{{ p.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="p in productosModal">
+                                <td>{{ p.nombre }}</td>
+                                <td>${{ p.precioVenta }}</td>
+                                <td>{{ p.stock }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success" @@click="agregarProducto(p)">Agregar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item" :class="{ disabled: paginaModal === 1 }">
+                                <button class="page-link" @@lick="cambiarPagina(paginaModal - 1)">Anterior</button>
+                            </li>
+                            <li class="page-item" :class="{ disabled: paginaModal === totalPaginasModal }">
+                                <button class="page-link" @@click="cambiarPagina(paginaModal + 1)">Siguiente</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carrito -->
+    <div v-else>
+        <div class="form-group">
+            <label><strong>Tipo de Venta</strong></label>
+            <select class="form-control" v-model="tipoVenta">
+                <option disabled value="">-- Seleccione un tipo --</option>
+                <option value="Contado">Contado</option>
+                <option value="Tarjeta Débito">Tarjeta Débito</option>
+                <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                <option value="Transferencia">Transferencia</option>
+            </select>
+        </div>
+
+        <table class="table table-bordered" v-if="carrito.length">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in carrito" :key="item.productoId">
+                    <td>{{ item.nombre }}</td>
+                    <td>${{ item.precioVenta.toFixed(2) }}</td>
+                    <td>
+                        <input type="number" class="form-control" v-model.number="item.cantidad"
+                               :min="1" :max="item.stock" @@change="actualizarTotal">
+                    </td>
+                    <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
+                    <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-if="carrito.length">
+            <h4>Total: ${{ total.toFixed(2) }}</h4>
+            <button class="btn btn-success" @@click="confirmarVenta">Confirmar Venta</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+new Vue({
+    el: '#app',
+    data: {
+        productosModal: [],
+        proveedores: [],
+        filtroNombre: '',
+        filtroRubroId: '',
+        filtroProveedorId: '',
+        paginaModal: 1,
+        totalPaginasModal: 1,
+        productos: [],
+        rubros: [],
+        ventaIdGenerada: 0,
+        ventaConfirmada: false,
+        carrito: [],
+        total: 0,
+        tipoVenta: '',
+        clienteSeleccionado: { clienteId: 1, nombre: 'Cliente Genérico' },
+        usuarioId: 1
+    },
+    created() {
+        this.cargarRubros();
+        this.cargarProveedores();
+    },
+    methods: {
+        abrirModalProductos() {
+            this.paginaModal = 1;
+            this.filtrarProductos();
+            $('#modalProductos').modal('show');
+        },
+        filtrarProductos() {
+            const params = {
+                query: this.filtroNombre,
+                rubroId: this.filtroRubroId,
+                proveedorId: this.filtroProveedorId,
+                page: this.paginaModal,
+                pageSize: 10
+            };
+            axios.get('/api/productos/filtrar', { params })
+                .then(r => {
+                    this.productosModal = r.data.data;
+                    this.totalPaginasModal = Math.ceil(r.data.total / 10);
+                });
+        },
+        cambiarPagina(nuevaPagina) {
+            if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginasModal) {
+                this.paginaModal = nuevaPagina;
+                this.filtrarProductos();
+            }
+        },
+        cargarProveedores() {
+            axios.get('/Proveedor/GetProveedores')
+                .then(r => this.proveedores = r.data);
+        },
+        cargarRubros() {
+            axios.get('/Rubro/GetRubros')
+                .then(r => this.rubros = r.data);
+        },
+        agregarProducto(p) {
+            const existente = this.carrito.find(item => item.productoId === p.productoId);
+            if (existente) {
+                if (existente.cantidad < p.stock) {
+                    existente.cantidad++;
+                }
+            } else {
+                this.carrito.push({
+                    productoId: p.productoId,
+                    nombre: p.nombre,
+                    precioVenta: p.precioVenta,
+                    stock: p.stock,
+                    cantidad: 1
+                });
+            }
+            this.actualizarTotal();
+        },
+        quitarProducto(index) {
+            this.carrito.splice(index, 1);
+            this.actualizarTotal();
+        },
+        actualizarTotal() {
+            this.total = this.carrito.reduce((acc, item) => acc + item.precioVenta * item.cantidad, 0);
+        },
+        confirmarVenta() {
+            if (!this.clienteSeleccionado || this.carrito.length === 0) {
+                alert("Seleccione un cliente y al menos un producto.");
+                return;
+            }
+            if (!this.tipoVenta) {
+                alert("Debe seleccionar un tipo de venta.");
+                return;
+            }
+
+            const venta = {
+                clienteId: this.clienteSeleccionado.clienteId,
+                usuarioId: this.usuarioId,
+                total: this.total,
+                tipoVenta: this.tipoVenta,
+                productos: this.carrito.map(p => ({
+                    productoId: p.productoId,
+                    cantidad: p.cantidad,
+                    precioUnitario: p.precioVenta
+                }))
+            };
+
+            axios.post('/api/ventas/crear', venta)
+                .then(r => {
+                    this.ventaIdGenerada = r.data.ventaId;
+                    this.ventaConfirmada = true;
+                })
+                .catch(e => {
+                    alert("Error al registrar la venta.");
+                    console.error(e);
+                });
+        },
+        resetearFormulario() {
+            location.reload();
+        },
+        irADetalleVenta() {
+            location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
+        }
+    }
+});
+</script>
+}

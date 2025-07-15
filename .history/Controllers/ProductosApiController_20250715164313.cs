@@ -120,40 +120,5 @@ namespace Tienda_Benito.Controllers.Api
 
             return Ok(productos);
         }
-        [HttpGet("filtrar")]
-public IActionResult Filtrar(string? query = "", int? rubroId = null, int? proveedorId = null, int page = 1, int pageSize = 10)
-{
-    var productos = _context.Producto
-        .Where(p =>
-            (string.IsNullOrEmpty(query) || p.Nombre.Contains(query)) &&
-            (!rubroId.HasValue || p.RubroId == rubroId.Value) &&
-            (!proveedorId.HasValue || p.ProveedorId == proveedorId.Value))
-        .Select(p => new
-        {
-            p.ProductoId,
-            p.Nombre,
-            p.PrecioVenta,
-            p.Stock,
-            p.UnidadMedida,
-            p.ProductoPadreId,
-            p.EquivalenciaEnPadre,
-            Rubro = p.Rubro.Nombre,
-            Proveedor = p.Proveedor.Nombre
-        });
-
-    var total = productos.Count();
-
-    var resultados = productos
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
-
-    return Ok(new
-    {
-        Total = total,
-        Data = resultados
-    });
-}
-
     }
 }

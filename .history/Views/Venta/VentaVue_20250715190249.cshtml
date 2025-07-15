@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Nueva Venta (Vue)";
+}
+
+<h2>Nueva Venta</h2>
+
+<div id="app">
+    <div class="form-group">
+        <label><strong>Tipo de Venta</strong></label>
+        <select class="form-control" v-model="tipoVenta">
+            <option disabled value="">-- Seleccione un tipo --</option>
+            <option value="Contado">Contado</option>
+            <option value="Tarjeta Débito">Tarjeta Débito</option>
+            <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+            <option value="Transferencia">Transferencia</option>
+        </select>
+    </div>
+
+    <button class="btn btn-primary" @@click="abrirModalProductos">Agregar Producto</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalProductos" tabindex="-1" aria-labelledby="modalProductosLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalProductosLabel">Seleccionar Producto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>Acá va el contenido del modal</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+    new Vue({
+        el: '#app',
+        data: {
+            tipoVenta: '',
+            modalInstance: null
+        },
+        methods: {
+            abrirModalProductos() {
+                if (!this.modalInstance) {
+                    var modalEl = document.getElementById('modalProductos');
+                    this.modalInstance = new bootstrap.Modal(modalEl);
+                }
+                this.modalInstance.show();
+            }
+        }
+    });
+    </script>
+}

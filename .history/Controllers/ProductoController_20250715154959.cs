@@ -156,36 +156,18 @@ namespace Tienda_Benito.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-public IActionResult Delete(int id)
-{
-    var producto = _context.Producto
-        .Include(p => p.Proveedor)
-        .Include(p => p.Rubro)
-        .FirstOrDefault(p => p.ProductoId == id);
-    if (producto == null) return NotFound();
-    return View(producto);
-}
-[HttpPost, ActionName("Delete")]
-[ValidateAntiForgeryToken]
+
+       [HttpPost, ActionName("Delete")]
 public IActionResult DeleteConfirmed(int id)
 {
     var producto = _context.Producto.Find(id);
 
-    bool usadoEnVentas = _context.Ventadetalle.Any(v => v.ProductoId == id);
+    // Verificar si tiene productos hijos (fraccionados)
     bool tieneHijos = _context.Producto.Any(p => p.ProductoPadreId == id);
-
-    if (usadoEnVentas)
-    {
-        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque ya fue usado en una venta.");
-    }
 
     if (tieneHijos)
     {
-        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque es usado como producto fraccionado (padre).");
-    }
-
-    if (!ModelState.IsValid)
-    {
+        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque está siendo usado como producto padre.");
         var productoCompleto = _context.Producto
             .Include(p => p.Proveedor)
             .Include(p => p.Rubro)
@@ -193,8 +175,11 @@ public IActionResult DeleteConfirmed(int id)
         return View("Delete", productoCompleto);
     }
 
-    _context.Producto.Remove(producto);
-    _context.SaveChanges();
+    if (producto != null)
+    {
+        _context.Producto.Remove(producto);
+        _context.SaveChanges();
+    }
 
     return RedirectToAction(nameof(Index));
 }

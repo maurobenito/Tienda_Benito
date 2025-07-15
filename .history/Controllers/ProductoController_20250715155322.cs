@@ -171,30 +171,22 @@ public IActionResult DeleteConfirmed(int id)
 {
     var producto = _context.Producto.Find(id);
 
-    bool usadoEnVentas = _context.Ventadetalle.Any(v => v.ProductoId == id);
     bool tieneHijos = _context.Producto.Any(p => p.ProductoPadreId == id);
-
-    if (usadoEnVentas)
-    {
-        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque ya fue usado en una venta.");
-    }
-
     if (tieneHijos)
     {
-        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque es usado como producto fraccionado (padre).");
-    }
-
-    if (!ModelState.IsValid)
-    {
+        ModelState.AddModelError(string.Empty, "No se puede eliminar este producto porque es usado como padre.");
         var productoCompleto = _context.Producto
             .Include(p => p.Proveedor)
             .Include(p => p.Rubro)
             .FirstOrDefault(p => p.ProductoId == id);
-        return View("Delete", productoCompleto);
+        return View(productoCompleto);
     }
 
-    _context.Producto.Remove(producto);
-    _context.SaveChanges();
+    if (producto != null)
+    {
+        _context.Producto.Remove(producto);
+        _context.SaveChanges();
+    }
 
     return RedirectToAction(nameof(Index));
 }
