@@ -1,0 +1,147 @@
+@model IEnumerable<Tienda_Benito.Models.Producto>
+
+@{
+    ViewData["Title"] = "Lista de Productos";
+    var nombreFiltro = ViewBag.NombreFiltro as string ?? "";
+    var rubroFiltro = ViewBag.RubroFiltro as string ?? "";
+    var proveedorFiltro = ViewBag.ProveedorFiltro as string ?? "";
+    var paginaActual = ViewBag.PaginaActual as int? ?? 1;
+    var tamanoPagina = ViewBag.TamanoPagina as int? ?? 5;
+    var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
+    var ordenCampo = ViewBag.OrdenCampo as string ?? "Nombre";
+    var ordenAscendente = ViewBag.OrdenAscendente as bool? ?? true;
+    var rubros = ViewBag.Rubros as SelectList;
+    var proveedores = ViewBag.Proveedores as SelectList;
+}
+
+<h1 class="mb-4">📦 Productos</h1>
+
+<a asp-action="Create" class="btn btn-success mb-3">➕ Crear Nuevo Producto</a>
+
+<form method="get" id="filtrosForm" class="mb-3">
+    <div class="form-row">
+        <div class="col">
+            <input name="nombre" id="nombreInput" class="form-control" placeholder="🔍 Filtrar por nombre" value="@nombreFiltro" autocomplete="off" />
+        </div>
+        <div class="col">
+            <select name="rubro" class="form-control">
+                <option value="">📁 Todos los rubros</option>
+                @foreach (var rubro in rubros)
+                {
+                    <option value="@rubro.Value" @(rubro.Value == rubroFiltro ? "selected" : "")>@rubro.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col">
+            <select name="proveedor" class="form-control">
+                <option value="">🚚 Todos los proveedores</option>
+                @foreach (var prov in proveedores)
+                {
+                    <option value="@prov.Value" @(prov.Value == proveedorFiltro ? "selected" : "")>@prov.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="tamPagina" class="form-control" onchange="this.form.submit()">
+                <option value="5" selected="@(tamanoPagina == 5)">5</option>
+                <option value="10" selected="@(tamanoPagina == 10)">10</option>
+                <option value="15" selected="@(tamanoPagina == 15)">15</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-hover table-bordered table-striped shadow-sm">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>
+                <a href="@Url.Action("Index", new { ordenCampo = "Nombre", ordenAscendente = !ordenAscendente, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">
+                    📛 Nombre @(ordenCampo == "Nombre" ? (ordenAscendente ? "⬆️" : "⬇️") : "")
+                </a>
+            </th>
+            <th>Descripción</th>
+            <th>
+                <a href="@Url.Action("Index", new { ordenCampo = "PrecioVenta", ordenAscendente = !ordenAscendente, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">
+                    💲 Precio Venta @(ordenCampo == "PrecioVenta" ? (ordenAscendente ? "⬆️" : "⬇️") : "")
+                </a>
+            </th>
+            <th>Precio Costo</th>
+            <th>Unidad</th>
+            <th>Rubro</th>
+            <th>Proveedor</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Descripcion</td>
+                <td class="text-right">@item.PrecioVenta.ToString("C")</td>
+                <td class="text-right">@item.PrecioCosto.ToString("C")</td>
+                <td>@item.UnidadMedida</td>
+                <td>@item.Rubro?.Nombre</td>
+                <td>@item.Proveedor?.Nombre</td>
+                <td class="text-center">@item.Stock</td>
+                <td class="text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@item.ProductoId" class="btn btn-warning btn-sm">✏️</a>
+                    <a asp-action="Details" asp-route-id="@item.ProductoId" class="btn btn-info btn-sm">🔍</a>
+                    <a asp-action="Delete" asp-route-id="@item.ProductoId" class="btn btn-danger btn-sm">🗑️</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPaginas > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = 1, tamPagina = tamanoPagina, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">«</a>
+            </li>
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual - 1, tamPagina = tamanoPagina, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">‹</a>
+            </li>
+            @for (int i = Math.Max(1, paginaActual - 2); i <= Math.Min(totalPaginas, paginaActual + 2); i++)
+            {
+                <li class="page-item @(i == paginaActual ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { pagina = i, tamPagina = tamanoPagina, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">@i</a>
+                </li>
+            }
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual + 1, tamPagina = tamanoPagina, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">›</a>
+            </li>
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = totalPaginas, tamPagina = tamanoPagina, nombre = nombreFiltro, rubro = rubroFiltro, proveedor = proveedorFiltro })">»</a>
+            </li>
+        </ul>
+    </nav>
+}
+
+@section Scripts {
+    <script>
+        // Autocompletar en campo de nombre (client-side)
+        const input = document.getElementById('nombreInput');
+        let timeout = null;
+
+        input.addEventListener('input', function () {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                document.getElementById('filtrosForm').submit();
+            }, 500);
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === "Escape") {
+                input.value = "";
+                document.getElementById('filtrosForm').submit();
+            }
+        });
+    </script>
+}

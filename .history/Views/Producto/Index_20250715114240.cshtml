@@ -5,18 +5,12 @@
     var nombreFiltro = ViewBag.NombreFiltro as string ?? "";
     var rubroFiltro = ViewBag.RubroFiltro as string ?? "";
     var proveedorFiltro = ViewBag.ProveedorFiltro as string ?? "";
-    var ordenActual = ViewBag.OrdenActual as string ?? "";
     var paginaActual = ViewBag.PaginaActual as int? ?? 1;
     var tamanoPagina = ViewBag.TamanoPagina as int? ?? 5;
     var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
-    var rubros = ViewBag.Rubros as List<SelectListItem>;
-    var proveedores = ViewBag.Proveedores as List<SelectListItem>;
-
-    string OrdenLink(string campo)
-    {
-        return ordenActual == campo ? campo + "_desc" :
-               ordenActual == campo + "_desc" ? campo : campo;
-    }
+    var ordenActual = ViewBag.OrdenActual as string ?? "";
+    var rubros = ViewBag.Rubros as List<SelectListItem> ?? new();
+    var proveedores = ViewBag.Proveedores as List<SelectListItem> ?? new();
 }
 
 <h1 class="mb-4">📦 Productos</h1>
@@ -25,19 +19,17 @@
     <a asp-action="Create" class="btn btn-success mb-3">➕ Crear Nuevo Producto</a>
 </p>
 
-<form method="get" class="mb-3">
+<form method="get" id="filtrosForm" class="mb-3">
     <div class="form-row">
         <div class="col">
-            <input name="nombre" value="@nombreFiltro" class="form-control" placeholder="🔍 Filtrar por nombre" />
+            <input name="nombre" class="form-control" placeholder="🔍 Filtrar por nombre" value="@nombreFiltro" autocomplete="off">
         </div>
         <div class="col">
             <select name="rubro" class="form-control">
                 <option value="">📁 Filtrar por rubro</option>
                 @foreach (var r in rubros)
                 {
-                    <option value="@r.Value" selected="@(r.Value == rubroFiltro)">
-                        @r.Text
-                    </option>
+                    <option value="@r.Value" selected="@(r.Value == rubroFiltro ? "selected" : null)">@r.Text</option>
                 }
             </select>
         </div>
@@ -46,21 +38,19 @@
                 <option value="">🚚 Filtrar por proveedor</option>
                 @foreach (var p in proveedores)
                 {
-                    <option value="@p.Value" selected="@(p.Value == proveedorFiltro)">
-                        @p.Text
-                    </option>
+                    <option value="@p.Value" selected="@(p.Value == proveedorFiltro ? "selected" : null)">@p.Text</option>
                 }
             </select>
         </div>
         <div class="col-auto">
-            <select name="tamPagina" class="form-control">
+            <select name="tamPagina" class="form-control" onchange="this.form.submit()">
                 <option value="5" selected="@(tamanoPagina == 5)">5</option>
                 <option value="10" selected="@(tamanoPagina == 10)">10</option>
                 <option value="15" selected="@(tamanoPagina == 15)">15</option>
             </select>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <button type="submit" class="btn btn-primary">Aplicar filtros</button>
         </div>
     </div>
 </form>
@@ -68,13 +58,23 @@
 <table class="table table-hover table-bordered table-striped shadow-sm">
     <thead class="thead-dark text-center">
         <tr>
-            <th><a asp-action="Index" asp-route-orden="@OrdenLink("nombre")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">Nombre</a></th>
+            <th>
+                <a asp-action="Index" asp-route-orden="@(ordenActual == "nombre" ? "nombre_desc" : "nombre")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina" class="text-white">Nombre</a>
+            </th>
             <th>Descripción</th>
-            <th><a asp-action="Index" asp-route-orden="@OrdenLink("precioCosto")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">Precio Costo</a></th>
-            <th><a asp-action="Index" asp-route-orden="@OrdenLink("precioVenta")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">Precio Venta</a></th>
+            <th>
+                <a asp-action="Index" asp-route-orden="@(ordenActual == "precioCosto" ? "precioCosto_desc" : "precioCosto")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina" class="text-white">Precio Costo</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orden="@(ordenActual == "precioVenta" ? "precioVenta_desc" : "precioVenta")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina" class="text-white">Precio Venta</a>
+            </th>
             <th>Unidad</th>
-            <th><a asp-action="Index" asp-route-orden="@OrdenLink("rubro")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">Rubro</a></th>
-            <th><a asp-action="Index" asp-route-orden="@OrdenLink("proveedor")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina">Proveedor</a></th>
+            <th>
+                <a asp-action="Index" asp-route-orden="@(ordenActual == "rubro" ? "rubro_desc" : "rubro")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina" class="text-white">Rubro</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orden="@(ordenActual == "proveedor" ? "proveedor_desc" : "proveedor")" asp-route-nombre="@nombreFiltro" asp-route-rubro="@rubroFiltro" asp-route-proveedor="@proveedorFiltro" asp-route-tamPagina="@tamanoPagina" class="text-white">Proveedor</a>
+            </th>
             <th>Stock</th>
             <th>Acciones</th>
         </tr>

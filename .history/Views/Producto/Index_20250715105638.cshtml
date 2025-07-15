@@ -1,0 +1,136 @@
+@model IEnumerable<Tienda_Benito.Models.Producto>
+
+@{
+    ViewData["Title"] = "Lista de Productos";
+    var nombreFiltro = ViewBag.FiltroNombre as string ?? "";
+    var rubroIdFiltro = ViewBag.FiltroRubroId as int? ?? 0;
+    var proveedorIdFiltro = ViewBag.FiltroProveedorId as int? ?? 0;
+    var paginaActual = ViewBag.PaginaActual as int? ?? 1;
+    var tamanoPagina = ViewBag.TamanoPagina as int? ?? 5;
+    var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
+    var orden = ViewBag.Orden as string ?? "nombre_asc";
+}
+
+<h1 class="mb-4">📦 Productos</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success mb-3">➕ Crear Nuevo Producto</a>
+</p>
+
+<form method="get" class="mb-3">
+    <div class="form-row">
+        <div class="col">
+            <input name="filtroNombre" class="form-control" placeholder="🔍 Filtrar por nombre"
+                   value="@nombreFiltro" autocomplete="off">
+        </div>
+        <div class="col">
+            <select name="filtroRubroId" class="form-control" onchange="this.form.submit()">
+                <option value="0">📁 Todos los rubros</option>
+                @foreach (var rubro in (IEnumerable<SelectListItem>)ViewBag.Rubros)
+                {
+                    <option value="@rubro.Value" selected="@(rubro.Value == rubroIdFiltro.ToString())">@rubro.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col">
+            <select name="filtroProveedorId" class="form-control" onchange="this.form.submit()">
+                <option value="0">🚚 Todos los proveedores</option>
+                @foreach (var proveedor in (IEnumerable<SelectListItem>)ViewBag.Proveedores)
+                {
+                    <option value="@proveedor.Value" selected="@(proveedor.Value == proveedorIdFiltro.ToString())">@proveedor.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="tamPagina" class="form-control" onchange="this.form.submit()">
+                <option value="5" selected="@(tamanoPagina == 5)">5</option>
+                <option value="10" selected="@(tamanoPagina == 10)">10</option>
+                <option value="15" selected="@(tamanoPagina == 15)">15</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-hover table-bordered table-striped shadow-sm">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orden="@(orden == "nombre_asc" ? "nombre_desc" : "nombre_asc")"
+                   asp-route-filtroNombre="@nombreFiltro"
+                   asp-route-filtroRubroId="@rubroIdFiltro"
+                   asp-route-filtroProveedorId="@proveedorIdFiltro"
+                   asp-route-tamPagina="@tamanoPagina">Nombre</a>
+            </th>
+            <th>Descripción</th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orden="@(orden == "precio_asc" ? "precio_desc" : "precio_asc")"
+                   asp-route-filtroNombre="@nombreFiltro"
+                   asp-route-filtroRubroId="@rubroIdFiltro"
+                   asp-route-filtroProveedorId="@proveedorIdFiltro"
+                   asp-route-tamPagina="@tamanoPagina">Precio Costo</a>
+            </th>
+            <th>Precio Venta</th>
+            <th>Unidad</th>
+            <th>Rubro</th>
+            <th>Proveedor</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Descripcion</td>
+                <td class="text-right">@item.PrecioCosto.ToString("C")</td>
+                <td class="text-right">@item.PrecioVenta.ToString("C")</td>
+                <td>@item.UnidadMedida</td>
+                <td>@item.Rubro?.Nombre</td>
+                <td>@item.Proveedor?.Nombre</td>
+                <td class="text-center">@item.Stock</td>
+                <td class="text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@item.ProductoId" class="btn btn-sm btn-warning">✏️</a>
+                    <a asp-action="Details" asp-route-id="@item.ProductoId" class="btn btn-sm btn-info">🔍</a>
+                    <a asp-action="Delete" asp-route-id="@item.ProductoId" class="btn btn-sm btn-danger">🗑️</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPaginas > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("Index", new { pagina = 1, tamPagina = tamanoPagina, filtroNombre = nombreFiltro, filtroRubroId = rubroIdFiltro, filtroProveedorId = proveedorIdFiltro, orden })">«</a>
+            </li>
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("Index", new { pagina = paginaActual - 1, tamPagina = tamanoPagina, filtroNombre = nombreFiltro, filtroRubroId = rubroIdFiltro, filtroProveedorId = proveedorIdFiltro, orden })">‹</a>
+            </li>
+            @for (int i = Math.Max(1, paginaActual - 2); i <= Math.Min(totalPaginas, paginaActual + 2); i++)
+            {
+                <li class="page-item @(i == paginaActual ? "active" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Index", new { pagina = i, tamPagina = tamanoPagina, filtroNombre = nombreFiltro, filtroRubroId = rubroIdFiltro, filtroProveedorId = proveedorIdFiltro, orden })">@i</a>
+                </li>
+            }
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("Index", new { pagina = paginaActual + 1, tamPagina = tamanoPagina, filtroNombre = nombreFiltro, filtroRubroId = rubroIdFiltro, filtroProveedorId = proveedorIdFiltro, orden })">›</a>
+            </li>
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("Index", new { pagina = totalPaginas, tamPagina = tamanoPagina, filtroNombre = nombreFiltro, filtroRubroId = rubroIdFiltro, filtroProveedorId = proveedorIdFiltro, orden })">»</a>
+            </li>
+        </ul>
+    </nav>
+}
