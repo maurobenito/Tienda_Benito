@@ -153,37 +153,35 @@
         </div>
     </div>
 </div>
-<!-- Modal Clientes -->
-<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog" aria-labelledby="modalClientesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Seleccionar Cliente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label><strong>Buscar Cliente</strong></label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" @@click="buscarClientes">Buscar</button>
-                    </div>
+<!-- ✅ NUEVO MODAL DE CLIENTES -->
+<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleccionar Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
                 </div>
-
-                <ul class="list-group" v-if="clientes.length">
-                    <li class="list-group-item" v-for="c in clientes" :key="c.clienteId" @@click="seleccionarClienteDesdeModal(c)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" class="form-control mb-3" placeholder="Buscar cliente por nombre o apellido"
+                           v-model="clienteBusquedaModal" @@input="buscarClientesModal">
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-action"
+                        v-for="c in clientesModal" :key="c.clienteId"
+                        @@click="seleccionarClienteDesdeModal(c)">
                         {{ c.nombreCompleto }}
                     </li>
                 </ul>
-                <div v-else class="text-muted text-center">No se encontraron clientes.</div>
+                <div v-if="clientesModal.length === 0" class="text-muted mt-3">
+                    No se encontraron clientes.
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -228,16 +226,19 @@
                     this.clienteBusqueda = c.nombreCompleto;
                     this.clientes = [];
                 },
-               abrirModalClientes() {
+                buscarClientesModal() {
+                    if (this.clienteBusquedaModal.length < 2) {
+                        this.clientesModal = [];
+                        return;
+                    }
+                    axios.get('/api/clientes/buscar?query=' + this.clienteBusquedaModal)
+                        .then(r => this.clientesModal = r.data);
+                },
+                abrirModalClientes() {
                     this.clienteBusquedaModal = '';
                     this.clientesModal = [];
                     $('#modalClientes').modal('show');
-        },
-
-                seleccionarClienteDesdeModal(cliente) {
-                    this.seleccionarCliente(cliente);
-                    $('#modalClientes').modal('hide');
-                },      
+                },
                 buscarProductos() {
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);

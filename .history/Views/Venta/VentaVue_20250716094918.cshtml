@@ -58,15 +58,7 @@
                 <button class="btn btn-sm btn-primary">Agregar</button>
             </li>
         </ul>
-        <!-- ALERTA STOCK BAJO -->
-        <div v-if="productosStockBajo.length" class="alert alert-warning mt-3">
-            ⚠️ Atención: Los siguientes productos tienen <strong>stock bajo</strong>:
-            <ul>
-                <li v-for="p in productosStockBajo" :key="p.productoId">
-                    {{ p.nombre }} (Stock: {{ p.stock }})
-                </li>
-            </ul>
-        </div>
+
         <!-- Carrito -->
         <div class="mt-4">
             <h4>Carrito</h4>
@@ -136,9 +128,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="p in productosModalFiltrados" :key="p.productoId"
-                            :class="{ 'table-danger': p.stock < 10 }">
-
+                            <tr v-for="p in productosModalFiltrados" :key="p.productoId">
                                 <td>{{ p.nombre }}</td>
                                 <td>{{ p.rubroNombre }}</td>
                                 <td>${{ p.precioVenta.toFixed(2) }}</td>
@@ -153,36 +143,6 @@
         </div>
     </div>
 </div>
-<!-- Modal Clientes -->
-<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog" aria-labelledby="modalClientesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Seleccionar Cliente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label><strong>Buscar Cliente</strong></label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" @@click="buscarClientes">Buscar</button>
-                    </div>
-                </div>
-
-                <ul class="list-group" v-if="clientes.length">
-                    <li class="list-group-item" v-for="c in clientes" :key="c.clienteId" @@click="seleccionarClienteDesdeModal(c)">
-                        {{ c.nombreCompleto }}
-                    </li>
-                </ul>
-                <div v-else class="text-muted text-center">No se encontraron clientes.</div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
@@ -194,8 +154,6 @@
                 clienteBusqueda: '',
                 clientes: [],
                 clienteSeleccionado: null,
-                clienteBusquedaModal: '',
-                clientesModal: [],
                 productoBusqueda: '',
                 productos: [],
                 carrito: [],
@@ -209,9 +167,6 @@
                 filtroModalNombre: ''
             },
             computed: {
-                productosStockBajo() {
-                    return this.carrito.filter(p => p.stock < 10);
-                },
                 productosModalFiltrados() {
                     return this.productos
                         .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
@@ -228,16 +183,13 @@
                     this.clienteBusqueda = c.nombreCompleto;
                     this.clientes = [];
                 },
-               abrirModalClientes() {
-                    this.clienteBusquedaModal = '';
-                    this.clientesModal = [];
-                    $('#modalClientes').modal('show');
-        },
-
-                seleccionarClienteDesdeModal(cliente) {
-                    this.seleccionarCliente(cliente);
-                    $('#modalClientes').modal('hide');
-                },      
+                abrirModalClientes() {
+                    axios.get('/api/clientes/buscar?query=')
+                        .then(r => {
+                            this.clientes = r.data;
+                            $('#modalClientes').modal('show');
+                        });
+                },
                 buscarProductos() {
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);

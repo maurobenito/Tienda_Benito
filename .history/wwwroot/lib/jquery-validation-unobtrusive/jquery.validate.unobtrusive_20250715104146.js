@@ -432,5 +432,4 @@
     });
 
     return $jQval.unobtrusive;
-    
 }));

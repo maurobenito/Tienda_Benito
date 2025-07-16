@@ -18,7 +18,7 @@
 
     <!-- Formulario de venta -->
     <div v-else>
-            <!-- Cliente -->
+        <!-- Cliente -->
         <div class="form-group">
             <label><strong>Buscar Cliente</strong></label>
             <div class="input-group">
@@ -40,6 +40,13 @@
         <!-- Rubro y producto -->
         <div class="row">
             <div class="col-md-6">
+                <label><strong>Filtrar por Rubro</strong></label>
+                <select class="form-control" v-model="rubroSeleccionado" @@change="filtrarProductosPorRubro">
+                    <option disabled value="">-- Seleccione un rubro --</option>
+                    <option v-for="r in rubros" :value="r.rubroId">{{ r.nombre }}</option>
+                </select>
+            </div>
+            <div class="col-md-6">
                 <label><strong>Buscar Producto</strong></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
@@ -49,15 +56,16 @@
                 </div>
             </div>
         </div>
-    
-        <!-- Lista rápida -->
-        <ul class="list-group mt-2" v-if="productos.length && productoBusqueda.length > 1">
+
+        <!-- Productos -->
+        <ul class="list-group mt-2" v-if="productos.length && productoBusqueda.length > 1 && !mostrarModalProductos">
             <li class="list-group-item d-flex justify-content-between align-items-center"
                 v-for="p in productos" @@click="agregarProducto(p)">
                 {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
                 <button class="btn btn-sm btn-primary">Agregar</button>
             </li>
         </ul>
+
         <!-- ALERTA STOCK BAJO -->
         <div v-if="productosStockBajo.length" class="alert alert-warning mt-3">
             ⚠️ Atención: Los siguientes productos tienen <strong>stock bajo</strong>:
@@ -67,6 +75,7 @@
                 </li>
             </ul>
         </div>
+
         <!-- Carrito -->
         <div class="mt-4">
             <h4>Carrito</h4>
@@ -112,7 +121,7 @@
         </div>
     </div>
 
-    <!-- Modal Productos Mejorado -->
+    <!-- Modal de Productos Mejorado -->
     <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -123,8 +132,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control mb-3" placeholder="Buscar producto..." v-model="filtroModalNombre">
-                    <table class="table table-sm table-striped">
+                    <div class="form-row mb-2">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="Buscar por nombre" v-model="filtroModalNombre">
+                        </div>
+                    </div>
+
+                    <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -136,15 +150,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="p in productosModalFiltrados" :key="p.productoId"
-                            :class="{ 'table-danger': p.stock < 10 }">
-
+                            <tr v-for="p in productosModalFiltrados" :key="p.productoId">
                                 <td>{{ p.nombre }}</td>
                                 <td>{{ p.rubroNombre }}</td>
                                 <td>${{ p.precioVenta.toFixed(2) }}</td>
                                 <td>{{ p.stock }}</td>
-                                <td><input type="number" class="form-control" v-model.number="p.cantidadTemp" :min="1" :max="p.stock"></td>
-                                <td><button class="btn btn-success btn-sm" @@click="agregarProductoDesdeModal(p)">Agregar</button></td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm" v-model.number="cantidades[p.productoId]" :max="p.stock" min="1" style="width:80px;">
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-sm" @@click="agregarProductoConCantidad(p)">Agregar</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -152,32 +168,24 @@
             </div>
         </div>
     </div>
-</div>
-<!-- Modal Clientes -->
-<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog" aria-labelledby="modalClientesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Seleccionar Cliente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label><strong>Buscar Cliente</strong></label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" @@click="buscarClientes">Buscar</button>
-                    </div>
-                </div>
 
-                <ul class="list-group" v-if="clientes.length">
-                    <li class="list-group-item" v-for="c in clientes" :key="c.clienteId" @@click="seleccionarClienteDesdeModal(c)">
-                        {{ c.nombreCompleto }}
-                    </li>
-                </ul>
-                <div v-else class="text-muted text-center">No se encontraron clientes.</div>
+    <!-- Modal Clientes -->
+    <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleccionar Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="c in clientes" @@click="seleccionarClienteDesdeModal(c)">
+                            {{ c.nombreCompleto }}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -185,7 +193,9 @@
 
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         new Vue({
@@ -194,8 +204,6 @@
                 clienteBusqueda: '',
                 clientes: [],
                 clienteSeleccionado: null,
-                clienteBusquedaModal: '',
-                clientesModal: [],
                 productoBusqueda: '',
                 productos: [],
                 carrito: [],
@@ -205,116 +213,162 @@
                 rubros: [],
                 rubroSeleccionado: '',
                 ventaConfirmada: false,
-                ventaIdGenerada: 0,
-                filtroModalNombre: ''
+                ventaIdGenerada: 0
             },
             computed: {
                 productosStockBajo() {
                     return this.carrito.filter(p => p.stock < 10);
-                },
-                productosModalFiltrados() {
-                    return this.productos
-                        .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
-                        .sort((a, b) => a.nombre.localeCompare(b.nombre));
                 }
             },
+            created() {
+                this.cargarRubros();
+            },
+            mounted() {
+                document.addEventListener('click', this.handleClickOutside);
+                document.addEventListener('keydown', this.handleEscape);
+            },
+            beforeDestroy() {
+                document.removeEventListener('click', this.handleClickOutside);
+                document.removeEventListener('keydown', this.handleEscape);
+            },
             methods: {
+                handleEscape(event) {
+                    if (event.key === 'Escape') {
+                        this.clienteBusqueda = '';
+                        this.clientes = [];
+                        this.productoBusqueda = '';
+                        this.productos = [];
+                    }
+                },
+                handleClickOutside(event) {
+                    const clickedInside = event.target.closest('.list-group') || event.target.closest('.input-group');
+                    if (!clickedInside) {
+                        this.clienteBusqueda = '';
+                        this.clientes = [];
+                        this.productoBusqueda = '';
+                        this.productos = [];
+                    }
+                },
                 buscarClientes() {
+                    if (this.clienteBusqueda.length < 2) {
+                        this.clientes = [];
+                        return;
+                    }
                     axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
                         .then(r => this.clientes = r.data);
                 },
-                seleccionarCliente(c) {
-                    this.clienteSeleccionado = c;
-                    this.clienteBusqueda = c.nombreCompleto;
+                seleccionarCliente(cliente) {
+                    this.clienteSeleccionado = cliente;
+                    this.clienteBusqueda = cliente.nombreCompleto;
                     this.clientes = [];
                 },
-               abrirModalClientes() {
-                    this.clienteBusquedaModal = '';
-                    this.clientesModal = [];
-                    $('#modalClientes').modal('show');
-        },
-
                 seleccionarClienteDesdeModal(cliente) {
                     this.seleccionarCliente(cliente);
                     $('#modalClientes').modal('hide');
-                },      
+                },
                 buscarProductos() {
+                    if (this.productoBusqueda.length < 2) {
+                        this.productos = [];
+                        return;
+                    }
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);
                 },
                 abrirModalProductos() {
                     axios.get('/api/productos/buscar?query=')
                         .then(r => {
-                            this.productos = r.data.map(p => ({ ...p, cantidadTemp: 1 }));
+                            this.productos = r.data;
                             $('#modalProductos').modal('show');
                         });
                 },
-                agregarProducto(p) {
-                    const existente = this.carrito.find(item => item.productoId === p.productoId);
+                abrirModalClientes() {
+                    axios.get('/api/clientes/buscar?query=')
+                        .then(r => {
+                            this.clientes = r.data;
+                            $('#modalClientes').modal('show');
+                        });
+                },
+                agregarProducto(producto) {
+                    const existente = this.carrito.find(p => p.productoId === producto.productoId);
                     if (existente) {
-                        if (existente.cantidad < p.stock) existente.cantidad++;
+                        if (existente.cantidad < producto.stock) existente.cantidad++;
                     } else {
-                        this.carrito.push({ ...p, cantidad: 1 });
+                        this.carrito.push({ ...producto, cantidad: 1 });
                     }
                     this.actualizarTotal();
                 },
-                agregarProductoDesdeModal(p) {
-                    const existente = this.carrito.find(item => item.productoId === p.productoId);
-                    if (existente) {
-                        const nuevaCantidad = existente.cantidad + p.cantidadTemp;
-                        existente.cantidad = nuevaCantidad <= p.stock ? nuevaCantidad : p.stock;
-                    } else {
-                        this.carrito.push({ ...p, cantidad: p.cantidadTemp });
-                    }
-                    this.actualizarTotal();
-                },
-                quitarProducto(i) {
-                    this.carrito.splice(i, 1);
+                quitarProducto(index) {
+                    this.carrito.splice(index, 1);
                     this.actualizarTotal();
                 },
                 actualizarTotal() {
-                    this.total = this.carrito.reduce((acc, p) => acc + p.precioVenta * p.cantidad, 0);
+                    this.total = this.carrito.reduce((sum, p) => sum + p.precioVenta * p.cantidad, 0);
                 },
                 confirmarVenta() {
-                    if (!this.clienteSeleccionado || !this.tipoVenta || !this.carrito.length) {
-                        alert('Complete cliente, tipo de venta y al menos un producto.');
+                    if (!this.clienteSeleccionado || this.carrito.length === 0) {
+                        alert("Seleccione un cliente y al menos un producto.");
                         return;
                     }
+                    if (!this.tipoVenta) {
+                        alert("Debe seleccionar un tipo de venta.");
+                        return;
+                    }
+
                     const venta = {
                         clienteId: this.clienteSeleccionado.clienteId,
                         usuarioId: this.usuarioId,
-                        tipoVenta: this.tipoVenta,
                         total: this.total,
+                        tipoVenta: this.tipoVenta,
                         productos: this.carrito.map(p => ({
                             productoId: p.productoId,
                             cantidad: p.cantidad,
                             precioUnitario: p.precioVenta
                         }))
                     };
+
                     axios.post('/api/ventas/crear', venta)
                         .then(r => {
                             this.ventaIdGenerada = r.data.ventaId;
                             this.ventaConfirmada = true;
                         })
-                        .catch(() => alert('Error al registrar la venta.'));
+                        .catch(e => {
+                            alert("Error al registrar la venta.");
+                            console.error(e);
+                        });
                 },
                 resetearFormulario() {
-                    location.reload();
-                },
-                irADetalleVenta() {
-                    window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
+                    this.clienteBusqueda = '';
+                    this.clientes = [];
+                    this.clienteSeleccionado = null;
+                    this.productoBusqueda = '';
+                    this.productos = [];
+                    this.carrito = [];
+                    this.total = 0;
+                    this.tipoVenta = '';
+                    this.rubroSeleccionado = '';
+                    this.ventaConfirmada = false;
+                    this.ventaIdGenerada = 0;
                 },
                 cargarRubros() {
                     axios.get('/Rubro/GetRubros')
-                        .then(r => this.rubros = r.data);
+                        .then(r => this.rubros = r.data)
+                        .catch(e => {
+                            console.error('Error al cargar rubros:', e);
+                            this.rubros = [];
+                        });
                 },
                 filtrarProductosPorRubro() {
+                    if (!this.rubroSeleccionado) return;
                     axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
-                        .then(r => this.productos = r.data);
+                        .then(r => this.productos = r.data)
+                        .catch(e => {
+                            console.error('Error al filtrar productos por rubro:', e);
+                            this.productos = [];
+                        });
+                },
+                irADetalleVenta() {
+                    window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
                 }
-            },
-            created() {
-                this.cargarRubros();
             }
         });
     </script>

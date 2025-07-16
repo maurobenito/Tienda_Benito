@@ -234,10 +234,7 @@
                     $('#modalClientes').modal('show');
         },
 
-                seleccionarClienteDesdeModal(cliente) {
-                    this.seleccionarCliente(cliente);
-                    $('#modalClientes').modal('hide');
-                },      
+                
                 buscarProductos() {
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);
