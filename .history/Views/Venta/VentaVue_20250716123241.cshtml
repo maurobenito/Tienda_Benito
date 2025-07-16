@@ -224,12 +224,12 @@
                     this.clientes = [];
                 },
                 abrirModalClientes() {
-                    this.clienteBusqueda = '';
-                    axios.get('/api/clientes/buscar')
-                        .then(r => {
-                            this.clientes = r.data;
-                            $('#modalClientes').modal('show');
-                        });
+                    this.clienteBusqueda = '';  // Limpiar búsqueda
+                    axios.get('/api/clientes/buscar') // Traer todos los clientes (sin query)
+                    .then(r => {
+                    this.clientes = r.data;
+                    $('#modalClientes').modal('show');
+        });
                 },
                 seleccionarClienteDesdeModal(cliente) {
                     this.seleccionarCliente(cliente);
@@ -300,32 +300,8 @@
                 },
                 irADetalleVenta() {
                     window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
-                },
-                limpiarBusquedas() {
-                    this.clienteBusqueda = '';
-                    this.productoBusqueda = '';
-                    this.clientes = [];
-                    this.productos = [];
                 }
-            },
-            mounted() {
-                // ESC para limpiar
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        this.limpiarBusquedas();
-                    }
-                });
-
-                // Click fuera de los inputs para limpiar
-                document.addEventListener('click', (e) => {
-                    const clickedInside = e.target.closest('.input-group') || e.target.closest('.list-group');
-                    if (!clickedInside) {
-                        this.limpiarBusquedas();
-                    }
-                });
             }
         });
     </script>
 }
-
-  

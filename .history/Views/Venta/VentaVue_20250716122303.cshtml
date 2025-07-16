@@ -38,25 +38,27 @@
         </div>
 
         <!-- Producto -->
-        <div class="form-group">
-            <label><strong>Buscar Producto</strong></label>
-            <div class="input-group">
-                <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" @@click="abrirModalProductos">👁 Navegar Productos</button>
+        <div class="row">
+            <div class="col-md-6">
+                <label><strong>Buscar Producto</strong></label>
+                <div class="input-group">
+                    <input type="text" class="form-control" v-model="productoBusqueda" @@input="buscarProductos">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" @@click="abrirModalProductos">👁 Navegar Productos</button>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Lista rápida -->
         <ul class="list-group mt-2" v-if="productos.length && productoBusqueda.length > 1">
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-                v-for="p in productos" @@click="agregarProducto(p)">
+            <li class="list-group-item d-flex justify-content-between align-items-center" v-for="p in productos" @@click="agregarProducto(p)">
                 {{ p.nombre }} - ${{ p.precioVenta }} (Stock: {{ p.stock }})
                 <button class="btn btn-sm btn-primary">Agregar</button>
             </li>
         </ul>
 
-        <!-- Alerta Stock Bajo -->
+        <!-- Alerta stock bajo -->
         <div v-if="productosStockBajo.length" class="alert alert-warning mt-3">
             ⚠️ Atención: Los siguientes productos tienen <strong>stock bajo</strong>:
             <ul>
@@ -94,10 +96,7 @@
                     <tr v-for="(item, index) in carrito" :key="item.productoId">
                         <td>{{ item.nombre }}</td>
                         <td>${{ item.precioVenta.toFixed(2) }}</td>
-                        <td>
-                            <input type="number" class="form-control" v-model.number="item.cantidad"
-                                :min="1" :max="item.stock" @@change="actualizarTotal">
-                        </td>
+                        <td><input type="number" class="form-control" v-model.number="item.cantidad" :min="1" :max="item.stock" @@change="actualizarTotal"></td>
                         <td>${{ (item.precioVenta * item.cantidad).toFixed(2) }}</td>
                         <td><button class="btn btn-danger btn-sm" @@click="quitarProducto(index)">Quitar</button></td>
                     </tr>
@@ -135,8 +134,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="p in productosModalFiltrados" :key="p.productoId"
-                                :class="{ 'table-danger': p.stock < 10 }">
+                            <tr v-for="p in productosModalFiltrados" :key="p.productoId" :class="{ 'table-danger': p.stock < 10 }">
                                 <td>{{ p.nombre }}</td>
                                 <td>{{ p.rubroNombre }}</td>
                                 <td>${{ p.precioVenta.toFixed(2) }}</td>
@@ -151,33 +149,31 @@
         </div>
     </div>
 
-    <!-- Modal Clientes -->
-<div class="modal fade" id="modalClientes" tabindex="-1" role="dialog" aria-labelledby="modalClientesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Seleccionar Cliente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label><strong>Buscar Cliente</strong></label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" @@click="buscarClientes">Buscar</button>
-                    </div>
+    <!-- Modal Clientes usando buscarClientes y seleccionarCliente -->
+    <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog" aria-labelledby="modalClientesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Seleccionar Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-
-                <ul class="list-group" v-if="clientes.length">
-                    <li class="list-group-item" v-for="c in clientes" :key="c.clienteId" @@click="seleccionarClienteDesdeModal(c)">
-                        <div><strong>{{ c.nombreCompleto }}</strong></div>
-                        <div class="text-muted">Email: {{ c.email }}</div>
-                        <div class="text-muted">Teléfono: {{ c.telefono }}</div>
-                    </li>
-                </ul>
-                <div v-else class="text-muted text-center">No se encontraron clientes.</div>
+                <div class="modal-body">
+                    <label><strong>Buscar Cliente</strong></label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" v-model="clienteBusqueda" @@input="buscarClientes">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" @@click="buscarClientes">Buscar</button>
+                        </div>
+                    </div>
+                    <ul class="list-group" v-if="clientes.length">
+                        <li class="list-group-item" v-for="c in clientes" :key="c.clienteId" @@click="seleccionarClienteDesdeModal(c)">
+                            {{ c.nombreCompleto }}
+                        </li>
+                    </ul>
+                    <div v-else class="text-muted text-center">No se encontraron clientes.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -193,12 +189,16 @@
                 clienteBusqueda: '',
                 clientes: [],
                 clienteSeleccionado: null,
+                clienteBusquedaModal: '',
+                clientesModal: [],
                 productoBusqueda: '',
                 productos: [],
                 carrito: [],
                 total: 0,
                 tipoVenta: '',
                 usuarioId: 1,
+                rubros: [],
+                rubroSeleccionado: '',
                 ventaConfirmada: false,
                 ventaIdGenerada: 0,
                 filtroModalNombre: ''
@@ -211,8 +211,8 @@
                     return this.productos
                         .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
                         .sort((a, b) => a.nombre.localeCompare(b.nombre));
-                }
-            },
+                    }
+                },
             methods: {
                 buscarClientes() {
                     axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
@@ -223,18 +223,30 @@
                     this.clienteBusqueda = c.nombreCompleto;
                     this.clientes = [];
                 },
-                abrirModalClientes() {
-                    this.clienteBusqueda = '';
-                    axios.get('/api/clientes/buscar')
-                        .then(r => {
-                            this.clientes = r.data;
-                            $('#modalClientes').modal('show');
-                        });
+               abrirModalClientes() {
+                    this.clienteBusquedaModal = '';
+                    this.clientesModal = [];
+                    $('#modalClientes').modal('show');
                 },
-                seleccionarClienteDesdeModal(cliente) {
-                    this.seleccionarCliente(cliente);
+
+                buscarClientesModal() {
+                if (this.clienteBusqueda.length < 2) {
+                    return;
+            }
+
+                axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
+                    .then(r => this.clientes = r.data)
+                    .catch(() => this.clientes = []);
+            },
+
+
+            
+                seleccionarClienteDesdeModal(c) {
+                    this.seleccionarCliente(c);
                     $('#modalClientes').modal('hide');
-                },
+            },  
+
+
                 buscarProductos() {
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);
@@ -301,31 +313,18 @@
                 irADetalleVenta() {
                     window.location.href = '/Venta/DetalleVue/' + this.ventaIdGenerada;
                 },
-                limpiarBusquedas() {
-                    this.clienteBusqueda = '';
-                    this.productoBusqueda = '';
-                    this.clientes = [];
-                    this.productos = [];
+                cargarRubros() {
+                    axios.get('/Rubro/GetRubros')
+                        .then(r => this.rubros = r.data);
+                },
+                filtrarProductosPorRubro() {
+                    axios.get('/api/productos/porrubro/' + this.rubroSeleccionado)
+                        .then(r => this.productos = r.data);
                 }
             },
-            mounted() {
-                // ESC para limpiar
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') {
-                        this.limpiarBusquedas();
-                    }
-                });
-
-                // Click fuera de los inputs para limpiar
-                document.addEventListener('click', (e) => {
-                    const clickedInside = e.target.closest('.input-group') || e.target.closest('.list-group');
-                    if (!clickedInside) {
-                        this.limpiarBusquedas();
-                    }
-                });
+            created() {
+                this.cargarRubros();
             }
         });
     </script>
 }
-
-  
