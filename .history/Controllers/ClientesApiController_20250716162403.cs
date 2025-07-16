@@ -40,9 +40,7 @@ public IActionResult ObtenerTodos()
         .Select(c => new
         {
             clienteId = c.ClienteId,
-            nombreCompleto = c.Nombre + " " + c.Apellido,
-            email = c.Email,
-            cuit = c.Cuit
+            nombreCompleto = c.Nombre + " " + c.Apellido
         })
         .ToList();
 

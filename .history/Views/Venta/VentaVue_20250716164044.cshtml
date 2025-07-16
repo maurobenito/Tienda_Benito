@@ -113,13 +113,12 @@
 
 <!-- Modal Productos Mejorado -->
 <div class="modal fade" id="modalProductos" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
-
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">📦 Seleccionar Producto</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">
-                    <span>&times;</span>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -149,7 +148,7 @@
                                     v-model.number="p.cantidadTemp" :min="1" :max="p.stock">
                             </td>
                             <td>
-                                <button class="btn btn-success btn-sm" @@click="agregarProductoDesdeModal(p)">
+                                <button class="btn btn-success btn-sm" @@click.prevent="agregarProductoDesdeModal(p)">
                                     Agregar
                                 </button>
                             </td>
@@ -374,28 +373,22 @@
                     this.productos = [];
                 }
             },
-           mounted() {
-    // ESC para limpiar solo si no hay un modal abierto
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const modalAbierto = document.querySelector('.modal.show');
-            if (!modalAbierto) {
-                this.limpiarBusquedas();
+            mounted() {
+                // ESC para limpiar
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.limpiarBusquedas();
+                    }
+                });
+
+                // Click fuera de los inputs para limpiar
+                document.addEventListener('click', (e) => {
+                    const clickedInside = e.target.closest('.input-group') || e.target.closest('.list-group');
+                    if (!clickedInside) {
+                        this.limpiarBusquedas();
+                    }
+                });
             }
-        }
-    });
-
-    // Click fuera de los inputs y fuera de los modales
-    document.addEventListener('click', (e) => {
-        const clickedInsideInputGroup = e.target.closest('.input-group') || e.target.closest('.list-group');
-        const clickedInsideModal = e.target.closest('.modal-content');
-
-        if (!clickedInsideInputGroup && !clickedInsideModal) {
-            this.limpiarBusquedas();
-        }
-    });
-}
-
         });
     </script>
 }

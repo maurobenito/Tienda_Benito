@@ -118,7 +118,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">📦 Seleccionar Producto</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">
+                <button type="button" class="close text-white">
                     <span>&times;</span>
                 </button>
             </div>
@@ -330,6 +330,7 @@
                         this.carrito.push({ ...p, cantidad: p.cantidadTemp });
                     }
                     this.actualizarTotal();
+                    console.log("Agregado")
                 },
                 quitarProducto(i) {
                     this.carrito.splice(i, 1);
@@ -374,28 +375,22 @@
                     this.productos = [];
                 }
             },
-           mounted() {
-    // ESC para limpiar solo si no hay un modal abierto
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const modalAbierto = document.querySelector('.modal.show');
-            if (!modalAbierto) {
-                this.limpiarBusquedas();
+            mounted() {
+                // ESC para limpiar
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.limpiarBusquedas();
+                    }
+                });
+
+                // Click fuera de los inputs para limpiar
+                document.addEventListener('click', (e) => {
+                    const clickedInside = e.target.closest('.input-group') || e.target.closest('.list-group');
+                    if (!clickedInside) {
+                        this.limpiarBusquedas();
+                    }
+                });
             }
-        }
-    });
-
-    // Click fuera de los inputs y fuera de los modales
-    document.addEventListener('click', (e) => {
-        const clickedInsideInputGroup = e.target.closest('.input-group') || e.target.closest('.list-group');
-        const clickedInsideModal = e.target.closest('.modal-content');
-
-        if (!clickedInsideInputGroup && !clickedInsideModal) {
-            this.limpiarBusquedas();
-        }
-    });
-}
-
         });
     </script>
 }
