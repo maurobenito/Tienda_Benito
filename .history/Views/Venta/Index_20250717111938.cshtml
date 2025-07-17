@@ -1,0 +1,48 @@
+public IActionResult Index(string cliente, string vendedor, string tipo, string orderBy = "fecha", bool desc = true, int pagina = 1, int tamPagina = 5)
+{
+    var query = _context.Venta
+        .Include(v => v.Cliente)
+        .Include(v => v.Usuario)
+        .AsQueryable();
+
+    if (!string.IsNullOrEmpty(cliente))
+        query = query.Where(v => (v.Cliente.Nombre + " " + v.Cliente.Apellido).ToLower().Contains(cliente.ToLower()));
+
+    if (!string.IsNullOrEmpty(vendedor))
+        query = query.Where(v => v.Usuario.Email.ToLower().Contains(vendedor.ToLower()));
+
+    if (!string.IsNullOrEmpty(tipo))
+        query = query.Where(v => v.TipoVenta.ToLower().Contains(tipo.ToLower()));
+
+    query = (orderBy?.ToLower(), desc) switch
+    {
+        ("cliente", true) => query.OrderByDescending(v => v.Cliente.Apellido),
+        ("cliente", false) => query.OrderBy(v => v.Cliente.Apellido),
+        ("vendedor", true) => query.OrderByDescending(v => v.Usuario.Apellido),
+        ("vendedor", false) => query.OrderBy(v => v.Usuario.Apellido),
+        ("tipo", true) => query.OrderByDescending(v => v.TipoVenta),
+        ("tipo", false) => query.OrderBy(v => v.TipoVenta),
+        ("total", true) => query.OrderByDescending(v => v.Total),
+        ("total", false) => query.OrderBy(v => v.Total),
+        ("fecha", false) => query.OrderBy(v => v.Fecha),
+        _ => query.OrderByDescending(v => v.Fecha)
+    };
+
+    var total = query.Count();
+
+    var ventas = query
+        .Skip((pagina - 1) * tamPagina)
+        .Take(tamPagina)
+        .ToList();
+
+    ViewBag.PaginaActual = pagina;
+    ViewBag.TamanoPagina = tamPagina;
+    ViewBag.TotalPaginas = (int)Math.Ceiling((double)total / tamPagina);
+    ViewBag.Cliente = cliente;
+    ViewBag.Vendedor = vendedor;
+    ViewBag.Tipo = tipo;
+    ViewBag.OrderBy = orderBy;
+    ViewBag.Desc = desc;
+
+    return View(ventas);
+}

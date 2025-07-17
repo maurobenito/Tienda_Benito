@@ -45,7 +45,7 @@ namespace Tienda_Benito.Controllers
         ("tipo", false) => query.OrderBy(v => v.TipoVenta),
         ("total", true) => query.OrderByDescending(v => v.Total),
         ("total", false) => query.OrderBy(v => v.Total),
-        ("fecha", true) => query.OrderBy(v => v.Fecha),
+        ("fecha", false) => query.OrderBy(v => v.Fecha),
         _ => query.OrderByDescending(v => v.Fecha)
     };
 

@@ -1,0 +1,99 @@
+@{
+    ViewData["Title"] = "Ventas";
+    var currentOrder = Context.Request.Query["orderBy"];
+    var isDesc = Context.Request.Query["desc"] == "true";
+    var arrow = (bool desc) => desc ? "▼" : "▲";
+    Func<string, string> getArrow = col => currentOrder == col ? arrow(isDesc) : "";
+}
+
+<h2>Ventas</h2>
+
+<form method="get" class="mb-3 row g-2 align-items-center">
+    <div class="col">
+        <input type="text" name="cliente" value="@Context.Request.Query["cliente"]" class="form-control" placeholder="Buscar cliente..." />
+    </div>
+    <div class="col">
+        <input type="text" name="vendedor" value="@Context.Request.Query["vendedor"]" class="form-control" placeholder="Buscar vendedor..." />
+    </div>
+    <div class="col">
+        <input type="text" name="tipo" value="@Context.Request.Query["tipo"]" class="form-control" placeholder="Tipo de venta..." />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            @* Encabezados clickeables para ordenamiento *@
+            <th>
+                <a asp-action="Index" asp-route-orderBy="cliente" asp-route-desc="@(currentOrder == "cliente" && !isDesc)"
+                   class="text-dark text-decoration-none">
+                    Cliente @getArrow("cliente")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orderBy="vendedor" asp-route-desc="@(currentOrder == "vendedor" && !isDesc)"
+                   class="text-dark text-decoration-none">
+                    Vendedor @getArrow("vendedor")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orderBy="tipo" asp-route-desc="@(currentOrder == "tipo" && !isDesc)"
+                   class="text-dark text-decoration-none">
+                    Tipo @getArrow("tipo")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orderBy="total" asp-route-desc="@(currentOrder == "total" && !isDesc)"
+                   class="text-dark text-decoration-none">
+                    Total @getArrow("total")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-orderBy="fecha" asp-route-desc="@(currentOrder == "fecha" && !isDesc)"
+                   class="text-dark text-decoration-none">
+                    Fecha @getArrow("fecha")
+                </a>
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var venta in Model.Items)
+        {
+            <tr>
+                <td>@venta.Cliente</td>
+                <td>@venta.Vendedor</td>
+                <td>@venta.Tipo</td>
+                <td>$@venta.Total.ToString("N2")</td>
+                <td>@venta.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="DetailsVue" asp-route-id="@venta.VentaId" class="btn btn-sm btn-info">Detalle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link"
+                   asp-route-page="@i"
+                   asp-route-cliente="@Context.Request.Query["cliente"]"
+                   asp-route-vendedor="@Context.Request.Query["vendedor"]"
+                   asp-route-tipo="@Context.Request.Query["tipo"]"
+                   asp-route-orderBy="@currentOrder"
+                   asp-route-desc="@isDesc">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+}
