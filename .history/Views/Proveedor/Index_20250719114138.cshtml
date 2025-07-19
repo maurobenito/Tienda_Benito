@@ -1,0 +1,45 @@
+@model IEnumerable<Tienda_Benito.Models.Proveedor>
+
+@{
+    ViewData["Title"] = "Listado de Proveedores";
+}
+
+<h1>Listado de Proveedores</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Agregar nuevo proveedor</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>CUIT</th>
+            <th>Razón Social</th>
+            <th>Datos Bancarios</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+        <tr>
+            <td>@item.Nombre</td>
+            <td>@item.Email</td>
+            <td>@item.Telefono</td>
+            <td>@item.Direccion</td>
+            <td>@item.Cuit</td>
+            <td>@item.RazonSocial</td>
+            <td>@item.DatosBancarios</td>
+            <td>
+                <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.ProveedorId">Detalles</a>
+                <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@item.ProveedorId">Editar</a>
+                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.ProveedorId">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

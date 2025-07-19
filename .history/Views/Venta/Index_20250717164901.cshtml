@@ -1,0 +1,187 @@
+@model IEnumerable<Tienda_Benito.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Ventas";
+    var paginaActual = ViewBag.PaginaActual as int? ?? 1;
+    var tamanoPagina = ViewBag.TamanoPagina as int? ?? 5;
+    var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
+    var cliente = ViewBag.Cliente as string ?? "";
+    var vendedor = ViewBag.Vendedor as string ?? "";
+    var tipo = ViewBag.Tipo as string ?? "";
+    var ordenActual = ViewBag.OrderBy as string ?? "fecha";
+    var desc = ViewBag.Desc as bool? ?? true;
+
+    string OrdenLink(string campo)
+{
+    if (ordenActual == campo)
+        return campo + "_desc";
+    if (ordenActual == campo + "_desc")
+        return campo;
+    return campo + "_desc"; // Por defecto ir a descendente (últimas ventas primero)
+}
+
+<h1 class="mb-4">📦 Ventas</h1>
+
+<p>
+    <a asp-action="VentaVue" asp-controller="Venta" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Crear Nueva Venta
+    </a>
+</p>
+
+<form method="get" class="mb-3">
+    <div class="form-row">
+        <div class="col">
+            <input name="cliente" value="@cliente" class="form-control" placeholder="🔍 Filtrar por cliente" />
+        </div>
+        <div class="col">
+            <input name="vendedor" value="@vendedor" class="form-control" placeholder="👤 Filtrar por vendedor" />
+        </div>
+        <div class="col">
+            <input name="tipo" value="@tipo" class="form-control" placeholder="📄 Filtrar por tipo" />
+        </div>
+        <div class="col-auto">
+            <select name="tamPagina" class="form-control" onchange="this.form.submit()">
+                <option value="5" selected="@(tamanoPagina == 5)">5 Ventas por página</option>
+                <option value="10" selected="@(tamanoPagina == 10)">10 Ventas por página</option>
+                <option value="15" selected="@(tamanoPagina == 15)">15 Ventas por página</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-hover table-bordered table-striped shadow-sm">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>
+                <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("fecha")"
+                   asp-route-cliente="@cliente"
+                   asp-route-vendedor="@vendedor"
+                   asp-route-tipo="@tipo"
+                   asp-route-tamPagina="@tamanoPagina">
+                    Fecha
+                    @if (ordenActual.Contains("fecha"))
+                    {
+                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("total")"
+                   asp-route-cliente="@cliente"
+                   asp-route-vendedor="@vendedor"
+                   asp-route-tipo="@tipo"
+                   asp-route-tamPagina="@tamanoPagina">
+                    Total
+                    @if (ordenActual.Contains("total"))
+                    {
+                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("tipo")"
+                   asp-route-cliente="@cliente"
+                   asp-route-vendedor="@vendedor"
+                   asp-route-tipo="@tipo"
+                   asp-route-tamPagina="@tamanoPagina">
+                    Tipo
+                    @if (ordenActual.Contains("tipo"))
+                    {
+                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("vendedor")"
+                   asp-route-cliente="@cliente"
+                   asp-route-vendedor="@vendedor"
+                   asp-route-tipo="@tipo"
+                   asp-route-tamPagina="@tamanoPagina">
+                    Vendedor
+                    @if (ordenActual.Contains("vendedor"))
+                    {
+                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none d-inline-block cursor-pointer"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("cliente")"
+                   asp-route-cliente="@cliente"
+                   asp-route-vendedor="@vendedor"
+                   asp-route-tipo="@tipo"
+                   asp-route-tamPagina="@tamanoPagina">
+                    Cliente
+                    @if (ordenActual.Contains("cliente"))
+                    {
+                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.Total.ToString("C")</td>
+                <td>@item.TipoVenta</td>
+                <td>@item.Usuario?.Email</td>
+                <td>@item.Cliente?.Nombre @item.Cliente?.Apellido</td>
+                <td class="text-nowrap">
+                    <a asp-action="DetalleVue" asp-route-id="@item.VentaId" class="btn btn-sm btn-info mr-1">🔍</a>
+                    @if (!item.Anulada)
+                    {
+                        <form asp-action="Anular" asp-route-id="@item.VentaId" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro que desea anular esta venta?');">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Anulada</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPaginas > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = 1, tamPagina = tamanoPagina, cliente, vendedor, tipo, orderBy = ordenActual, desc })">«</a>
+            </li>
+            <li class="page-item @(paginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual - 1, tamPagina = tamanoPagina, cliente, vendedor, tipo, orderBy = ordenActual, desc })">‹</a>
+            </li>
+            @for (int i = Math.Max(1, paginaActual - 2); i <= Math.Min(totalPaginas, paginaActual + 2); i++)
+            {
+                <li class="page-item @(i == paginaActual ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { pagina = i, tamPagina = tamanoPagina, cliente, vendedor, tipo, orderBy = ordenActual, desc })">@i</a>
+                </li>
+            }
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = paginaActual + 1, tamPagina = tamanoPagina, cliente, vendedor, tipo, orderBy = ordenActual, desc })">›</a>
+            </li>
+            <li class="page-item @(paginaActual == totalPaginas ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pagina = totalPaginas, tamPagina = tamanoPagina, cliente, vendedor, tipo, orderBy = ordenActual, desc })">»</a>
+            </li>
+        </ul>
+    </nav>
+}

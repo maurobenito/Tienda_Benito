@@ -1,0 +1,62 @@
+@model Tienda_Benito.Models.Cliente
+
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+}
+
+<h1>Detalles del Cliente</h1>
+
+<div class="card shadow p-4 mb-3">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            @if (!string.IsNullOrEmpty(Model.FotoPerfil))
+            {
+                <img src="@Url.Content(Model.FotoPerfil)" class="img-fluid rounded mb-3 shadow" style="max-height: 250px;" alt="Foto de perfil" />
+            }
+            else
+            {
+                <p class="text-muted">Sin foto de perfil</p>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ArchivoAdjunto))
+            {
+                <a href="@Url.Content(Model.ArchivoAdjunto)" class="btn btn-outline-primary" download>
+                    <i class="bi bi-download"></i> Descargar archivo adjunto
+                </a>
+            }
+            else
+            {
+                <p class="text-muted">Sin archivo adjunto</p>
+            }
+        </div>
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-4">Nombre</dt>
+                <dd class="col-sm-8">@Model.Nombre</dd>
+
+                <dt class="col-sm-4">Apellido</dt>
+                <dd class="col-sm-8">@Model.Apellido</dd>
+
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+
+                <dt class="col-sm-4">Teléfono</dt>
+                <dd class="col-sm-8">@Model.Telefono</dd>
+
+                <dt class="col-sm-4">CUIT</dt>
+                <dd class="col-sm-8">@Model.Cuit</dd>
+
+                <dt class="col-sm-4">Condición Fiscal</dt>
+                <dd class="col-sm-8">@Model.CondFiscal</dd>
+
+                <dt class="col-sm-4">Dirección</dt>
+                <dd class="col-sm-8">@Model.Direccion</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ClienteId" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</div>

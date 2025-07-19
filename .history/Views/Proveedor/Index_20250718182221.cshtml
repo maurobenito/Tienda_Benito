@@ -1,0 +1,49 @@
+@model IEnumerable<Tienda_Benito.Models.Proveedor>
+@{
+    ViewData["Title"] = "Proveedores";
+}
+<h2>Proveedores</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Nuevo Proveedor</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>CUIT</th>
+            <th>Razon Social</th>
+            <th>Archivos</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var proveedor in Model) {
+        <tr>
+            <td>@proveedor.Nombre</td>
+            <td>@proveedor.Email</td>
+            <td>@proveedor.Telefono</td>
+            <td>@proveedor.Cuit</td>
+            <td>@proveedor.RazonSocial</td>
+            <td>
+                @if (!string.IsNullOrEmpty(proveedor.Archivo1))
+                {
+                    <a href="@Url.Content("~/uploads/" + proveedor.Archivo1)" target="_blank">Archivo 1</a><br />
+                }
+                @if (!string.IsNullOrEmpty(proveedor.Archivo2))
+                {
+                    <a href="@Url.Content("~/uploads/" + proveedor.Archivo2)" target="_blank">Archivo 2</a>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-warning">Editar</a>
+                <a asp-action="Details" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-info">Detalles</a>
+                <a asp-action="Delete" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

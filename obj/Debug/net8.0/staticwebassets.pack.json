@@ -245,6 +245,30 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\a34de05e-1323-4762-8624-b2e6d0b893f1.png",
+      "PackagePath": "staticwebassets\\uploads\\a34de05e-1323-4762-8624-b2e6d0b893f1.png"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\b4f1bb2e-deff-442e-8d20-c90ff8f329a3.jpg",
+      "PackagePath": "staticwebassets\\uploads\\b4f1bb2e-deff-442e-8d20-c90ff8f329a3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\b9877f32-56d6-4d79-ab13-a9147ddd7ae8.jpg",
+      "PackagePath": "staticwebassets\\uploads\\b9877f32-56d6-4d79-ab13-a9147ddd7ae8.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\c2784d28-0c92-4728-abd0-d616c9c51a33.jpg",
+      "PackagePath": "staticwebassets\\uploads\\c2784d28-0c92-4728-abd0-d616c9c51a33.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\deb4474d-42fa-46d5-843a-51b9a7dec45a.jpg",
+      "PackagePath": "staticwebassets\\uploads\\deb4474d-42fa-46d5-843a-51b9a7dec45a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg",
+      "PackagePath": "staticwebassets\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Tienda_Benito.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

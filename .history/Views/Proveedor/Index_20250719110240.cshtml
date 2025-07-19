@@ -1,0 +1,84 @@
+@model PaginatedList<Tienda_Benito.Models.Proveedor>
+@{
+    ViewData["Title"] = "Proveedores";
+}
+
+<h2>Proveedores</h2>
+
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <input type="text" name="busqueda" value="@ViewData["FiltroActual"]" class="form-control mr-2" placeholder="Buscar por nombre o razón social" />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Nuevo Proveedor</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>CUIT</th>
+            <th>Razón Social</th>
+            <th>Archivos</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var proveedor in Model)
+{
+        <tr>
+            <td>@proveedor.Nombre</td>
+            <td>@proveedor.Email</td>
+            <td>@proveedor.Telefono</td>
+            <td>@proveedor.Cuit</td>
+            <td>@proveedor.RazonSocial</td>
+            <td>
+                @if (!string.IsNullOrEmpty(proveedor.Archivo1))
+                {
+                    <a href="@Url.Content("~/uploads/" + proveedor.Archivo1)" target="_blank">Archivo 1</a><br />
+                }
+                @if (!string.IsNullOrEmpty(proveedor.Archivo2))
+                {
+                    <a href="@Url.Content("~/uploads/" + proveedor.Archivo2)" target="_blank">Archivo 2</a>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-warning">Editar</a>
+                <a asp-action="Details" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-info">Detalles</a>
+                <a asp-action="Delete" asp-route-id="@proveedor.ProveedorId" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-busqueda="@ViewData["FiltroActual"]">Anterior</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        }
+
+        <li class="page-item active"><span class="page-link">@Model.PageIndex</span></li>
+
+        @if (Model.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-busqueda="@ViewData["FiltroActual"]">Siguiente</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+        }
+    </ul>
+</nav>
