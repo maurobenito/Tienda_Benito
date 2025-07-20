@@ -1,0 +1,46 @@
+@model Tienda_Benito.Models.Proveedor
+@{
+    ViewData["Title"] = "Detalle Proveedor";
+}
+<h2>Detalle Proveedor</h2>
+
+<div class="card p-3 bg-light shadow rounded">
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.Nombre</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Teléfono</dt>
+        <dd class="col-sm-9">@Model.Telefono</dd>
+
+        <dt class="col-sm-3">CUIT</dt>
+        <dd class="col-sm-9">@Model.Cuit</dd>
+
+        <dt class="col-sm-3">Razon Social</dt>
+        <dd class="col-sm-9">@Model.RazonSocial</dd>
+
+        <dt class="col-sm-3">Datos Bancarios</dt>
+        <dd class="col-sm-9">@Model.DatosBancarios</dd>
+
+        <dt class="col-sm-3">Archivo 1</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.Archivo1))
+            {
+                <a href="@Url.Content("~/uploads/" + Model.Archivo1)" target="_blank">@Model.Archivo1</a>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Archivo 2</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.Archivo2))
+            {
+                <a href="@Url.Content("~/uploads/" + Model.Archivo2)" target="_blank">@Model.Archivo2</a>
+            }
+        </dd>
+    </dl>
+
+    <a asp-action="Edit" asp-route-id="@Model.ProveedorId" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</div>

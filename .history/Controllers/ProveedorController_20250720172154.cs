@@ -52,10 +52,6 @@ public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool d
 
     return View(proveedores);
 }
-public IActionResult Create()
-{
-    return View();
-}
 
 
         [HttpPost]
@@ -123,12 +119,6 @@ public IActionResult Edit(int id, Proveedor proveedor, IFormFile? Archivo1File, 
         return RedirectToAction(nameof(Index));
     }
 
-    return View(proveedor);
-}
-public IActionResult Details(int id)
-{
-    var proveedor = _context.Proveedor.Find(id);
-    if (proveedor == null) return NotFound();
     return View(proveedor);
 }
 

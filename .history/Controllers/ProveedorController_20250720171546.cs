@@ -13,50 +13,23 @@ namespace Tienda_Benito.Controllers
         {
             _context = context;
         }
-public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool desc = false, int pagina = 1, int tamPagina = 5)
-{
-    var query = _context.Proveedor.AsQueryable();
 
-    // Filtro
-    if (!string.IsNullOrEmpty(filtro))
-    {
-        query = query.Where(p =>
-            p.Nombre.Contains(filtro) ||
-            p.RazonSocial.Contains(filtro) ||
-            p.Email.Contains(filtro));
-    }
+        public IActionResult Index()
+        {
+            return View(_context.Proveedor.ToList());
+        }
 
-    // Ordenamiento
-    query = orderBy switch
-    {
-        "Nombre" => desc ? query.OrderByDescending(p => p.Nombre) : query.OrderBy(p => p.Nombre),
-        "RazonSocial" => desc ? query.OrderByDescending(p => p.RazonSocial) : query.OrderBy(p => p.RazonSocial),
-        "Email" => desc ? query.OrderByDescending(p => p.Email) : query.OrderBy(p => p.Email),
-        _ => query.OrderBy(p => p.Nombre)
-    };
+        public IActionResult Details(int id)
+        {
+            var proveedor = _context.Proveedor.Find(id);
+            if (proveedor == null) return NotFound();
+            return View(proveedor);
+        }
 
-    // Total y paginación
-    int total = query.Count();
-    var proveedores = query
-        .Skip((pagina - 1) * tamPagina)
-        .Take(tamPagina)
-        .ToList();
-
-    // Datos de paginación y filtro para la vista
-    ViewBag.PaginaActual = pagina;
-    ViewBag.TamanoPagina = tamPagina;
-    ViewBag.TotalPaginas = (int)Math.Ceiling((double)total / tamPagina);
-    ViewBag.Filtro = filtro;
-    ViewBag.OrderBy = orderBy;
-    ViewBag.Desc = desc;
-
-    return View(proveedores);
-}
-public IActionResult Create()
-{
-    return View();
-}
-
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult Create(Proveedor p)
@@ -123,12 +96,6 @@ public IActionResult Edit(int id, Proveedor proveedor, IFormFile? Archivo1File, 
         return RedirectToAction(nameof(Index));
     }
 
-    return View(proveedor);
-}
-public IActionResult Details(int id)
-{
-    var proveedor = _context.Proveedor.Find(id);
-    if (proveedor == null) return NotFound();
     return View(proveedor);
 }
 

@@ -52,10 +52,6 @@ public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool d
 
     return View(proveedores);
 }
-public IActionResult Create()
-{
-    return View();
-}
 
 
         [HttpPost]
