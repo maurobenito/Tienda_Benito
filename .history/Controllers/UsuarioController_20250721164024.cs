@@ -65,50 +65,34 @@ namespace Tienda_Benito.Controllers
 [ValidateAntiForgeryToken]
 public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
 {
-    // Eliminar el error de ModelState sobre PasswordHash para que no bloquee
-    ModelState.Remove("PasswordHash");
-
-    if (string.IsNullOrWhiteSpace(Password))
-    {
-        ModelState.AddModelError("Password", "La contraseña es obligatoria");
-    }
-
     if (ModelState.IsValid)
     {
-        // Asignar el hash de la contraseña antes de guardar
-        usuario.PasswordHash = Password; // aquí podés hacer hash si querés
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            ModelState.AddModelError("Password", "La contraseña es obligatoria");
+            return View(usuario);
+        }
+
+        // Hashear la contraseña con BCrypt
+        usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password);
 
         if (AvatarFile != null && AvatarFile.Length > 0)
         {
-            string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(AvatarFile.FileName);
-            string ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
-            using var stream = new FileStream(ruta, FileMode.Create);
+            string fileName = Guid.NewGuid() + Path.GetExtension(AvatarFile.FileName);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", fileName);
+            using var stream = new FileStream(path, FileMode.Create);
             AvatarFile.CopyTo(stream);
-            usuario.Avatar = nombreArchivo;
+            usuario.Avatar = fileName;
         }
 
         _context.Usuario.Add(usuario);
-        try
-        {
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError("", "Error al guardar usuario: " + ex.Message);
-        }
+        _context.SaveChanges();
+
+        return RedirectToAction(nameof(Index));
     }
+
     return View(usuario);
 }
-[HttpGet]
-public IActionResult Edit(int id)
-{
-    var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
-    if (usuario == null) return NotFound();
-    return View(usuario);
-}
-
-
 
 [HttpPost]
 [ValidateAntiForgeryToken]

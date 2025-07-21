@@ -1,40 +1,42 @@
 @model Tienda_Benito.Models.Usuario
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
 
 <h2>Crear Usuario</h2>
 
-<form asp-action="Create" enctype="multipart/form-data" method="post" class="shadow p-4 bg-light rounded">
+<form asp-action="Create" enctype="multipart/form-data" class="shadow p-4 bg-light rounded">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="Nombre"></label>
+        <label asp-for="Nombre" class="control-label"></label>
         <input asp-for="Nombre" class="form-control" />
         <span asp-validation-for="Nombre" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Apellido"></label>
+        <label asp-for="Apellido" class="control-label"></label>
         <input asp-for="Apellido" class="form-control" />
         <span asp-validation-for="Apellido" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Email"></label>
+        <label asp-for="Email" class="control-label"></label>
         <input asp-for="Email" type="email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
-    <!-- Campo de contraseña separado -->
     <div class="form-group">
-        <label for="Password">Contraseña</label>
-        <input type="password" name="Password" class="form-control" required />
+        <label for="Password" class="control-label">Contraseña</label>
+        <input name="Password" type="password" class="form-control" required />
     </div>
 
     <div class="form-group">
-        <label asp-for="Rol"></label>
-        <select asp-for="Rol" class="form-control" required>
+        <label asp-for="Rol" class="control-label"></label>
+        <select asp-for="Rol" class="form-control">
             <option value="">Seleccione un rol</option>
             <option value="Administrador">Administrador</option>
-            <option value="Empleado">Empleado</option>
+            <option value="Empleado">Vendedor</option>
         </select>
         <span asp-validation-for="Rol" class="text-danger"></span>
     </div>
@@ -49,5 +51,5 @@
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

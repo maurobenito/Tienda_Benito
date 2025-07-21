@@ -61,22 +61,21 @@ namespace Tienda_Benito.Controllers
         }
 
         
-[HttpPost]
+       [HttpPost]
 [ValidateAntiForgeryToken]
 public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
 {
-    // Eliminar el error de ModelState sobre PasswordHash para que no bloquee
-    ModelState.Remove("PasswordHash");
-
-    if (string.IsNullOrWhiteSpace(Password))
-    {
-        ModelState.AddModelError("Password", "La contraseña es obligatoria");
-    }
-
     if (ModelState.IsValid)
     {
-        // Asignar el hash de la contraseña antes de guardar
-        usuario.PasswordHash = Password; // aquí podés hacer hash si querés
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            ModelState.AddModelError("Password", "La contraseña es obligatoria");
+            return View(usuario);
+        }
+
+        // Hashear la password aquí (simplificado)
+        usuario.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password);
+
 
         if (AvatarFile != null && AvatarFile.Length > 0)
         {
@@ -84,7 +83,7 @@ public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Pass
             string ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
             using var stream = new FileStream(ruta, FileMode.Create);
             AvatarFile.CopyTo(stream);
-            usuario.Avatar = nombreArchivo;
+            usuario.Avatar = nombreArchivo; // Solo nombre para que coincida con Cliente
         }
 
         _context.Usuario.Add(usuario);
@@ -100,15 +99,13 @@ public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Pass
     }
     return View(usuario);
 }
-[HttpGet]
+
 public IActionResult Edit(int id)
 {
-    var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
+    var usuario = _context.Usuario.Find(id);
     if (usuario == null) return NotFound();
     return View(usuario);
 }
-
-
 
 [HttpPost]
 [ValidateAntiForgeryToken]

@@ -100,13 +100,6 @@ public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Pass
     }
     return View(usuario);
 }
-[HttpGet]
-public IActionResult Edit(int id)
-{
-    var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
-    if (usuario == null) return NotFound();
-    return View(usuario);
-}
 
 
 

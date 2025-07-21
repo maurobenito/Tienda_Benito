@@ -65,26 +65,25 @@ namespace Tienda_Benito.Controllers
 [ValidateAntiForgeryToken]
 public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
 {
-    // Eliminar el error de ModelState sobre PasswordHash para que no bloquee
-    ModelState.Remove("PasswordHash");
-
     if (string.IsNullOrWhiteSpace(Password))
     {
         ModelState.AddModelError("Password", "La contraseña es obligatoria");
     }
+    else
+    {
+        // Asignás el password al PasswordHash para que ModelState.IsValid funcione bien
+        usuario.PasswordHash = Password;
+    }
 
     if (ModelState.IsValid)
     {
-        // Asignar el hash de la contraseña antes de guardar
-        usuario.PasswordHash = Password; // aquí podés hacer hash si querés
-
         if (AvatarFile != null && AvatarFile.Length > 0)
         {
             string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(AvatarFile.FileName);
             string ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
             using var stream = new FileStream(ruta, FileMode.Create);
             AvatarFile.CopyTo(stream);
-            usuario.Avatar = nombreArchivo;
+            usuario.Avatar = nombreArchivo; // Solo nombre para que coincida con Cliente
         }
 
         _context.Usuario.Add(usuario);
@@ -100,14 +99,6 @@ public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Pass
     }
     return View(usuario);
 }
-[HttpGet]
-public IActionResult Edit(int id)
-{
-    var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
-    if (usuario == null) return NotFound();
-    return View(usuario);
-}
-
 
 
 [HttpPost]

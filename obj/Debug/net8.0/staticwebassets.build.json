@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "lT7kce3zMEZsRHN2LQjrS9DEgD2mqkrVYtP/QPj2I9s=",
+  "Hash": "XZq9QlLeNxo+iPZ/Me8HCCecEeN0AmOtwlJA+KiHJQE=",
   "Source": "Tienda_Benito",
   "BasePath": "_content/Tienda_Benito",
   "Mode": "Default",
@@ -1252,6 +1252,25 @@
       "OriginalItemSpec": "wwwroot\\uploads\\634c9e29-9ff4-4291-98d3-695324022d42.png"
     },
     {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\70aaf30b-bd55-46f8-bbe6-4a1431787500.jpg",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/70aaf30b-bd55-46f8-bbe6-4a1431787500.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\70aaf30b-bd55-46f8-bbe6-4a1431787500.jpg"
+    },
+    {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\75d5bbde-d3c1-4686-bd82-a2feac1df869.jpg",
       "SourceId": "Tienda_Benito",
       "SourceType": "Discovered",
@@ -1288,6 +1307,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\8c1e24e4-4e82-476d-9e7b-ea4fde933de0.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\a2069d3a-3afe-488b-a6f6-ba39b65b86ac.jpg",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/a2069d3a-3afe-488b-a6f6-ba39b65b86ac.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\a2069d3a-3afe-488b-a6f6-ba39b65b86ac.jpg"
     },
     {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\a34de05e-1323-4762-8624-b2e6d0b893f1.png",
@@ -1366,6 +1404,25 @@
       "OriginalItemSpec": "wwwroot\\uploads\\b9877f32-56d6-4d79-ab13-a9147ddd7ae8.jpg"
     },
     {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\c09359e6-9109-432e-b414-229592df9993.png",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/c09359e6-9109-432e-b414-229592df9993.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\c09359e6-9109-432e-b414-229592df9993.png"
+    },
+    {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\c2784d28-0c92-4728-abd0-d616c9c51a33.jpg",
       "SourceId": "Tienda_Benito",
       "SourceType": "Discovered",
@@ -1383,6 +1440,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\c2784d28-0c92-4728-abd0-d616c9c51a33.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\de576346-643d-4aa1-a324-c883fd316633.jpg",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/de576346-643d-4aa1-a324-c883fd316633.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\de576346-643d-4aa1-a324-c883fd316633.jpg"
     },
     {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\deb4474d-42fa-46d5-843a-51b9a7dec45a.jpg",
