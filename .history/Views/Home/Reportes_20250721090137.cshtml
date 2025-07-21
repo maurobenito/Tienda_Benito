@@ -1,0 +1,75 @@
+@{
+    ViewData["Title"] = "Reportes de Ventas";
+}
+
+<h2 class="mb-4">Reportes de Ventas</h2>
+
+<div class="row g-4">
+    <!-- Ventas entre fechas -->
+    <div class="col-md-6">
+        <form method="get" action="/Home/ReporteEntreFechas" class="card card-body shadow-sm">
+            <h5>Ventas entre fechas</h5>
+            <div class="row g-3">
+                <div class="col">
+                    <label class="form-label">Desde</label>
+                    <input type="date" name="desde" class="form-control" required />
+                </div>
+                <div class="col">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" name="hasta" class="form-control" required />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="bi bi-search"></i> Ver Reporte
+            </button>
+        </form>
+    </div>
+
+    <!-- Ventas por producto -->
+    <div class="col-md-6">
+        <form method="get" action="/Home/ReportePorProducto" class="card card-body shadow-sm">
+            <h5>Ventas por producto</h5>
+            <div class="mb-3">
+                <label class="form-label">Nombre del producto</label>
+                <input type="text" name="nombreProducto" class="form-control" placeholder="Nombre del producto" />
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Ver Reporte
+            </button>
+        </form>
+    </div>
+
+    <!-- Ventas por cliente -->
+    <div class="col-md-6">
+        <form method="get" action="/Home/ReportePorCliente" class="card card-body shadow-sm">
+            <h5>Ventas por cliente</h5>
+            <div class="mb-3">
+                <label class="form-label">Nombre o apellido del cliente</label>
+                <input type="text" name="nombreCliente" class="form-control" placeholder="Nombre o apellido del cliente" />
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Ver Reporte
+            </button>
+        </form>
+    </div>
+
+    <!-- Ventas por usuario -->
+    <div class="col-md-6">
+        <form method="get" action="/Home/ReportePorUsuario" class="card card-body shadow-sm">
+            <h5>Ventas por usuario</h5>
+            <div class="mb-3">
+                <label class="form-label">Nombre o Apellido Usuario</label>
+                <input type="text" name="nombreUsuario" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Ver Reporte
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver al inicio
+    </a>
+</div>

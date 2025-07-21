@@ -1,0 +1,75 @@
+@model Tienda_Benito.Models.Proveedor
+
+@{
+    ViewData["Title"] = "Detalle Proveedor";
+}
+
+<h2 class="mb-4"><i class="fas fa-truck"></i> Detalle Proveedor</h2>
+
+<div class="card shadow-sm rounded p-4 bg-light">
+    <dl class="row mb-4">
+        <dt class="col-sm-3 font-weight-bold">Nombre:</dt>
+        <dd class="col-sm-9">@Model.Nombre</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Email:</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.Email))
+            {
+                <a href="mailto:@Model.Email">@Model.Email</a>
+            }
+            else
+            {
+                <em>No disponible</em>
+            }
+        </dd>
+
+        <dt class="col-sm-3 font-weight-bold">Teléfono:</dt>
+        <dd class="col-sm-9">@Model.Telefono ?? "<em>No disponible</em>"</dd>
+
+        <dt class="col-sm-3 font-weight-bold">CUIT:</dt>
+        <dd class="col-sm-9">@Model.Cuit ?? "<em>No disponible</em>"</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Razón Social:</dt>
+        <dd class="col-sm-9">@Model.RazonSocial ?? "<em>No disponible</em>"</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Datos Bancarios:</dt>
+        <dd class="col-sm-9">@Model.DatosBancarios ?? "<em>No disponible</em>"</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Archivo 1:</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.Archivo1))
+            {
+                <a href="@Url.Content("~/uploads/" + Model.Archivo1)" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-file-alt"></i> Descargar Archivo 1
+                </a>
+            }
+            else
+            {
+                <em>No hay archivo</em>
+            }
+        </dd>
+
+        <dt class="col-sm-3 font-weight-bold">Archivo 2:</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.Archivo2))
+            {
+                <a href="@Url.Content("~/uploads/" + Model.Archivo2)" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-file-alt"></i> Descargar Archivo 2
+                </a>
+            }
+            else
+            {
+                <em>No hay archivo</em>
+            }
+        </dd>
+    </dl>
+
+    <div class="d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.ProveedorId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>

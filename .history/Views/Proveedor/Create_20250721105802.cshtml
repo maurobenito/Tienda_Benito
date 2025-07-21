@@ -1,0 +1,57 @@
+@model Tienda_Benito.Models.Proveedor
+@{
+    ViewData["Title"] = "Nuevo Proveedor";
+}
+<h2>Nuevo Proveedor</h2>
+
+<form asp-action="Create" enctype="multipart/form-data" class="p-4 bg-light rounded shadow">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Telefono" class="control-label"></label>
+        <input asp-for="Telefono" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Direccion" class="control-label"></label>
+        <input asp-for="Direccion" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cuit" class="control-label"></label>
+        <input asp-for="Cuit" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RazonSocial" class="control-label"></label>
+        <input asp-for="RazonSocial" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DatosBancarios" class="control-label"></label>
+        <input asp-for="DatosBancarios" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Archivo 1</label>
+        <input type="file" name="Archivo1File" class="form-control-file" />
+    </div>
+    <div class="form-group">
+        <label>Archivo 2</label>
+        <input type="file" name="Archivo2File" class="form-control-file" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>

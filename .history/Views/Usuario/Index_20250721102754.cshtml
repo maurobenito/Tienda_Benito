@@ -1,0 +1,57 @@
+@model IEnumerable<Tienda_Benito.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<h2 class="mb-4">Gestión de Usuarios</h2>
+
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nuevo Usuario
+    </a>
+</div>
+
+<table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Avatar</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th class="text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    @if (!string.IsNullOrEmpty(item.Avatar))
+                    {
+                        <img src="@item.Avatar" alt="Avatar" width="50" height="50" class="rounded-circle shadow-sm" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin avatar</span>
+                    }
+                </td>
+                <td>@item.Nombre</td>
+                <td>@item.Apellido</td>
+                <td>@item.Email</td>
+                <td>@item.Rol</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-primary me-1">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-info me-1">
+                        <i class="bi bi-info-circle"></i> Detalles
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

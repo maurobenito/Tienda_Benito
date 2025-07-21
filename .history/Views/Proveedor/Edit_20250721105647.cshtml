@@ -1,0 +1,82 @@
+@model Tienda_Benito.Models.Proveedor
+
+@{
+    ViewData["Title"] = "Editar Proveedor";
+}
+
+<h2>Editar Proveedor</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data" class="p-4 bg-light rounded shadow">
+    <input type="hidden" asp-for="ProveedorId" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Telefono"></label>
+        <input asp-for="Telefono" class="form-control" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Direccion"></label>
+        <input asp-for="Direccion" class="form-control" />
+        <span asp-validation-for="Direccion" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cuit"></label>
+        <input asp-for="Cuit" class="form-control" />
+        <span asp-validation-for="Cuit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RazonSocial"></label>
+        <input asp-for="RazonSocial" class="form-control" />
+        <span asp-validation-for="RazonSocial" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DatosBancarios"></label>
+        <input asp-for="DatosBancarios" class="form-control" />
+        <span asp-validation-for="DatosBancarios" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Archivo 1 actual:</label><br />
+        @if (!string.IsNullOrEmpty(Model.Archivo1))
+        {
+            <a href="@Url.Content("~/uploads/" + Model.Archivo1)" target="_blank">@Model.Archivo1</a>
+        }
+    </div>
+    <div class="form-group">
+        <label>Archivo 2 actual:</label><br />
+        @if (!string.IsNullOrEmpty(Model.Archivo2))
+        {
+            <a href="@Url.Content("~/uploads/" + Model.Archivo2)" target="_blank">@Model.Archivo2</a>
+        }
+    </div>
+
+    <div class="form-group">
+        <label>Nuevo Archivo 1</label>
+        <input type="file" name="Archivo1File" class="form-control-file" />
+    </div>
+
+    <div class="form-group">
+        <label>Nuevo Archivo 2</label>
+        <input type="file" name="Archivo2File" class="form-control-file" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>

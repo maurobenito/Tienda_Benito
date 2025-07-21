@@ -1,0 +1,40 @@
+@model Tienda_Benito.Models.Usuario
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<h1>Detalles del Usuario</h1>
+
+<div class="card shadow-sm" style="max-width: 500px;">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Nombre</dt>
+            <dd class="col-sm-8">@Model.Nombre</dd>
+
+            <dt class="col-sm-4">Apellido</dt>
+            <dd class="col-sm-8">@Model.Apellido</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4">Rol</dt>
+            <dd class="col-sm-8">@Model.Rol</dd>
+
+            <dt class="col-sm-4">Avatar</dt>
+            <dd class="col-sm-8">
+                @if (!string.IsNullOrEmpty(Model.Avatar))
+                {
+                    <img src="@Model.Avatar" alt="Avatar" width="120" class="img-thumbnail" />
+                }
+                else
+                {
+                    <span><em>No hay avatar cargado.</em></span>
+                }
+            </dd>
+        </dl>
+
+        <a asp-action="Edit" asp-route-id="@Model.UsuarioId" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Volver</a>
+    </div>
+</div>
