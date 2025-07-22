@@ -5,8 +5,6 @@ using System.IO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies; // <- Agrega este using
-
 
 namespace Tienda_Benito.Controllers
 {
@@ -18,7 +16,7 @@ namespace Tienda_Benito.Controllers
         {
             _context = context;
         }
-        // Vista Login
+            // Vista Login
         [HttpGet]
         public IActionResult Login()
         {
@@ -59,7 +57,7 @@ namespace Tienda_Benito.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
-
+    
 
         public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool desc = false, int pagina = 1, int tamPagina = 5)
         {
@@ -107,91 +105,91 @@ namespace Tienda_Benito.Controllers
             return View();
         }
 
+        
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
+{
+    // Eliminar el error de ModelState sobre PasswordHash para que no bloquee
+    ModelState.Remove("PasswordHash");
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
+    if (string.IsNullOrWhiteSpace(Password))
+    {
+        ModelState.AddModelError("Password", "La contraseña es obligatoria");
+    }
+
+    if (ModelState.IsValid)
+    {
+        // Asignar el hash de la contraseña antes de guardar
+        usuario.PasswordHash = Password; // aquí podés hacer hash si querés
+
+        if (AvatarFile != null && AvatarFile.Length > 0)
         {
-            // Eliminar el error de ModelState sobre PasswordHash para que no bloquee
-            ModelState.Remove("PasswordHash");
-
-            if (string.IsNullOrWhiteSpace(Password))
-            {
-                ModelState.AddModelError("Password", "La contraseña es obligatoria");
-            }
-
-            if (ModelState.IsValid)
-            {
-                // Asignar el hash de la contraseña antes de guardar
-                usuario.PasswordHash = Password; // aquí podés hacer hash si querés
-
-                if (AvatarFile != null && AvatarFile.Length > 0)
-                {
-                    string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(AvatarFile.FileName);
-                    string ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
-                    using var stream = new FileStream(ruta, FileMode.Create);
-                    AvatarFile.CopyTo(stream);
-                    usuario.Avatar = nombreArchivo;
-                }
-
-                _context.Usuario.Add(usuario);
-                try
-                {
-                    _context.SaveChanges();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Error al guardar usuario: " + ex.Message);
-                }
-            }
-            return View(usuario);
-        }
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
-            if (usuario == null) return NotFound();
-            return View(usuario);
+            string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(AvatarFile.FileName);
+            string ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
+            using var stream = new FileStream(ruta, FileMode.Create);
+            AvatarFile.CopyTo(stream);
+            usuario.Avatar = nombreArchivo;
         }
 
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile)
+        _context.Usuario.Add(usuario);
+        try
         {
-            if (id != usuario.UsuarioId)
-                return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                var existente = _context.Usuario.Find(id);
-                if (existente == null)
-                    return NotFound();
-
-                if (FotoPerfilFile != null)
-                {
-                    string nombreFoto = Guid.NewGuid() + Path.GetExtension(FotoPerfilFile.FileName);
-                    string rutaFoto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreFoto);
-                    using var streamFoto = new FileStream(rutaFoto, FileMode.Create);
-                    FotoPerfilFile.CopyTo(streamFoto);
-                    existente.Avatar = nombreFoto;
-                }
-
-                // Actualizar campos
-                existente.Email = usuario.Email;
-                existente.PasswordHash = usuario.PasswordHash; // Podés cifrar si querés
-                existente.Rol = usuario.Rol;
-                existente.Nombre = usuario.Nombre;
-                existente.Apellido = usuario.Apellido;
-
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(usuario);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError("", "Error al guardar usuario: " + ex.Message);
+        }
+    }
+    return View(usuario);
+}
+[HttpGet]
+public IActionResult Edit(int id)
+{
+    var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
+    if (usuario == null) return NotFound();
+    return View(usuario);
+}
+
+
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile)
+{
+    if (id != usuario.UsuarioId)
+        return NotFound();
+
+    if (ModelState.IsValid)
+    {
+        var existente = _context.Usuario.Find(id);
+        if (existente == null)
+            return NotFound();
+
+        if (FotoPerfilFile != null)
+        {
+            string nombreFoto = Guid.NewGuid() + Path.GetExtension(FotoPerfilFile.FileName);
+            string rutaFoto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreFoto);
+            using var streamFoto = new FileStream(rutaFoto, FileMode.Create);
+            FotoPerfilFile.CopyTo(streamFoto);
+            existente.Avatar = nombreFoto;
+        }
+
+        // Actualizar campos
+        existente.Email = usuario.Email;
+        existente.PasswordHash = usuario.PasswordHash; // Podés cifrar si querés
+        existente.Rol = usuario.Rol;
+        existente.Nombre = usuario.Nombre;
+        existente.Apellido = usuario.Apellido;
+
+        _context.SaveChanges();
+        return RedirectToAction(nameof(Index));
+    }
+
+    return View(usuario);
+}
 
         public IActionResult Details(int id)
         {
@@ -219,25 +217,5 @@ namespace Tienda_Benito.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-//         [HttpGet]
-// public IActionResult FixPasswords()
-// {
-//     var usuariosPorArreglar = _context.Usuario
-//         .Where(u => u.PasswordHash.Length < 20) // Suponemos que los no hasheados son cortos
-//         .ToList();
-
-//     int actualizados = 0;
-
-//     foreach (var u in usuariosPorArreglar)
-//     {
-//         u.PasswordHash = BCrypt.Net.BCrypt.HashPassword(u.PasswordHash);
-//         actualizados++;
-//     }
-
-//     _context.SaveChanges();
-
-//     return Content($"Contraseñas corregidas: {actualizados}");
-// }
-
     }
 }

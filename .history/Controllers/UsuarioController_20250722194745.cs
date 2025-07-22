@@ -5,8 +5,6 @@ using System.IO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies; // <- Agrega este using
-
 
 namespace Tienda_Benito.Controllers
 {
@@ -219,25 +217,25 @@ namespace Tienda_Benito.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-//         [HttpGet]
-// public IActionResult FixPasswords()
-// {
-//     var usuariosPorArreglar = _context.Usuario
-//         .Where(u => u.PasswordHash.Length < 20) // Suponemos que los no hasheados son cortos
-//         .ToList();
+        [HttpPost]
+public IActionResult FixPasswords()
+{
+    var usuariosPorArreglar = _context.Usuario
+        .Where(u => u.PasswordHash.Length < 20) // Suponemos que los no hasheados son cortos
+        .ToList();
 
-//     int actualizados = 0;
+    int actualizados = 0;
 
-//     foreach (var u in usuariosPorArreglar)
-//     {
-//         u.PasswordHash = BCrypt.Net.BCrypt.HashPassword(u.PasswordHash);
-//         actualizados++;
-//     }
+    foreach (var u in usuariosPorArreglar)
+    {
+        u.PasswordHash = BCrypt.Net.BCrypt.HashPassword(u.PasswordHash);
+        actualizados++;
+    }
 
-//     _context.SaveChanges();
+    _context.SaveChanges();
 
-//     return Content($"Contraseñas corregidas: {actualizados}");
-// }
+    return Content($"Contraseñas corregidas: {actualizados}");
+}
 
     }
 }
