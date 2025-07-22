@@ -106,37 +106,27 @@ public IActionResult ReporteEntreFechas(DateTime desde, DateTime hasta)
 
         return View("ReportePorCliente", ventas);
     }
- [HttpGet]
-public IActionResult ReportePorUsuario(string nombreUsuario)
+    public IActionResult ReportePorUsuario(string nombreUsuario)
 {
     if (string.IsNullOrEmpty(nombreUsuario))
     {
-        ViewBag.TotalAcumulado = 0;
-        ViewBag.TotalCosto = 0;
-        ViewBag.Ganancia = 0;
-        ViewBag.Usuario = "";
-        return View("ReportePorUsuario", new List<Ventum>());
+        // Podrías mostrar un mensaje o devolver la vista vacía
+        return View();
     }
 
-    var ventas = _context.Venta
-        .Include(v => v.Cliente)
-        .Include(v => v.Usuario)
-        .Include(v => v.Ventadetalles).ThenInclude(d => d.Producto)
-        .Where(v => v.Usuario.Email.Contains(nombreUsuario))
-        .OrderByDescending(v => v.Fecha)
+    // Supongamos que tienes _context.Usuario con los usuarios y sus ventas
+    var ventasPorUsuario = _context.Venta
+        .Where(v => v.Usuario.Email.Contains(nombreUsuario) || v.Usuario.Email.Contains(nombreUsuario))
+        .Select(v => new {
+            v.VentaId,
+            v.Fecha,
+            v.Total,
+            UsuarioNombre = v.Usuario.Email
+        })
         .ToList();
+    // Si necesitas incluir más detalles, puedes usar Include() para cargar entidades relacionadas
 
-    var totalAcumulado = ventas.Sum(v => v.Total);
-    var totalCosto = ventas.Sum(v => v.Ventadetalles.Sum(d => d.Cantidad * d.Producto.PrecioCosto));
-    var ganancia = totalAcumulado - totalCosto;
-
-    ViewBag.Usuario = nombreUsuario;
-    ViewBag.TotalAcumulado = totalAcumulado;
-    ViewBag.TotalCosto = totalCosto;
-    ViewBag.Ganancia = ganancia;
-
-    return View("ReportePorUsuario", ventas);
+    return View(ventasPorUsuario);
 }
-
 
 }
