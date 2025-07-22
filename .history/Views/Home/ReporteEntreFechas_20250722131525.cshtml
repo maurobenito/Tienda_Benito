@@ -1,0 +1,93 @@
+@model List<Tienda_Benito.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Reporte de Ventas Entre Fechas";
+}
+
+<h2 class="mb-4">Reporte de ventas del @ViewBag.Desde al @ViewBag.Hasta</h2>
+
+<form asp-action="ReporteEntreFechas" method="get" class="mb-4">
+    <div class="form-inline">
+        <label for="desde" class="mr-2 mb-0">Desde:</label>
+        <input type="date" name="desde" class="form-control mr-4" required />
+
+        <label for="hasta" class="mr-2 mb-0">Hasta:</label>
+        <input type="date" name="hasta" class="form-control mr-4" required />
+
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+
+<div class="mb-3">
+    <button class="btn btn-success mr-2" onclick="exportTableToExcel('tablaVentas')">Exportar a Excel</button>
+    <button class="btn btn-secondary" onclick="window.print()">Imprimir</button>
+</div>
+
+<div class="row text-center mb-4">
+    <div class="col-md-4">
+        <div class="alert alert-primary">
+            <strong>Total acumulado:</strong><br /> $@ViewBag.TotalAcumulado
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alert-warning">
+            <strong>Costo acumulado:</strong><br /> $@ViewBag.TotalCosto
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="alert alert-success">
+            <strong>Ganancia neta:</strong><br /> $@ViewBag.Ganancia
+        </div>
+    </div>
+</div>
+
+<table id="tablaVentas" class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Usuario</th>
+            <th>Total</th>
+            <th>Ver Detalle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var venta in Model)
+        {
+            <tr>
+                <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                <td>@venta.Cliente?.Nombre @venta.Cliente?.Apellido</td>
+                <td>@venta.Usuario?.Nombre</td>
+                <td>$@venta.Total</td>
+                <td class="d-flex justify-content-center">
+                    <a class="btn btn-info btn-sm" target="_blank" href="@Url.Action("DetalleVue", "Venta", new { id = venta.VentaId })">Ver detalle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+<script>
+    function exportTableToExcel(tableID, filename = 'Reporte_Ventas.xlsx') {
+        var downloadLink;
+        var dataType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+        // Crear link de descarga
+        downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+
+        if (navigator.msSaveOrOpenBlob) {
+            var blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+            navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+    }
+</script>
+}

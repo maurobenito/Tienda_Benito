@@ -1,0 +1,138 @@
+@model List<Tienda_Benito.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Reporte Ventas entre Fechas";
+    var desde = (string)Request.Query["desde"];
+    var hasta = (string)Request.Query["hasta"];
+    int paginaActual = 1;
+    int registrosPorPagina = 10;
+    int totalPaginas = (int)Math.Ceiling(Model.Count / (double)registrosPorPagina);
+}
+
+<h2 class="mb-4">Ventas entre @@desde y @@hasta</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <button class="btn btn-primary me-2" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn btn-success" onclick="exportarExcel()">📥 Exportar a CSV</button>
+    </div>
+    <div>
+        <a asp-action="Reportes" class="btn btn-secondary">Volver a Reportes</a>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped" id="tablaVentas">
+    <thead class="table-dark">
+        <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Detalle</th>
+        </tr>
+    </thead>
+    <tbody id="bodyTablaVentas">
+        @foreach (var venta in Model.Take(registrosPorPagina))
+        {
+            <tr>
+                <td>@venta.VentaId</td>
+                <td>@venta.Fecha.ToShortDateString()</td>
+                <td>@venta.Cliente.Nombre @venta.Cliente.Apellido</td>
+                <td>$@venta.Total.ToString("N2")</td>
+                <td>
+                    <a class="btn btn-sm btn-info" href="@Url.Action("DetalleVue", "Venta", new { id = venta.VentaId })">
+                        Ver Detalle
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Paginación simple -->
+<nav>
+    <ul class="pagination justify-content-center" id="paginacionVentas">
+        <!-- Los botones se generan por JS -->
+    </ul>
+</nav>
+
+@section Scripts {
+<script>
+    const ventas = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+    const registrosPorPagina = @registrosPorPagina;
+    let paginaActual = 1;
+    const totalPaginas = Math.ceil(ventas.length / registrosPorPagina);
+
+    function mostrarPagina(pagina) {
+        paginaActual = pagina;
+        const inicio = (pagina - 1) * registrosPorPagina;
+        const fin = inicio + registrosPorPagina;
+        const ventasPagina = ventas.slice(inicio, fin);
+
+        const tbody = document.getElementById('bodyTablaVentas');
+        tbody.innerHTML = '';
+
+        ventasPagina.forEach(venta => {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td>${venta.ventaId}</td>
+                <td>${new Date(venta.fecha).toLocaleDateString()}</td>
+                <td>${venta.cliente.nombre} ${venta.cliente.apellido}</td>
+                <td>$${venta.total.toFixed(2)}</td>
+                <td>
+                    <a class="btn btn-sm btn-info" href="/Venta/DetalleVue/${venta.ventaId}">
+                        Ver Detalle
+                    </a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        renderizarPaginacion();
+    }
+
+    function renderizarPaginacion() {
+        const ul = document.getElementById('paginacionVentas');
+        ul.innerHTML = '';
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item ' + (i === paginaActual ? 'active' : '');
+            const a = document.createElement('a');
+            a.className = 'page-link';
+            a.href = '#';
+            a.textContent = i;
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                mostrarPagina(i);
+            });
+            li.appendChild(a);
+            ul.appendChild(li);
+        }
+    }
+
+    function exportarExcel() {
+        let csv = 'ID Venta,Fecha,Cliente,Total\n';
+        ventas.forEach(v => {
+            const fecha = new Date(v.fecha).toLocaleDateString();
+            const cliente = `${v.cliente.nombre} ${v.cliente.apellido}`;
+            csv += `${v.ventaId},"${fecha}","${cliente}",${v.total}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Reporte_Ventas_${@desde}_a_${@hasta}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Mostrar la primera página al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+        mostrarPagina(1);
+    });
+</script>
+}

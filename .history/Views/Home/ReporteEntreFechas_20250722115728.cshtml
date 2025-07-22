@@ -1,0 +1,31 @@
+@model List<Tienda_Benito.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Reporte Ventas entre Fechas";
+}
+
+<h2>Ventas entre @@Request.Query["desde"] y @@Request.Query["hasta"]</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var venta in Model)
+        {
+            <tr>
+                <td>@venta.VentaId</td>
+                <td>@venta.Fecha.ToShortDateString()</td>
+                <td>@venta.Cliente.Nombre @venta.Cliente.Apellido</td>
+                <td>@venta.Total</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Reportes" class="btn btn-secondary mt-3">Volver a Reportes</a>
