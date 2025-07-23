@@ -242,11 +242,6 @@ namespace Tienda_Benito.Controllers
 
         //     return Content($"Contraseñas corregidas: {actualizados}");
         // }
-[HttpGet]
-public IActionResult AccessDenied()
-{
-    return View();
-}
 
     }
 }

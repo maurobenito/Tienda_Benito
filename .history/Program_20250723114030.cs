@@ -31,13 +31,11 @@ builder.Services.AddTransient<IRepositorio<Ventum>, RepositorioVenta>();
 builder.Services.AddTransient<IRepositorio<Ventadetalle>, RepositorioVentadetalle>();
 builder.Services.AddTransient<RepositorioVenta>(); // esta es extra
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Usuario/Login";
-        options.AccessDeniedPath = "/Usuario/AccessDenied"; // 👈 importante que coincida con el controlador real
-    });
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Usuario/Login";
+    options.AccessDeniedPath = "/Shared/AccessDenied";
+});
 
 builder.Services.AddAuthorization(options =>
 {

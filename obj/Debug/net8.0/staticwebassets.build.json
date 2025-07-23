@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "XZq9QlLeNxo+iPZ/Me8HCCecEeN0AmOtwlJA+KiHJQE=",
+  "Hash": "hqAwtKYEQk2cEPjUsc4n2Dv0mswR3dkN2mfnpP1S0bE=",
   "Source": "Tienda_Benito",
   "BasePath": "_content/Tienda_Benito",
   "Mode": "Default",
@@ -1347,6 +1347,25 @@
       "OriginalItemSpec": "wwwroot\\uploads\\a34de05e-1323-4762-8624-b2e6d0b893f1.png"
     },
     {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\ae02c0e1-3ca6-4ae3-bb04-f4e09d3f3615.png",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/ae02c0e1-3ca6-4ae3-bb04-f4e09d3f3615.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\ae02c0e1-3ca6-4ae3-bb04-f4e09d3f3615.png"
+    },
+    {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\b4f1bb2e-deff-442e-8d20-c90ff8f329a3.jpg",
       "SourceId": "Tienda_Benito",
       "SourceType": "Discovered",
@@ -1497,6 +1516,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg.jpg",
+      "SourceId": "Tienda_Benito",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
+      "BasePath": "_content/Tienda_Benito",
+      "RelativePath": "uploads/fondo-tienda.jpg.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\fondo-tienda.jpg.jpg"
     }
   ]
 }

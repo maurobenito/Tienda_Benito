@@ -16,13 +16,11 @@ public class HomeController : Controller
         _logger = logger;
         _context = context;
     }
-    [Authorize]
-
     public IActionResult Index()
-    {
-        return View();
-    }
-[Authorize(Roles = "Admin")]
+{
+    return View();
+}
+[Authorize(Roles = "administrador")]
     public IActionResult Reportes()
     {
         return View();
@@ -37,7 +35,7 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "administrador")]
    [HttpGet]
 public IActionResult ReporteEntreFechas(DateTime desde, DateTime hasta)
 {
@@ -64,7 +62,7 @@ public IActionResult ReporteEntreFechas(DateTime desde, DateTime hasta)
 }
 
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "administrador")]
     [HttpGet]
     public IActionResult ReportePorProducto(string nombreProducto)
     {
@@ -87,7 +85,7 @@ public IActionResult ReporteEntreFechas(DateTime desde, DateTime hasta)
         return View("ReportePorProducto", ventas);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "administrador")]
     [HttpGet]
     public IActionResult ReportePorCliente(string nombreCliente)
     {
@@ -109,7 +107,7 @@ public IActionResult ReporteEntreFechas(DateTime desde, DateTime hasta)
 
         return View("ReportePorCliente", ventas);
     }
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "administrador")]
  [HttpGet]
 public IActionResult ReportePorUsuario(string nombreUsuario)
 {
@@ -142,10 +140,5 @@ public IActionResult ReportePorUsuario(string nombreUsuario)
     return View("ReportePorUsuario", ventas);
 }
 
-[HttpGet]
-public IActionResult AccessDenied()
-{
-    return View();
-}
 
 }

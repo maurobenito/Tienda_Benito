@@ -16,12 +16,10 @@ public class HomeController : Controller
         _logger = logger;
         _context = context;
     }
-    [Authorize]
-
     public IActionResult Index()
-    {
-        return View();
-    }
+{
+    return View();
+}
 [Authorize(Roles = "Admin")]
     public IActionResult Reportes()
     {

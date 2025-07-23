@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+    body {
+        background: url('/img/fondo-tienda.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.6);
+        min-height: 100vh;
+        padding-top: 80px;
+        padding-bottom: 80px;
+        color: white;
+    }
+
+    .btn-custom {
+        font-size: 1.2rem;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    h1.display-4, .lead {
+        color: #fff;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+</style>
+
+<div class="overlay text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">Bienvenido a <strong>Tienda Benito</strong></h1>
+        <p class="lead mb-5">Accedé rápidamente a las secciones principales del sistema.</p>
+
+        <div class="d-grid gap-3 col-12 col-md-6 mx-auto">
+            <a href="/Venta/VentaVue" class="btn btn-primary btn-custom shadow">
+                🛒 Nueva Venta
+            </a>
+
+            <a href="/Producto" class="btn btn-outline-light btn-custom shadow">
+                📦 Productos
+            </a>
+
+            <a href="/Cliente" class="btn btn-outline-light btn-custom shadow">
+                👥 Clientes
+            </a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="/Proveedor" class="btn btn-outline-light btn-custom shadow">
+                    🏭 Proveedores
+                </a>
+
+                <a href="/Home/Reportes" class="btn btn-outline-light btn-custom shadow">
+                    📊 Reportes
+                </a>
+
+                <a href="/Usuario" class="btn btn-outline-light btn-custom shadow">
+                    🔐 Gestión de Usuarios
+                </a>
+            }
+        </div>
+    </div>
+</div>

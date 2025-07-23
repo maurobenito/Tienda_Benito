@@ -16,12 +16,10 @@ public class HomeController : Controller
         _logger = logger;
         _context = context;
     }
-    [Authorize]
-
     public IActionResult Index()
-    {
-        return View();
-    }
+{
+    return View();
+}
 [Authorize(Roles = "Admin")]
     public IActionResult Reportes()
     {
@@ -142,10 +140,5 @@ public IActionResult ReportePorUsuario(string nombreUsuario)
     return View("ReportePorUsuario", ventas);
 }
 
-[HttpGet]
-public IActionResult AccessDenied()
-{
-    return View();
-}
 
 }

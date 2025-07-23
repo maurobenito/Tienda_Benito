@@ -35,9 +35,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Usuario/Login";
-        options.AccessDeniedPath = "/Usuario/AccessDenied"; // 👈 importante que coincida con el controlador real
+        options.AccessDeniedPath = "/Home/AccessDenied";
     });
-
 
 builder.Services.AddAuthorization(options =>
 {

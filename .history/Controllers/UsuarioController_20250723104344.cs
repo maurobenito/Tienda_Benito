@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization; // <- Agrega este using
 
 namespace Tienda_Benito.Controllers
 {
-
+    [Authorize(Roles = "administrador")]
     public class UsuarioController : Controller
     {
         private readonly ProyectoTiendaContext _context;
@@ -63,7 +63,7 @@ namespace Tienda_Benito.Controllers
             return RedirectToAction("Login");
         }
 
-    [Authorize(Roles = "Admin")]
+
         public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool desc = false, int pagina = 1, int tamPagina = 5)
         {
             var query = _context.Usuario.AsQueryable();
@@ -104,13 +104,13 @@ namespace Tienda_Benito.Controllers
 
             return View(usuarios);
         }
-    [Authorize(Roles = "Admin")]
+
         public IActionResult Create()
         {
             return View();
         }
 
-    [Authorize(Roles = "Admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Usuario usuario, IFormFile? AvatarFile, string? Password)
@@ -150,7 +150,6 @@ namespace Tienda_Benito.Controllers
             }
             return View(usuario);
         }
-            [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -160,7 +159,7 @@ namespace Tienda_Benito.Controllers
         }
 
 
-    [Authorize(Roles = "Admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile)
@@ -203,7 +202,7 @@ namespace Tienda_Benito.Controllers
             if (usuario == null) return NotFound();
             return View(usuario);
         }
-    [Authorize(Roles = "Admin")]
+
         public IActionResult Delete(int id)
         {
             var usuario = _context.Usuario.Find(id);
@@ -242,11 +241,6 @@ namespace Tienda_Benito.Controllers
 
         //     return Content($"Contraseñas corregidas: {actualizados}");
         // }
-[HttpGet]
-public IActionResult AccessDenied()
-{
-    return View();
-}
 
     }
 }

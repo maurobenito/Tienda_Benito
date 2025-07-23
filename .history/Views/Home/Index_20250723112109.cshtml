@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container py-5 text-center">
+    <h1 class="display-4 mb-4">Bienvenido a Tienda Benito</h1>
+    <p class="lead mb-5">Accedé rápidamente a las secciones principales del sistema.</p>
+
+    <div class="d-grid gap-3 col-12 col-md-6 mx-auto">
+        <a href="/Venta/VentaVue" class="btn btn-primary btn-lg shadow-sm">
+            🛒 Nueva Venta
+        </a>
+
+        <a href="/Producto" class="btn btn-outline-secondary btn-lg shadow-sm">
+            📦 Productos
+        </a>
+
+        <a href="/Cliente" class="btn btn-outline-secondary btn-lg shadow-sm">
+            👥 Clientes
+        </a>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a href="/Proveedor" class="btn btn-outline-secondary btn-lg shadow-sm">
+                🏭 Proveedores
+            </a>
+
+            <a href="/Home/Reportes" class="btn btn-outline-secondary btn-lg shadow-sm">
+                📊 Reportes
+            </a>
+
+            <a href="/Usuario" class="btn btn-outline-secondary btn-lg shadow-sm">
+                🔐 Gestión de Usuarios
+            </a>
+        }
+    </div>
+</div>

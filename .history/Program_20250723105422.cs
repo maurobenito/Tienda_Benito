@@ -30,23 +30,27 @@ builder.Services.AddTransient<IRepositorio<Cliente>, RepositorioCliente>();
 builder.Services.AddTransient<IRepositorio<Ventum>, RepositorioVenta>();
 builder.Services.AddTransient<IRepositorio<Ventadetalle>, RepositorioVentadetalle>();
 builder.Services.AddTransient<RepositorioVenta>(); // esta es extra
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Usuario/Login";
-        options.AccessDeniedPath = "/Usuario/AccessDenied"; // 👈 importante que coincida con el controlador real
+        options.AccessDeniedPath = "/Home/AccessDenied";
     });
-
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdministradorOnly", policy =>
-        policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+        policy.RequireClaim(ClaimTypes.Role, "Admin"));
 });
 
 
 
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/Usuario/Login";
+        options.AccessDeniedPath = "/Home/AccesoDenegado"; // opcional
+    });
 
 var app = builder.Build(); // 🔴 DESPUÉS de registrar servicios
 
