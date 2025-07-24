@@ -313,6 +313,14 @@
       "PackagePath": "staticwebassets\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-login.jpg",
+      "PackagePath": "staticwebassets\\uploads\\fondo-login.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-login1.jpg",
+      "PackagePath": "staticwebassets\\uploads\\fondo-login1.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg",
       "PackagePath": "staticwebassets\\uploads\\fondo-tienda.jpg"
     },
