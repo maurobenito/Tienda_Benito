@@ -156,32 +156,31 @@
                         </tr>
                     </tbody>
                 </table>
-                    <div class="d-flex justify-content-center align-items-center mt-3">
-            <button class="btn btn-sm btn-outline-secondary me-2"
+                <div class="d-flex justify-content-between align-items-center mt-3">
+    <div>
+        Página {{ paginaModal }} de {{ totalPaginasModal }}
+    </div>
+    <div>
+        <button class="btn btn-sm btn-outline-primary mr-2"
                 :disabled="paginaModal === 1"
                 @@click="paginaModal--">
-            ◀
-            </button>
-
-            <span class="mx-2">
-            {{ paginaModal }} de {{ totalPaginasModal }}
-            </span>
-
-            <button class="btn btn-sm btn-outline-secondary ms-2"
+            ◀ Anterior
+        </button>
+        <button class="btn btn-sm btn-outline-primary"
                 :disabled="paginaModal === totalPaginasModal"
                 @@click="paginaModal++">
-            ▶
+            Siguiente ▶
         </button>
     </div>
+</div>
 
-
-                    <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
-                        😕 No se encontraron productos.
-                    </div>
+                <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
+                    😕 No se encontraron productos.
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 <!-- Modal Clientes Mejorado -->

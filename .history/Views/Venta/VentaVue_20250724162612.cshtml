@@ -156,32 +156,14 @@
                         </tr>
                     </tbody>
                 </table>
-                    <div class="d-flex justify-content-center align-items-center mt-3">
-            <button class="btn btn-sm btn-outline-secondary me-2"
-                :disabled="paginaModal === 1"
-                @@click="paginaModal--">
-            ◀
-            </button>
 
-            <span class="mx-2">
-            {{ paginaModal }} de {{ totalPaginasModal }}
-            </span>
-
-            <button class="btn btn-sm btn-outline-secondary ms-2"
-                :disabled="paginaModal === totalPaginasModal"
-                @@click="paginaModal++">
-            ▶
-        </button>
-    </div>
-
-
-                    <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
-                        😕 No se encontraron productos.
-                    </div>
+                <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
+                    😕 No se encontraron productos.
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 <!-- Modal Clientes Mejorado -->
@@ -280,31 +262,18 @@
                 usuarioId: 1,
                 ventaConfirmada: false,
                 ventaIdGenerada: 0,
-                filtroModalNombre: '',
-                paginaModal: 1,
-                tamanoPaginaModal: 10
+                filtroModalNombre: ''
             },
             computed: {
                 productosStockBajo() {
                     return this.carrito.filter(p => p.stock < 10);
                 },
-                totalPaginasModal() {
-                    const filtrados = this.productos
-                        .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()));
-                    return Math.ceil(filtrados.length / this.tamanoPaginaModal);
-                },
-
                 productosModalFiltrados() {
-                 const filtrados = this.productos
-                .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
-                .sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-                 const inicio = (this.paginaModal - 1) * this.tamanoPaginaModal;
-                const fin = inicio + this.tamanoPaginaModal;
-                    return filtrados.slice(inicio, fin);
-                },
-                },
-
+                    return this.productos
+                        .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
+                        .sort((a, b) => a.nombre.localeCompare(b.nombre));
+                }
+            },
             methods: {
                 buscarClientes() {
                     axios.get('/api/clientes/buscar?query=' + this.clienteBusqueda)
@@ -331,32 +300,20 @@
                     axios.get('/api/productos/buscar?query=' + this.productoBusqueda)
                         .then(r => this.productos = r.data);
                 },
-                abrirModalProductos() {
-                axios.get('/api/productos/filtrar?query=&page=1&pageSize=1000')
-                .then(r => {
-                console.log('Respuesta completa:', r);
-                console.log('Contenido en r.data:', r.data);
-
-            // Dependiendo del resultado, ajustar la referencia a los datos
-                const productos = r.data.Data || r.data.data || r.data;
-
-            if (!productos) {
-                console.error('No se encontraron productos en la respuesta.');
-                return;
-            }
-
-            this.productos = productos.map(p => ({
+           abrirModalProductos() {
+    axios.get('/api/productos/filtrar?query=&page=1&pageSize=1000')
+        .then(r => {
+            this.productos = r.data.map(p => ({
                 ...p,
                 cantidadTemp: 1
             }));
-
             this.filtroModalNombre = '';
-            $('#modalProductos').modal('show');
-        })
-        .catch(error => {
-            console.error('Error al obtener productos:', error);
+            this.$nextTick(() => {
+                $('#modalProductos').modal('show');
+            });
         });
-                },
+    },
+
 
 
                 agregarProducto(p) {

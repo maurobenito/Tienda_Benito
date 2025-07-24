@@ -121,7 +121,7 @@ namespace Tienda_Benito.Controllers.Api
             return Ok(productos);
         }
         [HttpGet("filtrar")]
-public IActionResult Filtrar(string? query = "", int? rubroId = null, int? proveedorId = null, int page = 1, int pageSize = 1000)
+public IActionResult Filtrar(string? query = "", int? rubroId = null, int? proveedorId = null, int page = 1, int pageSize = 100)
 {
     var productos = _context.Producto
         .Where(p =>

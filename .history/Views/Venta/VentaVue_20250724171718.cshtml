@@ -156,32 +156,14 @@
                         </tr>
                     </tbody>
                 </table>
-                    <div class="d-flex justify-content-center align-items-center mt-3">
-            <button class="btn btn-sm btn-outline-secondary me-2"
-                :disabled="paginaModal === 1"
-                @@click="paginaModal--">
-            ◀
-            </button>
 
-            <span class="mx-2">
-            {{ paginaModal }} de {{ totalPaginasModal }}
-            </span>
-
-            <button class="btn btn-sm btn-outline-secondary ms-2"
-                :disabled="paginaModal === totalPaginasModal"
-                @@click="paginaModal++">
-            ▶
-        </button>
-    </div>
-
-
-                    <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
-                        😕 No se encontraron productos.
-                    </div>
+                <div v-if="!productosModalFiltrados.length" class="text-muted text-center mt-3">
+                    😕 No se encontraron productos.
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 <!-- Modal Clientes Mejorado -->
@@ -280,20 +262,12 @@
                 usuarioId: 1,
                 ventaConfirmada: false,
                 ventaIdGenerada: 0,
-                filtroModalNombre: '',
-                paginaModal: 1,
-                tamanoPaginaModal: 10
+                filtroModalNombre: ''
             },
             computed: {
                 productosStockBajo() {
                     return this.carrito.filter(p => p.stock < 10);
                 },
-                totalPaginasModal() {
-                    const filtrados = this.productos
-                        .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()));
-                    return Math.ceil(filtrados.length / this.tamanoPaginaModal);
-                },
-
                 productosModalFiltrados() {
                  const filtrados = this.productos
                 .filter(p => p.nombre.toLowerCase().includes(this.filtroModalNombre.toLowerCase()))
