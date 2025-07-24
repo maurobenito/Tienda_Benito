@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+    }
+
+    .background-image {
+        background-image: url('/uploads/Fondo-Tienda.jpg'); /* Cambiá por tu imagen */
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .overlay {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 40px;
+        border-radius: 15px;
+        max-width: 800px;
+        width: 90%;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+</style>
+
+<div class="background-image">
+    <div class="overlay text-center">
+        <h1 class="display-5 mb-4 text-primary fw-bold">Bienvenido a Tienda Benito</h1>
+        <p class="lead mb-5 text-muted">Gestioná tus ventas, productos y más desde este panel principal.</p>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+            <div class="col">
+                <a href="/Venta/VentaVue" class="btn btn-primary btn-lg w-100 shadow-lg p-3 rounded">
+                    🛒 Nueva Venta
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/Producto" class="btn btn-outline-secondary btn-lg w-100 shadow p-3 rounded">
+                    📦 Productos
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/Cliente" class="btn btn-outline-secondary btn-lg w-100 shadow p-3 rounded">
+                    👥 Clientes
+                </a>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col">
+                    <a href="/Proveedor" class="btn btn-outline-secondary btn-lg w-100 shadow p-3 rounded">
+                        🏭 Proveedores
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="/Home/Reportes" class="btn btn-outline-secondary btn-lg w-100 shadow p-3 rounded">
+                        📊 Reportes
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="/Usuario" class="btn btn-outline-secondary btn-lg w-100 shadow p-3 rounded">
+                        🔐 Gestión de Usuarios
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

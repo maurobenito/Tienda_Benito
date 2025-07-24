@@ -10,31 +10,25 @@
     var ordenActual = ViewBag.OrderBy as string ?? "Nombre";
     var desc = ViewBag.Desc as bool? ?? false;
 
-    string OrdenLink(string campo)
-    {
-        return ordenActual == campo ? campo + (desc ? "" : "_desc") :
-               ordenActual == campo + "_desc" ? campo : campo + "_desc";
-    }
+    bool IsDescending(string campo) => ordenActual == campo + "_desc" || (ordenActual == campo && desc);
 }
 
-<h1 class="mb-4">👤 Usuarios</h1>
+<h1 class="mb-4">🔐 Usuarios</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success mb-3">
-        <i class="fas fa-plus"></i> Nuevo Usuario
-    </a>
+    <a asp-action="Create" class="btn btn-success mb-3">➕ Nuevo Usuario</a>
 </p>
 
 <form method="get" class="mb-3">
     <div class="form-row">
         <div class="col">
-            <input name="filtro" value="@filtro" class="form-control" placeholder="🔍 Buscar por nombre, apellido o email" />
+            <input name="filtro" value="@filtro" class="form-control" placeholder="🔍 Buscar por nombre, email o rol" />
         </div>
         <div class="col-auto">
             <select name="tamPagina" class="form-control" onchange="this.form.submit()">
-                <option value="5" selected="@(tamanoPagina == 5)">5 por página</option>
-                <option value="10" selected="@(tamanoPagina == 10)">10 por página</option>
-                <option value="15" selected="@(tamanoPagina == 15)">15 por página</option>
+                <option value="5" selected="@(tamanoPagina == 5)">5</option>
+                <option value="10" selected="@(tamanoPagina == 10)">10</option>
+                <option value="15" selected="@(tamanoPagina == 15)">15</option>
             </select>
         </div>
         <div class="col-auto">
@@ -47,19 +41,27 @@
     <thead class="thead-dark text-center">
         <tr>
             <th>
-                <a class="text-dark text-decoration-none" asp-action="Index" asp-route-orderBy="@OrdenLink("Nombre")" asp-route-filtro="@filtro" asp-route-tamPagina="@tamanoPagina" asp-route-pagina="1">
-                    Nombre
-                    @if (ordenActual.Contains("Nombre"))
-                    {
-                        <i class="bi @(ordenActual.EndsWith("_desc") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
-                    }
-                </a>
+                Nombre
+                @if (ordenActual.StartsWith("Nombre"))
+                {
+                    <i class="bi @(IsDescending("Nombre") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                }
             </th>
-            <th>Apellido</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Avatar</th>
-            <th class="text-nowrap">Acciones</th>
+            <th>
+                Email
+                @if (ordenActual.StartsWith("Email"))
+                {
+                    <i class="bi @(IsDescending("Email") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                }
+            </th>
+            <th>
+                Rol
+                @if (ordenActual.StartsWith("Rol"))
+                {
+                    <i class="bi @(IsDescending("Rol") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                }
+            </th>
+            <th class="text-center">Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -67,19 +69,12 @@
         {
             <tr>
                 <td>@usuario.Nombre</td>
-                <td>@usuario.Apellido</td>
                 <td>@usuario.Email</td>
                 <td>@usuario.Rol</td>
-                <td>
-                    @if (!string.IsNullOrWhiteSpace(usuario.Avatar))
-                    {
-                        <img src="@Url.Content("~/uploads/" + usuario.Avatar)" alt="Avatar" width="50" class="rounded" />
-                    }
-                </td>
                 <td class="text-center text-nowrap">
-                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@usuario.UsuarioId" title="Editar">✏️</a>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@usuario.UsuarioId" title="Detalles">👁️</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@usuario.UsuarioId" title="Eliminar" onclick="return confirm('¿Está seguro que desea eliminar este usuario?');">🗑️</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@usuario.UsuarioId" title="Editar">✏️</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@usuario.UsuarioId" title="Detalles">🔍</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@usuario.UsuarioId" title="Eliminar">🗑️</a>
                 </td>
             </tr>
         }

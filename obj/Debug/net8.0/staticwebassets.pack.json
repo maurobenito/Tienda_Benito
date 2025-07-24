@@ -313,8 +313,8 @@
       "PackagePath": "staticwebassets\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg"
     },
     {
-      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg.jpg",
-      "PackagePath": "staticwebassets\\uploads\\fondo-tienda.jpg.jpg"
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg",
+      "PackagePath": "staticwebassets\\uploads\\fondo-tienda.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Tienda_Benito.Microsoft.AspNetCore.StaticWebAssets.props",

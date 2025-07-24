@@ -64,7 +64,7 @@ namespace Tienda_Benito.Controllers
         }
 
     [Authorize(Roles = "Admin")]
-   public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool desc = false, int pagina = 1, int tamPagina = 5)
+        public IActionResult Index(string filtro = "", string orderBy = "Nombre", bool desc = false, int pagina = 1, int tamPagina = 5)
 {
     var query = _context.Usuario.AsQueryable();
 
@@ -78,35 +78,35 @@ namespace Tienda_Benito.Controllers
             u.Rol.Contains(filtro));
     }
 
-    // Detectar orden descendente por sufijo "_desc"
-    bool descending = orderBy.EndsWith("_desc");
-    string campoOrden = descending ? orderBy.Replace("_desc", "") : orderBy;
-
-    // Ordenamiento dinámico
-    query = campoOrden switch
+    // Ordenamiento
+    query = orderBy switch
     {
-        "Nombre" => descending ? query.OrderByDescending(u => u.Nombre) : query.OrderBy(u => u.Nombre),
-        "Apellido" => descending ? query.OrderByDescending(u => u.Apellido) : query.OrderBy(u => u.Apellido),
-        "Email" => descending ? query.OrderByDescending(u => u.Email) : query.OrderBy(u => u.Email),
-        "Rol" => descending ? query.OrderByDescending(u => u.Rol) : query.OrderBy(u => u.Rol),
+        "Nombre" => desc ? query.OrderByDescending(u => u.Nombre) : query.OrderBy(u => u.Nombre),
+        "Apellido" => desc ? query.OrderByDescending(u => u.Apellido) : query.OrderBy(u => u.Apellido),
+        "Email" => desc ? query.OrderByDescending(u => u.Email) : query.OrderBy(u => u.Email),
+        "Rol" => desc ? query.OrderByDescending(u => u.Rol) : query.OrderBy(u => u.Rol),
         _ => query.OrderBy(u => u.Nombre)
     };
 
-    // Paginación
-    int total = query.Count();
-    var usuarios = query.Skip((pagina - 1) * tamPagina).Take(tamPagina).ToList();
+    // Total de registros antes de paginar
+    int totalRegistros = query.Count();
 
-    // Pasar valores a la vista
+    // Paginación
+    var usuarios = query
+        .Skip((pagina - 1) * tamPagina)
+        .Take(tamPagina)
+        .ToList();
+
+    // ViewBag para la vista
     ViewBag.PaginaActual = pagina;
     ViewBag.TamanoPagina = tamPagina;
-    ViewBag.TotalPaginas = (int)Math.Ceiling((double)total / tamPagina);
+    ViewBag.TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamPagina);
     ViewBag.Filtro = filtro;
     ViewBag.OrderBy = orderBy;
-    ViewBag.Desc = descending;
+    ViewBag.Desc = desc;
 
     return View(usuarios);
 }
-
 
 
     [Authorize(Roles = "Admin")]

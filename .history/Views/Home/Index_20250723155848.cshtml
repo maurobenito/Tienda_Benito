@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .fullscreen-bg {
+        background-image: url('/img/fondo-tienda.jpg'); /* Ruta a tu imagen */
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: white;
+    }
+
+    .overlay-dark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* oscurece el fondo */
+        z-index: 0;
+    }
+
+    .content-box {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .btn-custom {
+        font-size: 1.2rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="fullscreen-bg">
+    <div class="overlay-dark"></div>
+
+    <div class="container content-box">
+        <h1 class="display-4 fw-bold mb-4 text-white">Bienvenido a Tienda Benito</h1>
+        <p class="lead mb-5 text-light">Gestioná tus ventas, productos y más desde este panel principal.</p>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+            <div class="col">
+                <a href="/Venta/VentaVue" class="btn btn-primary btn-lg w-100 shadow btn-custom">
+                    🛒 Nueva Venta
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/Producto" class="btn btn-outline-light btn-lg w-100 shadow btn-custom">
+                    📦 Productos
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="/Cliente" class="btn btn-outline-light btn-lg w-100 shadow btn-custom">
+                    👥 Clientes
+                </a>
+            </div>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col">
+                    <a href="/Proveedor" class="btn btn-outline-light btn-lg w-100 shadow btn-custom">
+                        🏭 Proveedores
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="/Home/Reportes" class="btn btn-outline-light btn-lg w-100 shadow btn-custom">
+                        📊 Reportes
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="/Usuario" class="btn btn-outline-light btn-lg w-100 shadow btn-custom">
+                        🔐 Gestión de Usuarios
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

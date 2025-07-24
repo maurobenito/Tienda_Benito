@@ -1,13 +1,13 @@
-@model IEnumerable<Tienda_Benito.Models.Cliente>
+@model IEnumerable<Tienda_Benito.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Clientes";
+    ViewData["Title"] = "Usuarios";
 
     var paginaActual = ViewBag.PaginaActual as int? ?? 1;
     var tamanoPagina = ViewBag.TamanoPagina as int? ?? 5;
     var totalPaginas = ViewBag.TotalPaginas as int? ?? 1;
     var filtro = ViewBag.Filtro as string ?? "";
-    var ordenActual = ViewBag.OrderBy as string ?? "Apellido";
+    var ordenActual = ViewBag.OrderBy as string ?? "Nombre";
     var desc = ViewBag.Desc as bool? ?? false;
 
     string OrdenLink(string campo)
@@ -22,10 +22,12 @@
     bool IsDescending(string campo) => ordenActual == campo + "_desc" || (ordenActual == campo && desc);
 }
 
-<h1 class="mb-4">👥 Clientes</h1>
+<h1 class="mb-4">👤 Usuarios</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success mb-3">➕ Nuevo Cliente</a>
+    <a asp-action="Create" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Nuevo Usuario
+    </a>
 </p>
 
 <form method="get" class="mb-3">
@@ -52,6 +54,20 @@
             <th>
                 <a class="text-dark text-decoration-none"
                    asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Nombre")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1">
+                    Nombre
+                    @if (ordenActual.StartsWith("Nombre"))
+                    {
+                        <i class="bi @(IsDescending("Nombre") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none"
+                   asp-action="Index"
                    asp-route-orderBy="@OrdenLink("Apellido")"
                    asp-route-filtro="@filtro"
                    asp-route-tamPagina="@tamanoPagina"
@@ -66,50 +82,53 @@
             <th>
                 <a class="text-dark text-decoration-none"
                    asp-action="Index"
-                   asp-route-orderBy="@OrdenLink("Nombre")"
+                   asp-route-orderBy="@OrdenLink("Email")"
                    asp-route-filtro="@filtro"
                    asp-route-tamPagina="@tamanoPagina"
                    asp-route-pagina="1">
-                    Nombre
-                    @if (ordenActual.StartsWith("Nombre"))
+                    Email
+                    @if (ordenActual.StartsWith("Email"))
                     {
-                        <i class="bi @(IsDescending("Nombre") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                        <i class="bi @(IsDescending("Email") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
                     }
                 </a>
             </th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>CUIT</th>
+            <th>
+                <a class="text-dark text-decoration-none"
+                   asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Rol")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1">
+                    Rol
+                    @if (ordenActual.StartsWith("Rol"))
+                    {
+                        <i class="bi @(IsDescending("Rol") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
             <th>Avatar</th>
-            <th>DNI (PDF)</th>
             <th class="text-center">Acciones</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var cliente in Model)
+        @foreach (var usuario in Model)
         {
             <tr>
-                <td>@cliente.Apellido</td>
-                <td>@cliente.Nombre</td>
-                <td>@cliente.Email</td>
-                <td>@cliente.Telefono</td>
-                <td>@cliente.Cuit</td>
+                <td>@usuario.Nombre</td>
+                <td>@usuario.Apellido</td>
+                <td>@usuario.Email</td>
+                <td>@usuario.Rol</td>
                 <td class="text-center">
-                    @if (!string.IsNullOrEmpty(cliente.FotoPerfil))
+                    @if (!string.IsNullOrEmpty(usuario.FotoPerfil))
                     {
-                        <img src="~/uploads/@cliente.FotoPerfil" alt="Avatar" class="img-thumbnail" width="50" height="50" />
-                    }
-                </td>
-                <td class="text-center">
-                    @if (!string.IsNullOrEmpty(cliente.ArchivoAdjunto))
-                    {
-                        <a class="btn btn-sm btn-outline-secondary" target="_blank" href="~/uploads/@cliente.ArchivoAdjunto">📄 Ver</a>
+                        <img src="~/uploads/@usuario.FotoPerfil" alt="Avatar" class="img-thumbnail" width="50" height="50" />
                     }
                 </td>
                 <td class="text-center text-nowrap">
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@cliente.ClienteId" title="Editar">✏️</a>
-                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@cliente.ClienteId" title="Detalles">🔍</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@cliente.ClienteId" title="Eliminar">🗑️</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@usuario.UsuarioId" title="Editar">✏️</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@usuario.UsuarioId" title="Detalles">🔍</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@usuario.UsuarioId" title="Eliminar">🗑️</a>
                 </td>
             </tr>
         }

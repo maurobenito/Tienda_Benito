@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hqAwtKYEQk2cEPjUsc4n2Dv0mswR3dkN2mfnpP1S0bE=",
+  "Hash": "rUxKUmbAYFuwq8ljkpMflVc9oa6dO4BoRRsnpRLdT9s=",
   "Source": "Tienda_Benito",
   "BasePath": "_content/Tienda_Benito",
   "Mode": "Default",
@@ -1518,12 +1518,12 @@
       "OriginalItemSpec": "wwwroot\\uploads\\efe991cd-27a2-4bc2-8a83-aba375aabfaf.jpg"
     },
     {
-      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg.jpg",
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\uploads\\fondo-tienda.jpg",
       "SourceId": "Tienda_Benito",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\Tienda_Benito\\wwwroot\\",
       "BasePath": "_content/Tienda_Benito",
-      "RelativePath": "uploads/fondo-tienda.jpg.jpg",
+      "RelativePath": "uploads/fondo-tienda.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1534,7 +1534,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\uploads\\fondo-tienda.jpg.jpg"
+      "OriginalItemSpec": "wwwroot\\uploads\\fondo-tienda.jpg"
     }
   ]
 }

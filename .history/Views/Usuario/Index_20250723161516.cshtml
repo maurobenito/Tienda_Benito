@@ -1,0 +1,63 @@
+<table class="table table-hover table-bordered shadow-sm">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Nombre")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1"
+                   asp-route-desc="@(IsDescending("Nombre"))">
+                    Nombre
+                    @if (ordenActual.StartsWith("Nombre"))
+                    {
+                        <i class="bi @(IsDescending("Nombre") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Apellido")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1"
+                   asp-route-desc="@(IsDescending("Apellido"))">
+                    Apellido
+                    @if (ordenActual.StartsWith("Apellido"))
+                    {
+                        <i class="bi @(IsDescending("Apellido") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Email")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1"
+                   asp-route-desc="@(IsDescending("Email"))">
+                    Email
+                    @if (ordenActual.StartsWith("Email"))
+                    {
+                        <i class="bi @(IsDescending("Email") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-orderBy="@OrdenLink("Rol")"
+                   asp-route-filtro="@filtro"
+                   asp-route-tamPagina="@tamanoPagina"
+                   asp-route-pagina="1"
+                   asp-route-desc="@(IsDescending("Rol"))">
+                    Rol
+                    @if (ordenActual.StartsWith("Rol"))
+                    {
+                        <i class="bi @(IsDescending("Rol") ? "bi-caret-down-fill" : "bi-caret-up-fill")"></i>
+                    }
+                </a>
+            </th>
+            <th>Avatar</th>
+            <th class="text-center">Acciones</th>
+        </tr>
+    </thead>
