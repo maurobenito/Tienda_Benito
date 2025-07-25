@@ -22,11 +22,11 @@ public IActionResult Index(string cliente, string vendedor, string tipo, string 
     if (orderBy != null && orderBy.EndsWith("_desc"))
     {
         orderBy = orderBy[..^5];
-        desc = false;
+        desc = true;
     }
     else
     {
-        desc = true;
+        desc = false;
     }
 
     var query = _context.Venta

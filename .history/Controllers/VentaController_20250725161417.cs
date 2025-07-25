@@ -22,11 +22,11 @@ public IActionResult Index(string cliente, string vendedor, string tipo, string 
     if (orderBy != null && orderBy.EndsWith("_desc"))
     {
         orderBy = orderBy[..^5];
-        desc = false;
+        desc = true;
     }
     else
     {
-        desc = true;
+        desc = false;
     }
 
     var query = _context.Venta
@@ -196,35 +196,27 @@ public IActionResult Anular(int id)
     venta.Anulada = true;
 
     foreach (var detalle in venta.Ventadetalles)
-{
-    // Devuelve stock al producto vendido
-    detalle.Producto.Stock += detalle.Cantidad;
-    _context.Producto.Update(detalle.Producto);
-
-    // Si es fraccionado, devuelve stock al padre
-    if (detalle.Producto.ProductoPadreId.HasValue && detalle.Producto.EquivalenciaEnPadre.HasValue)
     {
-        var productoPadre = _context.Producto.FirstOrDefault(p => p.ProductoId == detalle.Producto.ProductoPadreId.Value);
-        if (productoPadre != null)
+        // Devolver stock al producto vendido
+        detalle.Producto.Stock += detalle.Cantidad;
+        _context.Producto.Update(detalle.Producto);
+
+        // Si es un producto fraccionado, devolver también al padre
+        if (detalle.Producto.ProductoPadreId.HasValue && detalle.Producto.EquivalenciaEnPadre.HasValue)
         {
-            // Devolver stock al padre
-            productoPadre.Stock += detalle.Cantidad * detalle.Producto.EquivalenciaEnPadre.Value;
-            _context.Producto.Update(productoPadre);
-
-            // Recalcular stock del hijo
-            var hijos = _context.Producto
-                .Where(p => p.ProductoPadreId == productoPadre.ProductoId && p.EquivalenciaEnPadre.HasValue)
-                .ToList();
-
-            foreach (var hijo in hijos)
+            var productoPadre = _context.Producto.FirstOrDefault(p => p.ProductoId == detalle.Producto.ProductoPadreId.Value);
+            if (productoPadre != null)
             {
-                hijo.Stock = (int)(productoPadre.Stock / hijo.EquivalenciaEnPadre.Value);
-                _context.Producto.Update(hijo);
+                // Devolver stock al padre
+                productoPadre.Stock += detalle.Cantidad * detalle.Producto.EquivalenciaEnPadre.Value;
+                _context.Producto.Update(productoPadre);
+
+                // ✅ Recalcular stock del hijo basado en el stock actual del padre
+                detalle.Producto.Stock = (int)(productoPadre.Stock / detalle.Producto.EquivalenciaEnPadre.Value);
+                _context.Producto.Update(detalle.Producto);
             }
         }
     }
-}
-
 
     _context.Venta.Update(venta);
     _context.SaveChanges();

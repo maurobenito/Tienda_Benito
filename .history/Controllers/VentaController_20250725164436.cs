@@ -16,17 +16,17 @@ namespace Tienda_Benito.Controllers
             _repositorio = repositorio;
             _context = context;
         }
-public IActionResult Index(string cliente, string vendedor, string tipo, string orderBy = "fecha", bool desc = true, int pagina = 1, int tamPagina = 5)
+public IActionResult Index(string cliente, string vendedor, string tipo, string orderBy = "fecha", bool desc = false, int pagina = 1, int tamPagina = 5)
 {
     // Detectar si viene con "_desc"
     if (orderBy != null && orderBy.EndsWith("_desc"))
     {
         orderBy = orderBy[..^5];
-        desc = false;
+        desc = true;
     }
     else
     {
-        desc = true;
+        desc = false;
     }
 
     var query = _context.Venta

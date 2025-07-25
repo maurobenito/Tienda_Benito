@@ -17,17 +17,22 @@ namespace Tienda_Benito.Models
         public int? RubroId { get; set; }
 
         public int? ProductoPadreId { get; set; }
-        public decimal? EquivalenciaEnPadre { get; set; }
 
         [ForeignKey("ProductoPadreId")]
         public Producto? ProductoPadre { get; set; }
 
-        public ICollection<Producto>? ProductosFraccionados { get; set; }
+        public ICollection<Producto> ProductosFraccionados { get; set; }
 
         // ✅ Propiedades de navegación necesarias
-       public Proveedor? Proveedor { get; set; }
+        public Proveedor? Proveedor { get; set; }
         public Rubro? Rubro { get; set; }
 
         public virtual ICollection<Ventadetalle> Ventadetalles { get; set; } = new List<Ventadetalle>();
+
+        // Constructor para inicializar las colecciones y evitar referencias nulas
+        public Producto()
+        {
+            ProductosFraccionados = new HashSet<Producto>();
+        }
     }
 }
