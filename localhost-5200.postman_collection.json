@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "d48818ad-82df-486a-b71c-5eb444da3937",
+		"name": "localhost:5200",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47074889",
+		"_collection_link": "https://lunar-module-cosmonaut-4528923-6714705.postman.co/workspace/tienda~1310ba98-b83f-4ec8-9e28-a48eeac484b0/collection/47074889-d48818ad-82df-486a-b71c-5eb444da3937?action=share&source=collection_link&creator=47074889"
+	},
+	"item": [
+		{
+			"name": "/Venta/DetalleVue/8",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clienteId\": 3,\r\n  \"usuarioId\": 2,\r\n  \"tipoVenta\": \"Contado\",\r\n  \"productos\": [\r\n    {\r\n      \"productoId\": 5,\r\n      \"cantidad\": 2,\r\n      \"precioUnitario\": 150.5\r\n    },\r\n    {\r\n      \"productoId\": 6,\r\n      \"cantidad\": 1,\r\n      \"precioUnitario\": 100.0\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5200/api/DetalleVue/10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5200",
+					"path": [
+						"api",
+						"DetalleVue",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/Producto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5200/Producto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5200",
+					"path": [
+						"Producto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/Venta/VentaVue",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"clienteId\": 4,\r\n  \"usuarioId\": 1,\r\n  \"tipoVenta\": \"Contado\",\r\n  \"productos\": [\r\n    {\r\n      \"productoId\": 5,\r\n      \"cantidad\": 3,\r\n      \"precioUnitario\": 18000.00\r\n    },\r\n    {\r\n      \"productoId\": 2,\r\n      \"cantidad\": 1,\r\n      \"precioUnitario\": 1100.00\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5200/api/ventas/Crear",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5200",
+					"path": [
+						"api",
+						"ventas",
+						"Crear"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

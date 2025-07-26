@@ -110,3 +110,4 @@ C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\Tienda_Benito.genr
 C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\ref\Tienda_Benito.dll
 C:\Users\User\Documents\GitHub\Tienda_Benito\obj\Debug\net8.0\Tienda_Benito.sourcelink.json
 C:\Users\User\Documents\GitHub\Tienda_Benito\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\User\Documents\GitHub\Tienda_Benito\bin\Debug\net8.0\localhost-5200.postman_collection.json
