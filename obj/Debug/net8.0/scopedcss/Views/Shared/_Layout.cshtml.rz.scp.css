@@ -44,5 +44,41 @@ button.accept-policy[b-aszm0hdu1b] {
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px;
+  line-height: 40px;
+  background-color: rgba(255, 255, 255, 0); /* completamente transparente */
+  color: #1b6ec2; /* azul para texto */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* para que texto se vea más */
+  border-top: 1px solid rgba(27, 110, 194, 0.3); /* línea sutil para separar */
+  z-index: 10;
 }
+
+.footer a.btn[b-aszm0hdu1b] {
+  padding: 5px 12px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(27, 110, 194, 0.6);
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.footer a.btn:hover[b-aszm0hdu1b] {
+  background-color: #155a9c;
+  border-color: #134f84;
+  color: #fff;
+}
+
+.footer a.btn i[b-aszm0hdu1b] {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+

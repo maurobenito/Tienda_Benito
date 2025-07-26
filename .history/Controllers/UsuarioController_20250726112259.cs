@@ -6,8 +6,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering; // <- Agrega este using
+using Microsoft.AspNetCore.Authorization; // <- Agrega este using
 
 
 namespace Tienda_Benito.Controllers
@@ -108,19 +107,6 @@ namespace Tienda_Benito.Controllers
     return View(usuarios);
 }
 
-[Authorize(Roles = "Admin")]
-[HttpGet]
-public IActionResult Create()
-{
-    ViewBag.Roles = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Administrador", Value = "Admin" },
-        new SelectListItem { Text = "Vendedor", Value = "Empleado" }
-    };
-
-    return View();
-}
-
 
 
     [Authorize(Roles = "Admin")]
@@ -163,33 +149,23 @@ public IActionResult Create()
             }
             return View(usuario);
         }
-           [Authorize(Roles = "Admin")]
-[HttpGet]
-public IActionResult Edit(int id)
-{
-    var usuario = _context.Usuario.Find(id);
-    if (usuario == null) return NotFound();
-
-    ViewBag.Roles = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Administrador", Value = "Admin" },
-        new SelectListItem { Text = "Vendedor", Value = "Empleado" }
-    };
-
-    return View(usuario);
-}
+            [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
+            if (usuario == null) return NotFound();
+            return View(usuario);
+        }
 
 
-
+    [Authorize(Roles = "Admin")]
 [HttpPost]
 [ValidateAntiForgeryToken]
 public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile, string? Password)
 {
     if (id != usuario.UsuarioId)
         return NotFound();
-
-    // 💡 Eliminamos este campo del ModelState para que no exija el valor
-    ModelState.Remove("PasswordHash");
 
     if (ModelState.IsValid)
     {
@@ -206,7 +182,7 @@ public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile, st
             existente.Avatar = nombreFoto;
         }
 
-        // ✅ Solo actualizar si se ingresó un nuevo password
+        // ✅ Solo si se completó un nuevo password
         if (!string.IsNullOrWhiteSpace(Password))
         {
             existente.PasswordHash = BCrypt.Net.BCrypt.HashPassword(Password);
@@ -223,7 +199,6 @@ public IActionResult Edit(int id, Usuario usuario, IFormFile? FotoPerfilFile, st
 
     return View(usuario);
 }
-
 
 
 

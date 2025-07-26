@@ -6,8 +6,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering; // <- Agrega este using
+using Microsoft.AspNetCore.Authorization; // <- Agrega este using
 
 
 namespace Tienda_Benito.Controllers
@@ -112,15 +111,8 @@ namespace Tienda_Benito.Controllers
 [HttpGet]
 public IActionResult Create()
 {
-    ViewBag.Roles = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Administrador", Value = "Admin" },
-        new SelectListItem { Text = "Vendedor", Value = "Empleado" }
-    };
-
     return View();
 }
-
 
 
     [Authorize(Roles = "Admin")]
@@ -163,22 +155,14 @@ public IActionResult Create()
             }
             return View(usuario);
         }
-           [Authorize(Roles = "Admin")]
-[HttpGet]
-public IActionResult Edit(int id)
-{
-    var usuario = _context.Usuario.Find(id);
-    if (usuario == null) return NotFound();
-
-    ViewBag.Roles = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Administrador", Value = "Admin" },
-        new SelectListItem { Text = "Vendedor", Value = "Empleado" }
-    };
-
-    return View(usuario);
-}
-
+            [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var usuario = _context.Usuario.FirstOrDefault(u => u.UsuarioId == id);
+            if (usuario == null) return NotFound();
+            return View(usuario);
+        }
 
 
 [HttpPost]
