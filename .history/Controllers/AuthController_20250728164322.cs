@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration; // Asegurate de tener este using
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,13 @@ namespace Tienda_Benito.Controllers.Api
             _context = context;
             _configuration = configuration;
         }
+        [HttpGet("claims")]
+[Authorize]
+public IActionResult GetClaims()
+{
+    var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+    return Ok(claims);
+}
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginDto login)
