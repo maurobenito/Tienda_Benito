@@ -150,7 +150,85 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "crear venta con jwt",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik1hdXJvIiwiZW1haWwiOiJtYXVyb0BnLmNvbSIsInJvbGUiOiJBZG1pbiIsIlVzdWFyaW9JZCI6IjEiLCJuYmYiOjE3NTM2MzQ2OTcsImV4cCI6MTc1MzY0OTA5NywiaWF0IjoxNzUzNjM0Njk3fQ.7Xa-kzuYDKACK8v4OLA2jQ1kuDxw_x3Mz9WCCBtaUAQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"clienteId\": 3,\r\n  \"usuarioId\": 1,\r\n  \"tipoVenta\": \"Contado\",\r\n  \"productos\": [\r\n    {\r\n      \"productoId\": 3,\r\n      \"cantidad\": 2,\r\n      \"precioUnitario\": 150\r\n    },\r\n    {\r\n      \"productoId\": 9,\r\n      \"cantidad\": 1,\r\n      \"precioUnitario\": 100\r\n    }\r\n  ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5200/api/ventas/Crear",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5200",
+							"path": [
+								"api",
+								"ventas",
+								"Crear"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 28 Jul 2025 12:03:38 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "\r\n\n<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"utf-8\" />\n        <title>Login - Tienda Benito</title>\n        <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" />\n        <style>\r\n        body {\r\n            background-image: url('/uploads/fondo-login.jpg'); /* Asegurate de tener esta imagen */\r\n            background-size: cover;\r\n            background-position: center;\r\n            background-repeat: no-repeat;\r\n            height: 100vh;\r\n        }\r\n\r\n        .login-container {\r\n            background-color: rgba(255, 255, 255, 0.1);\r\n            padding: 30px;\r\n            border-radius: 10px;\r\n            box-shadow: 0 0 15px rgba(0,0,0,0.4);\r\n        }\r\n\r\n        .login-title {\r\n            font-weight: bold;\r\n            font-size: 2rem;\r\n            margin-bottom: 1rem;\r\n        }\r\n\r\n        .extra-links a {\r\n            font-size: 0.9rem;\r\n        }\r\n    </style>\n    </head>\n    <body>\n        <div class=\"container h-100 d-flex align-items-center justify-content-center\">\n            <div class=\"col-md-5 login-container\">\n                <div class=\"text-center login-title\">🛒 Tienda Benito</div>\n                <div class=\"card shadow-sm border-0\">\n                    <div class=\"card-body\">\n                        <h5 class=\"card-title text-center mb-4\">Iniciar sesión</h5>\n                        <form method=\"post\" action=\"/Usuario/Login\">\n                            <div class=\"mb-3\">\n                                <label for=\"email\" class=\"form-label\">Email</label>\n                                <input name=\"email\" type=\"email\" class=\"form-control\" required />\n                            </div>\n                            <div class=\"mb-3\">\n                                <label for=\"password\" class=\"form-label\">Contraseña</label>\n                                <input name=\"password\" type=\"password\" class=\"form-control\" required />\n                            </div>\n                            <div class=\"form-check mb-3\">\n                                <input class=\"form-check-input\" type=\"checkbox\" name=\"recordarme\" id=\"recordarme\">\n                                <label class=\"form-check-label\" for=\"recordarme\">Recordarme</label>\n                            </div>\n                            <div class=\"d-grid mb-2\">\n                                <button type=\"submit\" class=\"btn btn-primary\">Ingresar</button>\n                            </div>\n                            <div class=\"text-center extra-links\">\n                                <a href=\"#\">¿Olvidaste tu contraseña?</a> |\n                                <a href=\"#\">Registrarse</a>\n                            </div>\n                            <input name=\"__RequestVerificationToken\" type=\"hidden\" value=\"CfDJ8DmLEoU0G8hKoQgL_39tjGICkBMXLQsSNjdGXwpDX6OZMOnlVcs4uRF8wVvq5b2b16SqT0YucqcFemUQ5ml147oYeB94Ygh8S2ROhxjLhVxjLBKw0VnjBSHN-tsalcVdSyCsSpZBKp-hj3tfYvJxMG0\" />\n                        </form>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </body>\n</html>"
+				}
+			]
 		}
 	],
 	"variable": [

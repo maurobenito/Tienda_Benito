@@ -1,0 +1,73 @@
+@model Tienda_Benito.Models.Cliente
+
+@{
+    ViewData["Title"] = "Nuevo Cliente";
+}
+
+<h1 class="mb-4">Nuevo Cliente</h1>
+
+<form asp-action="Create" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Apellido" class="form-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Telefono" class="form-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Direccion" class="form-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group mb-3">
+                <label asp-for="CondFiscal" class="form-label"></label>
+                <input asp-for="CondFiscal" class="form-control" />
+                <span asp-validation-for="CondFiscal" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Cuit" class="form-label"></label>
+                <input asp-for="Cuit" class="form-control" />
+                <span asp-validation-for="Cuit" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Archivo Adjunto (PDF o Imagen)</label>
+                <input asp-for="ArchivoSubido" type="file" accept=".pdf,image/*" class="form-control" />
+                <span asp-validation-for="ArchivoSubido" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Foto de Perfil</label>
+                <input asp-for="ImagenSubida" type="file" accept="image/*" class="form-control" />
+                <span asp-validation-for="ImagenSubida" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

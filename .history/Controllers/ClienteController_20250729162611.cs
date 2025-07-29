@@ -63,7 +63,7 @@ namespace Tienda_Benito.Controllers
             return View();
         }
 
-      
+        [HttpPost]
         [HttpPost]
 [ValidateAntiForgeryToken]
 public IActionResult Create(Cliente cliente)
@@ -99,88 +99,60 @@ public IActionResult Create(Cliente cliente)
     return RedirectToAction(nameof(Index));
 }
 
-     public IActionResult Edit(int id)
-{
-    var cliente = _context.Cliente.Find(id);
-    if (cliente == null) return NotFound();
-    return View(cliente);
-}
-
-[HttpPost]
-[ValidateAntiForgeryToken]
-public IActionResult Edit(int id, Cliente cliente)
-{
-    if (id != cliente.ClienteId)
-        return NotFound();
-
-    if (!ModelState.IsValid)
-        return View(cliente);
-
-    var existente = _context.Cliente.Find(id);
-    if (existente == null)
-        return NotFound();
-
-    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-    Directory.CreateDirectory(uploads);
-
-    // Procesar FotoPerfil (ImagenSubida)
-    if (cliente.ImagenSubida != null && cliente.ImagenSubida.Length > 0)
-    {
-        string nombreFoto = Guid.NewGuid() + Path.GetExtension(cliente.ImagenSubida.FileName);
-        string rutaFoto = Path.Combine(uploads, nombreFoto);
-        using var streamFoto = new FileStream(rutaFoto, FileMode.Create);
-        cliente.ImagenSubida.CopyTo(streamFoto);
-
-        // Borrar archivo anterior si existe
-        if (!string.IsNullOrEmpty(existente.FotoPerfil))
+        public IActionResult Edit(int id)
         {
-            var rutaAnterior = Path.Combine(uploads, existente.FotoPerfil);
-            if (System.IO.File.Exists(rutaAnterior))
-                System.IO.File.Delete(rutaAnterior);
+            var cliente = _context.Cliente.Find(id);
+            if (cliente == null) return NotFound();
+            return View(cliente);
         }
 
-        existente.FotoPerfil = nombreFoto;
-    }
-
-    // Procesar ArchivoAdjunto (ArchivoSubido)
-    if (cliente.ArchivoSubido != null && cliente.ArchivoSubido.Length > 0)
-    {
-        string nombreArchivo = Guid.NewGuid() + Path.GetExtension(cliente.ArchivoSubido.FileName);
-        string rutaArchivo = Path.Combine(uploads, nombreArchivo);
-        using var streamArchivo = new FileStream(rutaArchivo, FileMode.Create);
-        cliente.ArchivoSubido.CopyTo(streamArchivo);
-
-        // Borrar archivo anterior si existe
-        if (!string.IsNullOrEmpty(existente.ArchivoAdjunto))
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Cliente cliente, IFormFile? FotoPerfilFile, IFormFile? ArchivoAdjuntoFile)
         {
-            var rutaAnterior = Path.Combine(uploads, existente.ArchivoAdjunto);
-            if (System.IO.File.Exists(rutaAnterior))
-                System.IO.File.Delete(rutaAnterior);
+            if (id != cliente.ClienteId)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                var existente = _context.Cliente.Find(id);
+                if (existente == null)
+                    return NotFound();
+
+                // Procesar FotoPerfil
+                if (FotoPerfilFile != null)
+                {
+                    string nombreFoto = Guid.NewGuid() + Path.GetExtension(FotoPerfilFile.FileName);
+                    string rutaFoto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreFoto);
+                    using var streamFoto = new FileStream(rutaFoto, FileMode.Create);
+                    FotoPerfilFile.CopyTo(streamFoto);
+                    existente.FotoPerfil = nombreFoto;
+                }
+
+                // Procesar ArchivoAdjunto
+                if (ArchivoAdjuntoFile != null)
+                {
+                    string nombreArchivo = Guid.NewGuid() + Path.GetExtension(ArchivoAdjuntoFile.FileName);
+                    string rutaArchivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", nombreArchivo);
+                    using var streamArchivo = new FileStream(rutaArchivo, FileMode.Create);
+                    ArchivoAdjuntoFile.CopyTo(streamArchivo);
+                    existente.ArchivoAdjunto = nombreArchivo;
+                }
+
+                // Campos simples
+                existente.Nombre = cliente.Nombre;
+                existente.Apellido = cliente.Apellido;
+                existente.Email = cliente.Email;
+                existente.Telefono = cliente.Telefono;
+                existente.Direccion = cliente.Direccion;
+                existente.Cuit = cliente.Cuit;
+
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(cliente);
         }
-
-        existente.ArchivoAdjunto = nombreArchivo;
-    }
-
-    // Actualizar campos normales
-    existente.Nombre = cliente.Nombre;
-    existente.Apellido = cliente.Apellido;
-    existente.Email = cliente.Email;
-    existente.Telefono = cliente.Telefono;
-    existente.Direccion = cliente.Direccion;
-    existente.CondFiscal = cliente.CondFiscal;
-    existente.Cuit = cliente.Cuit;
-    // Agregá más campos si tu entidad los tiene
-
-    _context.Update(existente);
-    _context.SaveChanges();
-
-    return RedirectToAction(nameof(Index));
-}
-
-    
-
-
-
 
         public IActionResult Details(int id)
         {

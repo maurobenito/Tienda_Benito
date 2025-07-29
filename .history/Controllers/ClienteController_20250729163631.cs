@@ -131,7 +131,7 @@ public IActionResult Edit(int id, Cliente cliente)
         using var streamFoto = new FileStream(rutaFoto, FileMode.Create);
         cliente.ImagenSubida.CopyTo(streamFoto);
 
-        // Borrar archivo anterior si existe
+        // Borrar anterior si existe
         if (!string.IsNullOrEmpty(existente.FotoPerfil))
         {
             var rutaAnterior = Path.Combine(uploads, existente.FotoPerfil);
@@ -150,7 +150,7 @@ public IActionResult Edit(int id, Cliente cliente)
         using var streamArchivo = new FileStream(rutaArchivo, FileMode.Create);
         cliente.ArchivoSubido.CopyTo(streamArchivo);
 
-        // Borrar archivo anterior si existe
+        // Borrar anterior si existe
         if (!string.IsNullOrEmpty(existente.ArchivoAdjunto))
         {
             var rutaAnterior = Path.Combine(uploads, existente.ArchivoAdjunto);
@@ -161,7 +161,7 @@ public IActionResult Edit(int id, Cliente cliente)
         existente.ArchivoAdjunto = nombreArchivo;
     }
 
-    // Actualizar campos normales
+    // Actualizar otros campos
     existente.Nombre = cliente.Nombre;
     existente.Apellido = cliente.Apellido;
     existente.Email = cliente.Email;
@@ -169,14 +169,13 @@ public IActionResult Edit(int id, Cliente cliente)
     existente.Direccion = cliente.Direccion;
     existente.CondFiscal = cliente.CondFiscal;
     existente.Cuit = cliente.Cuit;
-    // Agregá más campos si tu entidad los tiene
+    // Añadí otros campos si los tenés
 
     _context.Update(existente);
     _context.SaveChanges();
 
     return RedirectToAction(nameof(Index));
 }
-
     
 
 
