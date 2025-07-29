@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-07-2025 a las 21:03:22
+-- Tiempo de generación: 29-07-2025 a las 15:35:00
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -76,17 +76,17 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`ProductoId`, `Nombre`, `Descripcion`, `PrecioCosto`, `PrecioVenta`, `UnidadMedida`, `RubroId`, `ProveedorId`, `stock`, `ProductoPadreId`, `EquivalenciaEnPadre`) VALUES
-(1, 'Cable UTP EXT', 'Cable UTP Furukawa exterior bobina 305 mtrs', 158000.00, 230000.00, 'bobina', NULL, NULL, 57.00, NULL, NULL),
-(2, 'Ficha rj45', 'ficha utp cat 6', 585.00, 1100.00, 'unidad', NULL, NULL, 56.00, NULL, NULL),
-(3, 'Patchcord', 'patchcord rj45', 585.00, 1100.00, 'unidad', 2, NULL, 200.00, NULL, NULL),
+(1, 'Cable UTP EXT', 'Cable UTP Furukawa exterior bobina 305 mtrs', 158000.00, 230000.00, 'bobina', NULL, NULL, 54.00, NULL, NULL),
+(2, 'Ficha rj45', 'ficha utp cat 6', 585.00, 1100.00, 'unidad', NULL, NULL, 51.00, NULL, NULL),
+(3, 'Patchcord', 'patchcord rj45', 585.00, 1100.00, 'unidad', 2, NULL, 192.00, NULL, NULL),
 (4, 'Cable UTP EXT x metro', 'furukawa exterior doble vaina x METRO', 485.00, 895.00, 'metro', 3, 1, 0.00, NULL, NULL),
-(5, 'Rollo Cable 305m', 'Bobina completa de cable UTP', 12000.00, 18000.00, 'bobina', 3, 1, 4.00, NULL, NULL),
-(6, 'Rollo Cable utp 305m', 'Bobina completa de cable UTP', 12000.00, 18000.00, 'bobina', 1, 1, 1.31, NULL, NULL),
-(7, 'Cable x metro', 'Cable de red UTP por metro', 508.00, 1050.00, 'metro', 1, 1, 400.00, 6, 0.00327860),
-(8, 'Pack 100 fichas RJ45 CAT6', 'Bolsa cerrada con 100 fichas de red CAT6', 20000.00, 28000.00, 'pack', 3, 1, 193.90, NULL, NULL),
-(9, 'Ficha RJ45 CAT6 por unidad', 'Ficha de red CAT6 suelta', 200.00, 300.00, 'unidad', 3, 1, 19990.00, 8, 0.01000000),
-(10, 'Cable CCTV interior', 'Cable  CCTV interior dos pares', 587.00, 897.00, 'metro', 3, 1, 78.85, NULL, NULL),
-(11, 'Cable x metro CCTV interior', 'Cable x metro CCTV interior 2 pares', 483.00, 987.00, 'metro', 3, 1, 2995.00, 10, 0.03000000),
+(5, 'Rollo Cable 305m', 'Bobina completa de cable UTP', 12000.00, 18000.00, 'bobina', 3, 1, 2.00, NULL, NULL),
+(6, 'Rollo Cable utp 305m', 'Bobina completa de cable UTP', 12000.00, 18000.00, 'bobina', 1, 1, 0.30, NULL, NULL),
+(7, 'Cable x metro', 'Cable de red UTP por metro', 508.00, 1050.00, 'metro', 1, 1, 92.00, 6, 0.00327860),
+(8, 'Pack 100 fichas RJ45 CAT6', 'Bolsa cerrada con 100 fichas de red CAT6', 20000.00, 28000.00, 'pack', 3, 1, 188.80, NULL, NULL),
+(9, 'Ficha RJ45 CAT6 por unidad', 'Ficha de red CAT6 suelta', 200.00, 300.00, 'unidad', 3, 1, 18880.00, 8, 0.01000000),
+(10, 'Cable CCTV interior', 'Cable  CCTV interior dos pares', 587.00, 897.00, 'metro', 3, 1, 36.53, NULL, NULL),
+(11, 'Cable x metro CCTV interior', 'Cable x metro CCTV interior 2 pares', 483.00, 987.00, 'metro', 3, 1, 1217.00, 10, 0.03000000),
 (13, 'Precinto bolsa x 100', 'precinto negro corto bolsa 100 unidades', 1500.00, 2800.00, 'pack', 3, 8, 6.04, NULL, NULL),
 (14, 'prencito negro corto unidad', 'prencito negro corto x 1', 150.00, 320.00, 'unidad', 3, 8, 604.00, 13, 0.01000000);
 
@@ -299,7 +299,58 @@ INSERT INTO `venta` (`VentaId`, `Fecha`, `Total`, `TipoVenta`, `UsuarioId`, `Cli
 (117, '2025-07-25 16:14:03', 6000.00, 'Contado', 1, 4, b'1'),
 (118, '2025-07-25 16:28:28', 3200.00, 'Contado', 1, 4, b'0'),
 (119, '2025-07-25 16:29:10', 6000.00, 'Contado', 1, 4, b'1'),
-(120, '2025-07-25 16:30:39', 4080.00, 'Contado', 1, 4, b'1');
+(120, '2025-07-25 16:30:39', 4080.00, 'Contado', 1, 4, b'1'),
+(122, '2025-07-27 13:52:04', 400.00, 'Contado', 1, 3, b'0'),
+(123, '2025-07-27 15:06:17', 1794.00, 'Transferencia', 1, 1, b'0'),
+(124, '2025-07-27 15:08:22', 897.00, 'Contado', 1, 1, b'0'),
+(125, '2025-07-27 15:09:37', 0.00, 'Contado', 1, 3, b'0'),
+(126, '2025-07-27 15:10:07', 0.00, 'Contado', 1, 3, b'0'),
+(127, '2025-07-27 15:11:17', 0.00, 'Contado', 1, 3, b'0'),
+(128, '2025-07-27 15:11:36', 400.00, 'Contado', 1, 3, b'0'),
+(129, '2025-07-27 15:12:15', 230000.00, 'Tarjeta Débito', 1, 1, b'0'),
+(130, '2025-07-27 15:18:09', 897.00, 'Contado', 1, 1, b'1'),
+(131, '2025-07-27 15:25:42', 897.00, 'Tarjeta Débito', 1, 1, b'0'),
+(132, '2025-07-27 19:12:08', 8970.00, 'Contado', 1, 4, b'0'),
+(133, '2025-07-27 19:13:12', 1050.00, 'Tarjeta Crédito', 1, 4, b'0'),
+(134, '2025-07-27 19:24:12', 897.00, 'Contado', 4, 3, b'0'),
+(135, '2025-07-28 08:58:54', 9867.00, 'Contado', 1, 4, b'0'),
+(136, '2025-07-28 10:37:29', 897.00, 'Contado', 1, 1, b'0'),
+(137, '2025-07-28 10:38:00', 897.00, 'Tarjeta Crédito', 4, 1, b'0'),
+(138, '2025-07-28 10:54:42', 897.00, 'Contado', 1, 1, b'0'),
+(139, '2025-07-28 10:55:19', 230000.00, 'Transferencia', 4, 4, b'0'),
+(140, '2025-07-28 10:59:44', 1050.00, 'Contado', 4, 1, b'0'),
+(141, '2025-07-28 11:05:09', 897.00, 'Contado', 1, 1, b'0'),
+(142, '2025-07-28 11:11:56', 897.00, 'Contado', 4, 1, b'0'),
+(143, '2025-07-28 11:18:19', 897.00, 'Contado', 1, 1, b'0'),
+(144, '2025-07-28 11:19:07', 28000.00, 'Contado', 4, 3, b'0'),
+(145, '2025-07-28 11:43:29', 897.00, 'Contado', 4, 1, b'0'),
+(146, '2025-07-28 11:46:12', 897.00, 'Contado', 1, 1, b'0'),
+(147, '2025-07-28 11:50:47', 897.00, 'Contado', 4, 1, b'0'),
+(148, '2025-07-28 11:51:09', 897.00, 'Contado', 1, 1, b'0'),
+(149, '2025-07-28 11:51:49', 897.00, 'Tarjeta Crédito', 1, 1, b'0'),
+(150, '2025-07-28 11:55:06', 897.00, 'Contado', 1, 1, b'0'),
+(151, '2025-07-28 11:55:47', 56000.00, 'Tarjeta Crédito', 1, 3, b'0'),
+(152, '2025-07-28 11:58:12', 2100.00, 'Tarjeta Débito', 1, 1, b'0'),
+(153, '2025-07-28 11:58:52', 230000.00, 'Contado', 1, 1, b'0'),
+(154, '2025-07-28 12:02:49', 897.00, 'Tarjeta Débito', 1, 2, b'0'),
+(155, '2025-07-28 12:10:27', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(156, '2025-07-28 12:10:32', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(157, '2025-07-28 12:10:34', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(158, '2025-07-28 12:10:54', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(159, '2025-07-28 12:10:54', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(160, '2025-07-28 12:10:55', 6909.00, 'Tarjeta Débito', 1, 1, b'0'),
+(161, '2025-07-28 12:11:45', 897.00, 'Tarjeta Débito', 1, 2, b'0'),
+(162, '2025-07-28 12:26:27', 1800.00, 'Tarjeta Débito', 1, 4, b'0'),
+(163, '2025-07-28 12:28:32', 5500.00, 'Tarjeta Crédito', 1, 3, b'0'),
+(164, '2025-07-28 12:49:42', 84000.00, 'Tarjeta Crédito', 1, 3, b'1'),
+(165, '2025-07-28 16:19:39', 897.00, 'Contado', 4, 1, b'0'),
+(166, '2025-07-28 17:06:52', 1974.00, 'Tarjeta Débito', 1, 4, b'0'),
+(167, '2025-07-28 17:07:03', 400.00, 'Contado', 1, 3, b'0'),
+(168, '2025-07-28 17:08:38', 9400.00, 'Tarjeta Crédito', 1, 4, b'1'),
+(169, '2025-07-28 17:16:12', 2800.00, 'Contado', 1, 4, b'1'),
+(170, '2025-07-28 17:17:26', 400.00, 'Contado', 1, 3, b'0'),
+(171, '2025-07-28 17:17:54', 400.00, 'Contado', 1, 3, b'0'),
+(172, '2025-07-28 18:35:21', 56000.00, 'Tarjeta Débito', 1, 1, b'0');
 
 -- --------------------------------------------------------
 
@@ -434,7 +485,61 @@ INSERT INTO `ventadetalle` (`VentaDetalleId`, `VentaId`, `ProductoId`, `Cantidad
 (112, 119, 13, 1, 2800.00),
 (113, 119, 14, 10, 320.00),
 (114, 120, 13, 1, 2800.00),
-(115, 120, 14, 4, 320.00);
+(115, 120, 14, 4, 320.00),
+(116, 122, 5, 2, 150.00),
+(117, 122, 6, 1, 100.00),
+(118, 123, 10, 2, 897.00),
+(119, 124, 10, 1, 897.00),
+(120, 128, 3, 2, 150.00),
+(121, 128, 9, 1, 100.00),
+(122, 129, 1, 1, 230000.00),
+(123, 130, 10, 1, 897.00),
+(124, 131, 10, 1, 897.00),
+(125, 132, 10, 10, 897.00),
+(126, 133, 7, 1, 1050.00),
+(127, 134, 10, 1, 897.00),
+(128, 135, 10, 11, 897.00),
+(129, 136, 10, 1, 897.00),
+(130, 137, 10, 1, 897.00),
+(131, 138, 10, 1, 897.00),
+(132, 139, 1, 1, 230000.00),
+(133, 140, 7, 1, 1050.00),
+(134, 141, 10, 1, 897.00),
+(135, 142, 10, 1, 897.00),
+(136, 143, 10, 1, 897.00),
+(137, 144, 8, 1, 28000.00),
+(138, 145, 10, 1, 897.00),
+(139, 146, 10, 1, 897.00),
+(140, 147, 10, 1, 897.00),
+(141, 148, 10, 1, 897.00),
+(142, 149, 10, 1, 897.00),
+(143, 150, 10, 1, 897.00),
+(144, 151, 8, 2, 28000.00),
+(145, 152, 7, 2, 1050.00),
+(146, 153, 1, 1, 230000.00),
+(147, 154, 10, 1, 897.00),
+(148, 155, 11, 7, 987.00),
+(149, 156, 11, 7, 987.00),
+(150, 157, 11, 7, 987.00),
+(151, 158, 11, 7, 987.00),
+(152, 159, 11, 7, 987.00),
+(153, 160, 11, 7, 987.00),
+(154, 161, 10, 1, 897.00),
+(155, 162, 9, 6, 300.00),
+(156, 163, 2, 5, 1100.00),
+(157, 164, 8, 3, 28000.00),
+(158, 165, 10, 1, 897.00),
+(159, 166, 11, 2, 987.00),
+(160, 167, 3, 2, 150.00),
+(161, 167, 9, 1, 100.00),
+(162, 168, 3, 6, 1100.00),
+(163, 168, 13, 1, 2800.00),
+(164, 169, 13, 1, 2800.00),
+(165, 170, 3, 2, 150.00),
+(166, 170, 9, 1, 100.00),
+(167, 171, 3, 2, 150.00),
+(168, 171, 9, 1, 100.00),
+(169, 172, 8, 2, 28000.00);
 
 --
 -- Índices para tablas volcadas
@@ -525,13 +630,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `VentaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `VentaId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=173;
 
 --
 -- AUTO_INCREMENT de la tabla `ventadetalle`
 --
 ALTER TABLE `ventadetalle`
-  MODIFY `VentaDetalleId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `VentaDetalleId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- Restricciones para tablas volcadas
